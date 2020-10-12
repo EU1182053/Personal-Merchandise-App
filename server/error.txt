@@ -1,0 +1,7 @@
+cannot read property undefined => replace 'undefined' with ` "" ` in user.js 
+'SignUp Successful.Please Login Here' message is not showing => Placement of function calling is the mistake
+400(Bad Request) => All the input fields should be filled with correct data.
+TypeError: Cannot read property 'length' of undefined => Syntax error in router.get() method
+TypeError: Cannot destructure property 'products' of 'undefined' as it is undefined. => Use useEffect method for products like used in Cart.js
+Unnecessary warnings => ignored
+TypeError: Cannot read property 'requestPaymentMethod' of undefined

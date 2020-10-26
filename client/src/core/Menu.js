@@ -29,11 +29,11 @@ const Menu = ({ history }) => (
       </li>
       <li className="nav-item">
         <Link
-          style={currentTab(history, "/user/dashboard")}
+          style={currentTab(history, "/user/review")}
           className="nav-link"
-          to="/user/dashboard"
+          to="/user/review"
         >
-          User_Dashboard
+          Reviews
         </Link>
       </li>
       {/* <li className="nav-item">
@@ -42,15 +42,15 @@ const Menu = ({ history }) => (
           className="nav-link"
           to="/admin/dashboard"
         >
-          A. Dashboard
+          A. review
         </Link>
       </li> */}
       {isAuthenticated() && isAuthenticated().user.role === 0 && (
         <li className="nav-item">
           <Link
-            style={currentTab(history, "/user/dashboard")}
+            style={currentTab(history, "/user/review")}
             className="nav-link"
-            to="/user/dashboard"
+            to="/user/review"
           >
             U. Dashboard
           </Link>

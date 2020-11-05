@@ -14,7 +14,7 @@ const Signup = () => {
   const { name, email, password, error, success } = values;
 
   const handleChange = (name) => (event) => {
-    setValues({ ...values, error: false, [name]: event.target.values });
+    setValues({ ...values, error: false, [name]: event.target.value });
   };
 
   const onSubmit = (event) => {

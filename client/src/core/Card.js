@@ -20,7 +20,7 @@ useEffect(() => {
   const showAddToCart = (addToCart) => {
     
     return (
-      addToCart && (
+      (isAuthenticated() && addToCart) && (
         <div className="col-12">
           <button
             onClick={() => {
@@ -33,6 +33,7 @@ useEffect(() => {
         </div>
       )
     );
+      
   };
   const getRedirect = () => {
     if(redirect){

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Base from '../core/Base'
-import Card from '../core/Card'
+import ReviewCard from "../core/ReviewCard";
 import { getProducts } from "../core/helper/coreapicalls";
 
 const ReviewBoard = () => {
@@ -37,7 +37,7 @@ const ReviewBoard = () => {
           {products.map((product, index) => {
             return (
               <div key={index} >
-                <Card 
+                <ReviewCard 
                 product={product}
                 addToCart={false}
                 />

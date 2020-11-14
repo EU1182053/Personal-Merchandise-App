@@ -13,7 +13,7 @@ import AddProduct from './admin/AddProduct'
 import ManageProducts from './admin/ManageProducts'
 import ManageCategory from './admin/ManageCategory'
 import Cart from './core/Cart'
-import ReviewBoard from "./user/ReviewBoard";
+
 const Routes = () => {
     
    return(

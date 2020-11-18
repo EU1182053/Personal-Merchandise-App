@@ -39,3 +39,6 @@ input[type=password] {
   background-position: right;
   
 }
+input[type="radio"]{
+  display: none;
+}

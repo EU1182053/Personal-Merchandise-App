@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import UpdateTheProduct from "./UpdateProduct";
 import Base from "../core/Base";
 import { Link } from "react-router-dom";
 import { isAuthenticated } from "../auth/helper";
@@ -53,11 +53,20 @@ const ManageProducts = () => {
                   <h3 className="text-white text-left">{product.name}</h3>
                 </div>
                 <div className="col-4">
-                  <Link
+                  <Link to={'/admin/product/update'}>
+                  <button
+                  
+                  onClick={() => {
+                    return <UpdateTheProduct 
+                    product={product}
+                    productId={product._id}/>
+                  }}
                     className="btn btn-success"
                     
                   >
                     <span className="">Update</span>
+                  </button>
+                  
                   </Link>
                 </div>
                 <div className="col-4">

@@ -118,35 +118,35 @@ const UpdateProduct = ({ product,productId }) => {
               <div className="form-group row">
                 <label className="col-sm-2 col-form-label">Name: </label>
 
-                <div class="col-sm-10">
+                <div className="col-sm-10">
                   <input type="text" />
                 </div>
               </div>
               <div className="form-group row">
                 <label className="col-sm-2 col-form-label">Description: </label>
 
-                <div class="col-sm-10">
+                <div className="col-sm-10">
                   <input type="text" />
                 </div>
               </div>
               <div className="form-group row">
                 <label className="col-sm-2 col-form-label">Stock: </label>
 
-                <div class="col-sm-10">
+                <div className="col-sm-10">
                   <input type="text" />
                 </div>
               </div>
               <div className="form-group row">
                 <label className="col-sm-2 col-form-label">Price: </label>
 
-                <div class="col-sm-10">
+                <div className="col-sm-10">
                   <input type="text" />
                 </div>
               </div>
               <div className="form-group row">
                 <label className="col-sm-2 col-form-label">Category: </label>
 
-                <div class="col-sm-10">
+                <div className="col-sm-10">
                   <input type="text" />
                 </div>
               </div>
@@ -161,9 +161,9 @@ const UpdateProduct = ({ product,productId }) => {
             </div>
          
       </div>
-    {onLoading()}
-        {successMessage()}
-        {console.log(productId)}
+            {onLoading()}
+            {successMessage()}
+            {console.log(productId)}
     </Base>
   );
 };

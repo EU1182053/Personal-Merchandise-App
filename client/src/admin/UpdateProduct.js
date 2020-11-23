@@ -150,6 +150,9 @@ const UpdateProduct = ({ product,productId }) => {
                   <input type="text" />
                 </div>
               </div>
+              <button className="btn btn-block btn-outline-success mt-2 mb-2">
+                    Done
+              </button>
               <br/>
               <br/>
               <br/>

@@ -102,8 +102,8 @@ const UpdateProduct = ({ product,productId }) => {
 
   return (
     <Base
-      title="Add a product here!"
-      description="Welcome to product creation section"
+      title="Update the product here!"
+      description="Welcome to product update section"
       className="container bg-info p-4"
     >
       <Link to="/admin/dashboard" className="btn btn-md btn-dark mb-3">
@@ -118,38 +118,41 @@ const UpdateProduct = ({ product,productId }) => {
               <div className="form-group row">
                 <label className="col-sm-2 col-form-label">Name: </label>
 
-                <div class="col-sm-10">
+                <div className="col-sm-10">
                   <input type="text" />
                 </div>
               </div>
               <div className="form-group row">
                 <label className="col-sm-2 col-form-label">Description: </label>
 
-                <div class="col-sm-10">
+                <div className="col-sm-10">
                   <input type="text" />
                 </div>
               </div>
               <div className="form-group row">
                 <label className="col-sm-2 col-form-label">Stock: </label>
 
-                <div class="col-sm-10">
+                <div className="col-sm-10">
                   <input type="text" />
                 </div>
               </div>
               <div className="form-group row">
                 <label className="col-sm-2 col-form-label">Price: </label>
 
-                <div class="col-sm-10">
+                <div className="col-sm-10">
                   <input type="text" />
                 </div>
               </div>
               <div className="form-group row">
                 <label className="col-sm-2 col-form-label">Category: </label>
 
-                <div class="col-sm-10">
+                <div className="col-sm-10">
                   <input type="text" />
                 </div>
               </div>
+              <button className="btn btn-block btn-outline-success mt-2 mb-2">
+                    Done
+              </button>
               <br/>
               <br/>
               <br/>
@@ -158,9 +161,9 @@ const UpdateProduct = ({ product,productId }) => {
             </div>
          
       </div>
-    {onLoading()}
-        {successMessage()}
-        {console.log(productId)}
+            {onLoading()}
+            {successMessage()}
+            {console.log(productId)}
     </Base>
   );
 };

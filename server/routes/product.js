@@ -7,7 +7,8 @@ const {
   getAllProducts,
   getProduct,
   deleteProduct,
-  photo
+  photo,
+  updateProduct
 } = require("../controllers/product");
 const { isSignIn, isAuthenticated, isAdmin } = require("../controllers/auth");
 

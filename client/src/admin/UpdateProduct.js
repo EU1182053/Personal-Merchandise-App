@@ -102,8 +102,8 @@ const UpdateProduct = ({ product,productId }) => {
 
   return (
     <Base
-      title="Add a product here!"
-      description="Welcome to product creation section"
+      title="Update the product here!"
+      description="Welcome to product update section"
       className="container bg-info p-4"
     >
       <Link to="/admin/dashboard" className="btn btn-md btn-dark mb-3">

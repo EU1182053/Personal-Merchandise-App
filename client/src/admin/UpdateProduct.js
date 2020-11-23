@@ -10,7 +10,7 @@ import { isAuthenticated } from "../auth/helper";
 import Card from "../core/Card";
 import { getAllProducts } from "./helper/adminapicall";
 
-const UpdateProduct = ({ product }) => {
+const UpdateProduct = ({ product,productId }) => {
   const { user, token } = isAuthenticated();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -43,34 +43,12 @@ const UpdateProduct = ({ product }) => {
     formData,
   } = values;
 
-  const preloadCategories = () => {
-    getCategories()
-      .then((data) => {
-        setCategories(data);
-        console.log(data);
-      })
-      .catch((err) => console.log(err));
-  };
-  const preloadProducts = () => {
-    getAllProducts()
-      .then((data) => {
-        setProducts(data);
-      })
-      .catch((data) => {
-        if (data.error) {
-          console.log(data.error);
-        }
-      });
-  };
-  useEffect(() => {
-    preloadCategories();
-    preloadProducts();
-  }, []);
+  
 
   const onSubmit = (event) => {
     event.preventDefault();
     setValues({ ...values, error: "", loading: true });
-    updateProduct(product._id, token, formData)
+    updateProduct(productId, token, formData)
       .then((data) => {
         setValues({
           ...values,
@@ -133,9 +111,9 @@ const UpdateProduct = ({ product }) => {
       </Link>
       <div className="row bg-dark text-white rounded">
         <div className="col-md-8 offset-md-2"></div>
-        {products.map((product, index) => {
-          return (
-            <div key={index}>
+      
+          
+            <div >
               <Card addToCart={false} product={product} />
               <div className="form-group row">
                 <label className="col-sm-2 col-form-label">Name: </label>
@@ -178,9 +156,11 @@ const UpdateProduct = ({ product }) => {
               <br/>
               <br/>
             </div>
-          );
-        })}
+         
       </div>
+    {onLoading()}
+        {successMessage()}
+        {console.log(productId)}
     </Base>
   );
 };

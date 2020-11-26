@@ -11,9 +11,9 @@ import AdminDashBoard from "./user/AdminDashBoard";
 import AddCategory from './admin/AddCategory'
 import AddProduct from './admin/AddProduct'
 import ManageProducts from './admin/ManageProducts'
-import ManageCategory from './admin/ManageCategory'
+
 import Cart from './core/Cart'
-import UpdateTheProduct from './admin/UpdateProduct'
+
 const Routes = () => {
     
    return(
@@ -24,11 +24,11 @@ const Routes = () => {
         <Route path='/signin' exact component={Signin} ></Route>
         <Route path='/signout' exact component={Signout} ></Route>
         <Route path="/user/review" exact component={ReviewBoard} />
-       <AdminRoute path="/admin/product/update" exact component={UpdateTheProduct} />
+      
         <AdminRoute path="/admin/dashboard" exact component={AdminDashBoard} />
         <AdminRoute path="/admin/create/category" exact component={AddCategory} />
         <AdminRoute path="/admin/create/product" exact component={AddProduct} />
-        <AdminRoute path="/admin/category" exact component={ManageCategory} />
+        
         <AdminRoute path="/admin/products" exact component={ManageProducts} />
         <Route path='/cart' exact component={Cart} ></Route>
         

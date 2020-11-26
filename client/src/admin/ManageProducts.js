@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import UpdateTheProduct from "./UpdateProduct";
+
 import Base from "../core/Base";
 import { Link } from "react-router-dom";
 import { isAuthenticated } from "../auth/helper";

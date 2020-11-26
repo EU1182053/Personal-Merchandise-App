@@ -52,23 +52,7 @@ const ManageProducts = () => {
                 <div className="col-4">
                   <h3 className="text-white text-left">{product.name}</h3>
                 </div>
-                <div className="col-4">
-                  <Link to={'/admin/product/update'}>
-                  <button
-                  
-                  onClick={() => {
-                    return <UpdateTheProduct 
-                    product={product}
-                    productId={product._id}/>
-                  }}
-                    className="btn btn-success"
-                    
-                  >
-                    <span className="">Update</span>
-                  </button>
-                  
-                  </Link>
-                </div>
+                
                 <div className="col-4">
                   <button
                     onClick={() => {

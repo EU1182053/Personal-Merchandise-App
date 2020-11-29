@@ -31,7 +31,7 @@ router.delete("/product/:productId/:userId",deleteProduct);
 router.get('/product/photo/:productId', photo)
   
 // route for update
-router.put('product/update/:productId',updateProduct )  
+router.put('/product/update/:productId',updateProduct )  
 
   
 module.exports = router;

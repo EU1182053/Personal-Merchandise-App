@@ -5,7 +5,7 @@ import { createOrder } from "./helper/orderHelper";
 import { isAuthenticated } from "../auth/helper";
 import { cartEmpty, loadCart } from "./helper/cartHelper";
 import DropIn from "braintree-web-drop-in-react";
-import {createOrder} from './helper/orderHelper'
+
 const Paymentb = () => {
   const [info, setInfo] = useState({
     loading: false,

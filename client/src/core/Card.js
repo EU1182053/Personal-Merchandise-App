@@ -10,6 +10,8 @@ const Card = ({ product, addToCart = true, removeFromCart = false, setReload= tr
   const cardTitle = product ? product.name : "Default";
   const cardDescription = product ? product.description : "Default";
   const cardPrice = product ? product.price : "Default";
+  const cardStock = product ? product.stock : "0";
+  const cardSold = product ? product.sold : "0";
   const [products, setProducts] = useState([]);
   
 const [redirect, setRedirect] = useState(false)
@@ -68,6 +70,8 @@ useEffect(() => {
           {cardDescription}
         </p>
         <p className="btn btn-success rounded  btn-sm px-4">Rs.{cardPrice}</p>
+        <p className="">InStock : { cardStock}</p>
+        <p className="">SOLD : {cardSold}</p>
         <div className="row">{showAddToCart(addToCart)}</div>
         <div className="row">{showRemoveFromCart(removeFromCart)}</div>
 

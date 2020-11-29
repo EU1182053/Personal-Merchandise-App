@@ -68,12 +68,12 @@ const [reload, setReload] = useState(undefined)
         .then((response) => {
           setInfo({ ...info, success: response.success, loading: false });
           console.log("PAYMENT SUCCESS");
-          // const orderData = {
-          //   products: products,
-          //   transaction_id: response.transaction.id,
-          //   amount: response.transaction.amount,
-          // };
-          // createOrder(userId, token, orderData);
+          const orderData = {
+            products: products,
+            transaction_id: response.transaction.id,
+            amount: response.transaction.amount,
+          };
+          createOrder(userId, token, orderData);
           // //TODO: empty the cart
           cartEmpty(() => {
             console.log('CartEmpty successful')

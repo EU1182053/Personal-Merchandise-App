@@ -117,7 +117,7 @@ exports.updateStock = (req, res, next) => {
     next();
   });
 };
-exports.updateProduct = () => {
+exports.updateProduct = (req, res) => {
   Product.findByIdAndUpdate({_id: req.product._id},{$set: req.body},{new: true}).then(product => {
     return res.status(200).json(product)
   })

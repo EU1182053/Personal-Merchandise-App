@@ -3,6 +3,8 @@ const authRoute = require('./routes/auth')
 const cors = require('cors')
 const userRoute = require('./routes/user')
 const cateRoute = require('./routes/category')
+const orderRoute = require('./routes/order')
+
 const productRoute = require('./routes/product')
 const paymentRoute = require('./routes/paymentBRoutes')
 const express = require('express')
@@ -32,7 +34,7 @@ app.use('/api', userRoute)
 app.use('/api', cateRoute)
 app.use('/api', productRoute)
 app.use('/api', paymentRoute)
-
+app.use('/api', orderRoute)
 
 
 

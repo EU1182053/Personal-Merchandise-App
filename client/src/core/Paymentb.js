@@ -6,7 +6,7 @@ import { isAuthenticated } from "../auth/helper";
 import { cartEmpty, loadCart } from "./helper/cartHelper";
 import DropIn from "braintree-web-drop-in-react";
 
-const Paymentb = () => {
+const Paymentb = ({ products, setReload = (f) => f, reload = undefined }) => {
   const [info, setInfo] = useState({
     loading: false,
     success: false,
@@ -14,10 +14,10 @@ const Paymentb = () => {
     error: "",
     instance: {},
   });
-  const [products, setProducts] = useState([])
+
   const userId = isAuthenticated() && isAuthenticated().user._id;
   const token = isAuthenticated() && isAuthenticated().token;
-const [reload, setReload] = useState(undefined)
+  // const [reload, setReload] = useState(undefined);
   const getToken = (userId, token) => {
     return getmeToken(userId, token)
       .then((info) => {
@@ -42,7 +42,7 @@ const [reload, setReload] = useState(undefined)
             </button>
           </div>
         ) : (
-          <h3>Please  add something to cart</h3>
+          <h3>Please add something to cart</h3>
         )}
       </div>
     );
@@ -50,8 +50,9 @@ const [reload, setReload] = useState(undefined)
 
   useEffect(() => {
     getToken(userId, token);
-    setProducts(loadCart())
-    
+    {
+      console.log(userId, token);
+    }
   }, []);
 
   const onPurchase = () => {
@@ -64,27 +65,38 @@ const [reload, setReload] = useState(undefined)
         paymentMethodNonce: nonce,
         amount: getAmount(),
       };
-      processPayment(userId, token, paymentData)
-        .then((response) => {
-          setInfo({ ...info, success: response.success, loading: false });
-          console.log("PAYMENT SUCCESS");
-          const orderData = {
-            products: products,
-            transaction_id: response.transaction.id,
-            amount: response.transaction.amount,
-          };
-          createOrder(userId, token, orderData);
-          // //TODO: empty the cart
-          cartEmpty(() => {
-            console.log('CartEmpty successful')
-          });
-          // //TODO: force reload
-          setReload(!reload)
-        })
-        .catch((error) => {
-          setInfo({ loading: false, success: false });
-          console.log("PAYMENT FAILED");
+      console.log(paymentData);
+      processPayment(userId, token, paymentData).then((response) => {
+        setInfo({ ...info, success: response.success, loading: false });
+        console.log("PAYMENT SUCCESS", response);
+
+        createOrder(userId, token, {
+          order: {
+            products: [products],
+            transaction_id: response._id,
+            amount: getAmount(),
+            user: userId,
+          },
         });
+        console.log({
+          order: {
+            products: [products],
+            transaction_id: response._id,
+            amount: getAmount(),
+            user: userId,
+          },
+        })
+        // //TODO: empty the cart
+        cartEmpty(() => {
+          console.log("CartEmpty successful");
+        });
+        // //TODO: force reload
+        setReload(!reload);
+      });
+      // .catch((error) => {
+      //   setInfo({ loading: false, success: false });
+      //   console.log("PAYMENT FAILED");
+      // });
     });
   };
 

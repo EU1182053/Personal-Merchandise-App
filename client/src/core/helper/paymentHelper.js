@@ -10,7 +10,7 @@ export const getmeToken = (userId, token) => {
     },
   })
   .then(response => {
-    return response.json();
+    return response.json()
   })
   .catch(err => console.log(err));
 };
@@ -18,6 +18,7 @@ export const getmeToken = (userId, token) => {
 export const processPayment = (userId, token, paymentInfo) => {
     return fetch(`${API}/payment/braintree/${userId}`, {
         method: "POST",
+        mode:"no-cors",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -26,7 +27,8 @@ export const processPayment = (userId, token, paymentInfo) => {
         body: JSON.stringify(paymentInfo)
       })
       .then(response => {
-      return response.json()
+        // console.log(response)
+      return response
     })
     .catch(err => console.log(err));
 }

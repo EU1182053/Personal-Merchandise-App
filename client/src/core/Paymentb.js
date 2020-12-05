@@ -54,7 +54,15 @@ const Paymentb = ({ products, setReload = (f) => f, reload = undefined }) => {
       console.log(userId, token);
     }
   }, []);
-
+const makeId = (len) => {
+    var result = "";
+    var characters = "abcdefghijklmnopqrstuvwxyz0123456789";
+    var charactersLength = characters.length;
+    for (var i = 0; i < len; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  };
   const onPurchase = () => {
     setInfo({ loading: true });
     let nonce;
@@ -73,7 +81,7 @@ const Paymentb = ({ products, setReload = (f) => f, reload = undefined }) => {
         createOrder(userId, token, {
           order: {
             products: [products],
-            transaction_id: response._id,
+            transaction_id: makeId(3),
             amount: getAmount(),
             user: userId,
           },
@@ -81,7 +89,7 @@ const Paymentb = ({ products, setReload = (f) => f, reload = undefined }) => {
         console.log({
           order: {
             products: [products],
-            transaction_id: response._id,
+            transaction_id: makeId(3),
             amount: getAmount(),
             user: userId,
           },

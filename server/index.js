@@ -12,7 +12,7 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const app = express()
-mongoose.connect(process.env.DATABASE,
+mongoose.connect(process.env.DATABASE || process.env.mongoURL,
                          {useNewUrlParser: true, 
                             useUnifiedTopology: true,
                             useCreateIndex: true,
@@ -37,9 +37,11 @@ app.use('/api', paymentRoute)
 app.use('/api', orderRoute)
 
 
+if(process.env.NODE_ENV==="production"){
+    app.use(express.static('client/build'))
+}
 
-
-const port = 8000
+const port = 8000 || 3000
 app.get('/', (req, res) => res.send('hello there'))
 
 app.listen(port, () => {

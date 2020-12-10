@@ -13,17 +13,17 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const app = express();
 mongoose
-  .connect(process.env.DATABASE || process.env.mongoURL, {
+  .connect( process.env.mongoURL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
     useFindAndModify: false,
   })
-  .then(() => {
-    console.log("DB succeed");
+  .then((data) => {
+    console.log("DB succeed", data);
   })
-  .catch(() => {
-    console.log("DB stopped working");
+  .catch((error) => {
+    console.log("DB stopped working", error);
   });
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -38,7 +38,7 @@ app.use("/api", orderRoute);
 // ... other app.use middleware
 app.use(express.static(path.join(__dirname, "client", "build")));
 
-const port = 8000 || 3000;
+const port = 8000 || process.env.PORT;
 app.get("/", (req, res) => res.send("hello there"));
 
 // Right before your app.listen(), add this:

@@ -1,4 +1,4 @@
-require("dotenv").config({ path: process.env.SECRET });
+require("dotenv").config();
 const authRoute = require("./routes/auth");
 const cors = require("cors");
 const userRoute = require("./routes/user");

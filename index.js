@@ -13,17 +13,17 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const app = express();
 mongoose
-  .connect( process.env.mongoURL || 'mongodb://localhost:27017/test', {
+  .connect(  ('mongodb://localhost:27017/test'), {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
     useFindAndModify: false,
   })
   .then((data) => {
-    console.log("DB succeed", data);
+    console.log("DB succeed");
   })
   .catch((error) => {
-    console.log("DB stopped working", error);
+    console.log("DB stopped working");
   });
 app.use(bodyParser.json());
 app.use(cookieParser());

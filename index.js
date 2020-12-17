@@ -13,7 +13,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const app = express();
 mongoose
-  .connect( process.env.mongoURL, {
+  .connect( process.env.mongoURL || 'mongodb://localhost:27017/test', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,

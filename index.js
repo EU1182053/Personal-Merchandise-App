@@ -13,7 +13,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const app = express();
 mongoose
-  .connect(  ('mongodb://localhost:27017/test'), {
+  .connect(  ('mongodb://localhost:27017/test') || 'mongodb+srv://siddheshs871:Siddhesh@123@gettingstarted.6ae8u.mongodb.net/test?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,

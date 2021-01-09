@@ -37,8 +37,8 @@ app.use("/api", orderRoute);
 
 // ... other app.use middleware
 app.use(express.static(path.join(__dirname, "client", "build")));
-const host = '0.0.0.0';
-const port =  process.env.PORT  || 8000 ;
+
+const port =  process.env.PORT || 6000 ;
 app.get("/", (req, res) => res.send("hello there"));
 
 // Right before your app.listen(), add this:
@@ -46,6 +46,6 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "client", "build", "index.html"));
 });
 
-app.listen(port,host,() => {
+app.listen(port,() => {
   console.log(`${port}`);
 });

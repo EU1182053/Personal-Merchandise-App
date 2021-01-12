@@ -38,7 +38,7 @@ app.use("/api", orderRoute);
 // ... other app.use middleware
 app.use(express.static(path.join(__dirname, "client", "build")));
 
-const port =  process.env.PORT || 6000 ;
+const port =   6000 ;
 app.get("/", (req, res) => res.send("hello there"));
 
 // Right before your app.listen(), add this:

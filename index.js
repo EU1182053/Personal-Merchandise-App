@@ -13,7 +13,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const app = express();
 mongoose
-  .connect(  ('mongodb://localhost:27017/test') || 'mongodb+srv://siddheshs871:Siddhesh@123@gettingstarted.6ae8u.mongodb.net/test?retryWrites=true&w=majority', {
+  .connect(  ('mongodb://localhost:27017/test') , {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
@@ -38,7 +38,7 @@ app.use("/api", orderRoute);
 // ... other app.use middleware
 app.use(express.static(path.join(__dirname, "client", "build")));
 
-const port =   6000 ;
+const port =   8000 ;
 app.get("/", (req, res) => res.send("hello there"));
 
 // Right before your app.listen(), add this:

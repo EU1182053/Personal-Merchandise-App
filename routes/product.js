@@ -19,7 +19,7 @@ router.param("productId", getProductById);
 router.post("/product/create/:userId", isSignIn, isAdmin, createProduct);
 
 // get all the products
-router.get("/product/show",  getAllProducts);
+// router.get("/product/show",  getAllProducts);
 
 //get a specific product
 router.get("/product/show/:productId", getProduct);

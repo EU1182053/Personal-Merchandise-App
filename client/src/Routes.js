@@ -32,10 +32,6 @@ const Routes = () => {
         <AdminRoute path="/admin/products" exact component={ManageProducts} />
         <Route path='/cart' exact component={Cart} ></Route>
         
-        
-       
-
-
 
     </Switch>
     </BrowserRouter>

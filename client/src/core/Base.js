@@ -27,16 +27,12 @@ const Base = ({
             If you have any problems, reach me at instagram!
           </span>
           <br></br>
-
-          <button className="btn btn-light bg-warning btn-lg">
-            Contact Us
-          </button>
-
-          <div className="container">
-            <span className="text-warning ">An Amazing MERN Project.</span>
-          </div>
+          <a href="https://www.google.com/" className="col-3" style={{"color":"green"}} ><i className="fab fa-instagram fa-2x" ></i></a>
+          <a href="https://www.google.com/" className="col-3" style={{"color":"green"}}><i className="fab fa-linkedin fa-2x" ></i></a>
+          <a href="https://www.google.com/" className="col-3" style={{"color":"green"}}><i className="fab fa-twitter fa-2x" ></i></a>
+          
         </div>
-      </footer>
+      </footer> 
     </div>
   );
 };

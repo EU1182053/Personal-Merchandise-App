@@ -6,13 +6,13 @@ var userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    maxlength: 20,
+    maxlength: 30,
     trim: true,
   },
   email: {
     type: String,
     required: true,
-    maxlength: 20,
+    maxlength: 30,
     trim: true,
   },
   //TODO: come back here later
@@ -28,6 +28,15 @@ var userSchema = new mongoose.Schema({
     default: 0,
     type: Number,
   },
+  resetPasswordToken: {
+    type: String,
+    required: false
+  },
+
+  resetPasswordExpires: {
+    type: Date,
+    required: false
+  }
 });
 
 userSchema
@@ -59,6 +68,10 @@ userSchema.methods = {
   },
 };
 
+userSchema.methods.generatePasswordReset = function() { 
+  this.resetPasswordToken = crypto.randomBytes(20).toString('hex');
+  this.resetPasswordExpires = Date.now() + 3600000; //expires in an hour
+};
 module.exports = mongoose.model("User", userSchema);
 
 // const crypto = require('crypto');

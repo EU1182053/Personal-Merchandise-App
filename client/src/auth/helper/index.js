@@ -55,3 +55,52 @@ export const isAuthenticated = () => {
     return false;
   }
 };
+
+export const recover = (email) => {
+  return fetch(`${API}/user/recover`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(email),
+  })
+    .then((data) => {
+      console.log("response", data)
+      return data.json()
+    }
+    )
+    .catch((error) => {
+      console.warn(error);
+    });
+};
+
+export const reset = (email, token) => {
+  return fetch(`${API}/user/reset/${token}`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(email),
+  })
+    .then((response) => response.json())
+    .catch((error) => {
+      console.warn(error);
+    });
+};
+
+export const resetPassword = (password, token) => {
+  return fetch(`${API}/user/reset/${token}`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(password),
+  })
+    .then((response) => response.json())
+    .catch((error) => {
+      console.warn(error);
+    });
+};

@@ -3,65 +3,58 @@ import Base from "../core/Base";
 import { Link, Redirect } from "react-router-dom";
 import '../styles.css'
 import { signin, authenticate, isAuthenticated } from "../auth/helper";
+import { recover } from "../auth/helper/index";
 
-const Signin = () => {
+const Forgot = () => {
   const [values, setValues] = useState({
     email: "",
-    password: "",
     error: "",
     loading: false,
     didRedirect: false,
   });
-
-  const { email, password, error, loading, didRedirect } = values;
+  const { email, error, loading, didRedirect } = values;
   const { user } = isAuthenticated();
-
   const handleChange = (name) => (event) => {
     setValues({ ...values, error: false, [name]: event.target.value });
   };
-
   const onSubmit = (event) => {
     event.preventDefault();
-    setValues({ ...values, error: false, loading: true });
-    signin({ email, password })
+    setValues({ ...values, error: false, loading: false });
+    recover({ email })
       .then((data) => {
-        if (data.error) {
-          setValues({ ...values, error: data.error, loading: false });
+        console.log(data)
+        if (data.message) {
+          setValues({ ...values, error: data.message, loading: false });
         } else {
-          authenticate(data, () => {
-            setValues({
-              ...values,
-              didRedirect: true,
-            });
-          });
+          setValues({ ...values, loading: true, didRedirect: true });
         }
       })
-      .catch(error => {return console.log("signin request failed",error)});
-  };
-
-  const performRedirect = () => {
-    if (didRedirect) {
-      if (user && user.role === 1) {
-        return <Redirect to="/admin/dashboard"/>
-      } else {
-        return <Redirect to="/"/>
-      }
-    }
-    if (isAuthenticated()) {
-      return <Redirect to="/" />;
-    }
-  };
-
+      .catch(error => { return console.log("signin request failed", error) });
+  }
   const loadingMessage = () => {
-    return (
-      loading && (
-        <div className="alert alert-info">
-          <h2>Loading...</h2>
-        </div>
-      )
-    );
-  };
+    if (loading) {
+      return (
+        loading && (
+          <div className="alert alert-info">
+            <h4>A link has been sent to you via email.Please click on that for reset your password.</h4>
+          </div>
 
+        ))
+    }
+
+    else {
+      return (
+        loading && (
+          <div className="alert alert-info">
+            <h4>{error}</h4>
+          </div>
+
+        ))
+    }
+
+
+
+  };
   const errorMessage = () => {
     return (
       <div className="row">
@@ -76,7 +69,6 @@ const Signin = () => {
       </div>
     );
   };
-
   const signInForm = () => {
     return (
       <div className="row">
@@ -91,27 +83,11 @@ const Signin = () => {
                 type="email"
               />
             </div>
-
-            <div className="form-group">
-              <label className="text-light">Password</label>
-              <input
-                onChange={handleChange("password")}
-                value={password}
-                className="form-control"
-                type="password"
-              />
-            </div>
             <button onClick={onSubmit} className="btn btn-success btn-block">
               Submit
             </button>
           </form>
-          <Link
-          
-          className="nav-link offset-sm-3 text-right"
-          to="/user/recover"
-        >
-          Forgot Password?
-        </Link>
+
         </div>
       </div>
     );
@@ -119,13 +95,11 @@ const Signin = () => {
 
   return (
     <Base title="Sign In page" description="A page for user to sign in!">
-      {loadingMessage()}
-      {errorMessage()}
       {signInForm()}
-      {performRedirect()}
-      
+      {errorMessage()}
+      {loadingMessage()}
     </Base>
   );
 };
 
-export default Signin;
+export default Forgot;

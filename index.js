@@ -13,7 +13,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const app = express();
 mongoose
-  .connect(  ('mongodb://localhost:27017/test') , {
+  .connect("mongodb://localhost:27017/ecom", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
@@ -23,9 +23,9 @@ mongoose
     console.log("DB succeed");
   })
   .catch((error) => {
-    console.log("DB stopped working");
+    console.log("DB stopped working", error);
   });
-app.use(bodyParser.json());
+app.use(bodyParser.json()); 
 app.use(cookieParser());
 app.use(cors());
 app.use("/api", authRoute);
@@ -38,7 +38,7 @@ app.use("/api", orderRoute);
 // ... other app.use middleware
 app.use(express.static(path.join(__dirname, "client", "build")));
 
-const port =   8000 ;
+const port = process.env.PORT;
 app.get("/", (req, res) => res.send("hello there"));
 
 // Right before your app.listen(), add this:
@@ -46,6 +46,6 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "client", "build", "index.html"));
 });
 
-app.listen(port,() => {
+app.listen(port, () => {
   console.log(`${port}`);
 });

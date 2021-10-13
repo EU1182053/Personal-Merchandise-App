@@ -88,7 +88,7 @@ const Menu = ({ history }) => (
             Signout
           </span>
         </li>
-      )}
+      )}     
     </ul>
   </div>
 );

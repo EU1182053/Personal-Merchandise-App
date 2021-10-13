@@ -39,7 +39,7 @@ const AddProduct = () => {
     getCategories()
       .then((data) => {
         setValues({ ...values, categories: data, formData: new FormData() });
-        console.log(data);
+        console.log(data, formData);
       })
       .catch((err) => console.log(err));
   };
@@ -51,7 +51,8 @@ const AddProduct = () => {
   const onSubmit = (event) => {
     event.preventDefault();
     setValues({ ...values, error: "", loading: true });
-    createaProduct(user._id, token, formData)
+    console.log(formData)
+    createaProduct(token, formData)
       .then((data) => {
         setValues({
           ...values,

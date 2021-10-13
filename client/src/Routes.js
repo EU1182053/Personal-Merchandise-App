@@ -13,6 +13,7 @@ import AddProduct from './admin/AddProduct'
 import ManageProducts from './admin/ManageProducts'
 
 import Cart from './core/Cart'
+import Forgot from './user/Forgot'
 
 const Routes = () => {
     
@@ -31,6 +32,7 @@ const Routes = () => {
         
         <AdminRoute path="/admin/products" exact component={ManageProducts} />
         <Route path='/cart' exact component={Cart} ></Route>
+        <Route path='/user/recover' exact component={Forgot} ></Route>
         
 
     </Switch>

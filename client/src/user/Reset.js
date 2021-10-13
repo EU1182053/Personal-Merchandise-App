@@ -1,19 +1,20 @@
 import React, { useState } from "react";
 import Base from "../core/Base";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import '../styles.css'
 import { signin, authenticate, isAuthenticated } from "../auth/helper";
 
-const Signin = () => {
+const Forgot = () => {
   const [values, setValues] = useState({
     email: "",
     password: "",
     error: "",
+    forgot:false,
     loading: false,
     didRedirect: false,
   });
 
-  const { email, password, error, loading, didRedirect } = values;
+  const { email, password, error,forgot, loading, didRedirect } = values;
   const { user } = isAuthenticated();
 
   const handleChange = (name) => (event) => {
@@ -22,8 +23,8 @@ const Signin = () => {
 
   const onSubmit = (event) => {
     event.preventDefault();
-    setValues({ ...values, error: false, loading: true });
-    signin({ email, password })
+    setValues({ ...values, error: false, forgot: true });
+    signin({ email})
       .then((data) => {
         if (data.error) {
           setValues({ ...values, error: data.error, loading: false });
@@ -56,7 +57,7 @@ const Signin = () => {
     return (
       loading && (
         <div className="alert alert-info">
-          <h2>Loading...</h2>
+          <h2>Sending Email...</h2>
         </div>
       )
     );
@@ -105,13 +106,6 @@ const Signin = () => {
               Submit
             </button>
           </form>
-          <Link
-          
-          className="nav-link offset-sm-3 text-right"
-          to="/user/recover"
-        >
-          Forgot Password?
-        </Link>
         </div>
       </div>
     );
@@ -122,10 +116,9 @@ const Signin = () => {
       {loadingMessage()}
       {errorMessage()}
       {signInForm()}
-      {performRedirect()}
       
     </Base>
   );
 };
 
-export default Signin;
+export default Forgot;

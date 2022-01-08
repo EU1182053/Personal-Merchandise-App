@@ -1,30 +1,33 @@
 require("dotenv").config();
 const authRoute = require("./routes/auth");
-const cors = require("cors");
+
 const userRoute = require("./routes/user");
 const cateRoute = require("./routes/category");
 const orderRoute = require("./routes/order");
-const path = require("path");
 const productRoute = require("./routes/product");
 const paymentRoute = require("./routes/paymentBRoutes");
+const reviewRoute = require("./routes/review");
+
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const path = require("path");
+const cors = require("cors");
 const app = express();
 mongoose
-  .connect("mongodb://localhost:27017/ecom", {
+  .connect(process.env.DATABASE, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
-    useFindAndModify: false,
-  })
+    useFindAndModify: false, 
+  }) 
   .then((data) => {
     console.log("DB succeed");
   })
   .catch((error) => {
-    console.log("DB stopped working", error);
-  });
+    console.log("DB stopped working",error);
+  }); 
 app.use(bodyParser.json()); 
 app.use(cookieParser());
 app.use(cors());
@@ -32,8 +35,9 @@ app.use("/api", authRoute);
 app.use("/api", userRoute);
 app.use("/api", cateRoute);
 app.use("/api", productRoute);
-app.use("/api", paymentRoute);
+app.use("/api", paymentRoute); 
 app.use("/api", orderRoute);
+app.use("/api", reviewRoute);
 
 // ... other app.use middleware
 app.use(express.static(path.join(__dirname, "client", "build")));

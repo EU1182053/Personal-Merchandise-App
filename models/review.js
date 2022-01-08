@@ -3,6 +3,10 @@ const { ObjectId } = mongoose.Schema;
 
 var reviewSchema = new mongoose.Schema({
   data:[{
+    user_id:{
+      type: ObjectId,
+      ref: "Product"
+    },
     product_id:{
       type: ObjectId,
       ref: "Product",

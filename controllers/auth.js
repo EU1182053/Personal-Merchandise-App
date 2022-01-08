@@ -3,6 +3,7 @@ const User = require("../models/user");
 const { validationResult } = require("express-validator");
 var jwt = require("jsonwebtoken");
 var expressJwt = require("express-jwt");
+var jwt_deocde = require("jwt-decode");
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -75,26 +76,37 @@ exports.isSignIn = expressJwt({
 // custom middlewares
 // is Authenticated remaining sec-7 v-7
 
+exports.getUserID = (req, res) => {
+  console.log(req)
+  jwt_token = req.headers.authorization.split(' ')[1]
+  jwt_token = jwt_deocde(jwt_token)
+  return jwt_token._id
+}
 
 exports.isAuthenticated = (req, res, next) => {
-  let checker = req.profile && req.auth && req.profile._id === req.auth._id
-  if (!checker) {
-    return res.json({
-      error: "ACCESS DENIED"
-    })
-  }
-
-  next()
+  jwt_token = req.headers.authorization.split(' ')[1]
+  jwt_token = jwt_deocde(jwt_token)
+  User.findById(jwt_token, (err, data) => {
+    if (err) {
+      return res.json({
+        error: "Do the Sign In First."
+      })
+    }
+    next()
+  })
 }
 
 exports.isAdmin = (req, res, next) => {
-  if (!req.profile.role === 1) {
-    return res.json({
-      error: "YOU ARE NOT AN ADMIN",
-    });
-  }
-
-  next();
+  jwt_token = req.headers.authorization.split(' ')[1]
+  jwt_token = jwt_deocde(jwt_token)
+  User.findById(jwt_token, (err, data) => {
+    if (err || data.role !== 1) {
+      return res.json({
+        error: "ACCESS DENIED"
+      })
+    }
+    next()
+  })
 };
 
 exports.recover = (req, res) => {
@@ -133,39 +145,39 @@ exports.reset = (req, res) => {
     .then((user) => {
       if (!user) return res.status(401).json({ message: 'Password reset token is invalid or has expired.' });
       //Redirect user to form with the email address
-     return res.json({Message: "Token is valid."});
+      return res.json({ Message: "Token is valid." });
     })
     .catch(err => res.status(500).json({ message: err.message }));
 };
 
 exports.resetPassword = (req, res) => {
-  User.findOne({resetPasswordToken: req.params.token, resetPasswordExpires: {$gt: Date.now()}})
-      .then((user) => {
-          if (!user) return res.status(401).json({message: 'Password reset token is invalid or has expired.'});
+  User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } })
+    .then((user) => {
+      if (!user) return res.status(401).json({ message: 'Password reset token is invalid or has expired.' });
 
-          //Set the new password
-          user.password = req.body.password;
-          user.resetPasswordToken = undefined;
-          user.resetPasswordExpires = undefined;
+      //Set the new password
+      user.password = req.body.password;
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpires = undefined;
 
-          // Save
-          user.save((err) => {
-              if (err) return res.status(500).json({message: err.message});
+      // Save
+      user.save((err) => {
+        if (err) return res.status(500).json({ message: err.message });
 
-              // send email
-              const mailOptions = {
-                  to: user.email,
-                  from: process.env.FROM_EMAIL,
-                  subject: "Your password has been changed",
-                  text: `Hi ${user.name} \n 
+        // send email
+        const mailOptions = {
+          to: user.email,
+          from: process.env.FROM_EMAIL,
+          subject: "Your password has been changed",
+          text: `Hi ${user.name} \n 
                   This is a confirmation that the password for your account ${user.email} has just been changed.\n`
-              };
-              return res.status(200).json({message: 'Your password has been updated.'});
-              // sgMail.send(mailOptions, (error, result) => {
-              //     if (error) return res.status(500).json({message: error.message});
+        };
+        return res.status(200).json({ message: 'Your password has been updated.' });
+        // sgMail.send(mailOptions, (error, result) => {
+        //     if (error) return res.status(500).json({message: error.message});
 
-              //     res.status(200).json({message: 'Your password has been updated.'});
-              // });
-          });
+        //     res.status(200).json({message: 'Your password has been updated.'});
+        // });
       });
+    });
 };

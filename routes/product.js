@@ -19,19 +19,19 @@ router.param("productId", getProductById);
 router.post("/product/create", isSignIn, createProduct);
 
 // get all the products
-router.get("/product/show",  getAllProducts);
+router.get("/product/show",isAuthenticated,  getAllProducts);
 
 //get a specific product
-router.get("/product/show/:productId", getProduct);
+router.get("/product/show/:productId",isAdmin, getProduct);
 
 //delete route
-router.delete("/product/:productId/:userId",deleteProduct);
+router.delete("/product/:productId", isAdmin, deleteProduct);
 
 // route for photo
-router.get('/product/photo/:productId', photo)
+router.get('/product/photo/:productId',isAdmin, photo)
   
 // route for update
-router.put('/product/update/:productId',updateProduct )  
+router.put('/product/update/:productId', isAdmin, updateProduct )  
 
   
 module.exports = router;

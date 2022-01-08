@@ -43,10 +43,11 @@ exports.updateCategory = (req, res) => {
 }
 
 exports.showAllCategory = (req, res) => {
+  
   Category.find().exec(
   (err, category) => {
-  if(err || !category){
-    return res.json({
+  if(err || !category){ 
+    return res.json({ 
       error:"Categories are absent"
     })
   }

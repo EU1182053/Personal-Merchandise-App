@@ -5,7 +5,7 @@ const { createReview, getAllReviews } = require("../controllers/review");
 const { getUserById } = require("../controllers/user");
 
 router.param('userId', getUserById)
-router.post("/review/create",  isSignIn, createReview);
+router.post("/review/create",  isSignIn, isAuthenticated, createReview);
 router.get("/review/:productId",  isAdmin,  getAllReviews);
 
 module.exports = router;

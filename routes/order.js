@@ -18,8 +18,8 @@ router.param("orderId", getOrderById);
 //Actual routes
 //create
 router.post(
-  "/order/create",
-  // isAuthenticated,
+  "/order/create", 
+  isAuthenticated,
   pushOrderInPurchaseList,
   updateStock,
   createOrder

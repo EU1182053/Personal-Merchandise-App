@@ -100,10 +100,11 @@ exports.photo = (req, res, next) => {
 }
 exports.updateStock = (req, res, next) => {
   let myOperations = req.body.order.products.map(prod => {
+    console.log("prod", prod) 
     return {
       updateOne: {
         filter: { _id: prod._id },
-        update: { $inc: { stock: -prod.count, sold: +prod.count } }
+        update: { $inc: { stock: -prod.quantity, sold: +prod.quantity } }
       }
     };
   });
@@ -114,7 +115,8 @@ exports.updateStock = (req, res, next) => {
         error: "Bulk operation failed"
       });
     }
-    next();
+    // console.log(products)
+    next(); 
   });
 };
 exports.updateProduct = (req, res) => {

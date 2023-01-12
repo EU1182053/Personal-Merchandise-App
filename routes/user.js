@@ -15,3 +15,4 @@ router.get("/user/reset/:token", reset)
 router.post("/user/reset/:token", resetPassword)
 
 module.exports = router;
+ 

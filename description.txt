@@ -1,0 +1,37 @@
+MERN stack application. Admin can perform various operations or manage the products, categories of products. Only the admin can access the database. On the customer side, they can give their ratings about that product.
+Authentication of users handled by the JWT token systems. There is a payment gateway service for the payment process and that is Braintree Payment Gateway.
+
+Felt-need - As a computer science, I want to take step in real programming world. Web 
+development is easy way for that. You can learn it from internet, books and many. It's
+creative and fun and also freelancing.
+
+Details of Technical Solution - I've used MERN(MongoDB database, Express.js backend 
+framework, Node.js javascript runtime, React.js Frontend) stack for building the project.
+Functionalities of this project :
+-basic infrastructure such as routers, models and etc.
+-Authentication of customers and admin with the help of JWT token systems. 
+-Admin can manage products, their categories.
+-Update product information such as sold, in stock.
+-Braintree Payment Gateway.
+
+Limitations and Future scope - 
+	Future Scope : 1. Re-Design website with some animations, effective colors etc.
+		       2. Implement Forgot Password functionality at the frontend. 
+
+
+31190935033224101056
+
+MERN Stack Bootcamp
+
+LearnCodeOnline.in
+
+https://www.dropbox.com/s/s4yob2ldxrgwzvy/3119093_50332.png?dl=0
+
+
+https://github.com/EU1182053
+
+https://www.hackerrank.com/siddheshs871
+
+https://www.linkedin.com/in/siddhesh-sawant-b2703a1a5/
+
+

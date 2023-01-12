@@ -26,10 +26,10 @@ mongoose
     console.log("DB succeed");
   })
   .catch((error) => {
-    console.log("DB stopped working",error);
+    console.log("DB stopped working",error );
   }); 
 app.use(bodyParser.json()); 
-app.use(cookieParser());
+app.use(cookieParser()); 
 app.use(cors());
 app.use("/api", authRoute);
 app.use("/api", userRoute);
@@ -41,8 +41,8 @@ app.use("/api", reviewRoute);
 
 // ... other app.use middleware
 app.use(express.static(path.join(__dirname, "client", "build")));
-
-const port = process.env.PORT;
+ 
+const port = process.env.PORT; 
 app.get("/", (req, res) => res.send("hello there"));
 
 // Right before your app.listen(), add this:
@@ -50,6 +50,6 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "client", "build", "index.html"));
 });
 
-app.listen(port, () => {
+app.listen(port, () => { 
   console.log(`${port}`);
 });

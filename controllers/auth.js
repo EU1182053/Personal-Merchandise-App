@@ -13,15 +13,28 @@ exports.signup = (req, res) => {
     return res.json({ error: errors.array()[0].msg });
   }
 
-  const user = new User(req.body);
-  user.save((err, user) => {
-    if (err) {
-      return res.status(400).json({
-        Message: err.message,
+  
+  var email = req.body.email;
+  
+  User.findOne({ email }, (err, user) => {
+    if (err || !user) {
+      const user = new User(req.body);
+      user.save((err, user) => {
+        if (err) {
+          return res.status(400).json({
+            Message: err.message,
+          });
+        }
+        res.json(user);
       });
     }
-    res.json(user);
-  });
+    else{
+      return res.status(400).json({
+        Message: "Email exists",
+      });
+    }
+  })
+  
   // res.send('signup works')
 };
 
@@ -31,7 +44,7 @@ exports.signout = (req, res) => {
     message: "User signout successful",
   });
 };
-
+ 
 exports.signin = (req, res) => {
   const { email, password } = req.body;
   const errors = validationResult(req);
@@ -76,25 +89,28 @@ exports.isSignIn = expressJwt({
 // custom middlewares
 // is Authenticated remaining sec-7 v-7
 
-exports.getUserID = (req, res) => {
+exports.getUserID = (req, res) => { 
   console.log(req)
   jwt_token = req.headers.authorization.split(' ')[1]
+  console.log(jwt_token)
+
   jwt_token = jwt_deocde(jwt_token)
   return jwt_token._id
 }
-
+ 
 exports.isAuthenticated = (req, res, next) => {
   jwt_token = req.headers.authorization.split(' ')[1]
-  jwt_token = jwt_deocde(jwt_token)
+
+  jwt_token = jwt_deocde(jwt_token)  
   User.findById(jwt_token, (err, data) => {
     if (err) {
       return res.json({
         error: "Do the Sign In First."
       })
     }
-    next()
+    next() 
   })
-}
+} 
 
 exports.isAdmin = (req, res, next) => {
   jwt_token = req.headers.authorization.split(' ')[1]

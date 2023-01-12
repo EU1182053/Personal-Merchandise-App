@@ -33,7 +33,7 @@ exports.updateUser = (req, res) => {
       }
       user.salt = "";
       user.encry_password = "";
-      console.log("object", user);
+      // console.log("object", user);
       res.send(user);
     }
   );

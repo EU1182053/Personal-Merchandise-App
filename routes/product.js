@@ -16,7 +16,7 @@ router.param("userId", getUserById);
 router.param("productId", getProductById);
 
 //create a product
-router.post("/product/create", isSignIn, createProduct);
+router.post("/product/create", isSignIn, isAdmin, createProduct);
 
 // get all the products
 router.get("/product/show",isAuthenticated,  getAllProducts);
@@ -24,7 +24,7 @@ router.get("/product/show",isAuthenticated,  getAllProducts);
 //get a specific product
 router.get("/product/show/:productId",isAdmin, getProduct);
 
-//delete route
+//delete route 
 router.delete("/product/:productId", isAdmin, deleteProduct);
 
 // route for photo

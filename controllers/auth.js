@@ -118,7 +118,7 @@ exports.isAdmin = (req, res, next) => {
   User.findById(jwt_token, (err, data) => {
     if (err || data.role !== 1) {
       return res.json({
-        error: "ACCESS DENIED"
+        error: data
       })
     }
     next()

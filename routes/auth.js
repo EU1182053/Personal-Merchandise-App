@@ -35,7 +35,7 @@ router.post(
 
 router.get("/signout", () => {
   signout;
-});
+}); 
 
 router.get("/testroute",  isSignIn, isAuthenticated,(req, res) => {
   res.send('testroute works successfully')

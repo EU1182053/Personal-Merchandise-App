@@ -56,51 +56,56 @@ export const isAuthenticated = () => {
   }
 };
 
-export const recover = (email) => {
-  return fetch(`${API}/user/recover`, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(email),
-  })
-    .then((data) => {
-      console.log("response", data)
-      return data.json()
-    }
-    )
-    .catch((error) => {
-      console.warn(error);
+export const recover = async (email) => {
+  try {
+    const data = await fetch(`${API}/user/recover`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(email),
     });
+    
+    
+    return await data.json();
+  } catch (error) {
+    console.warn(error);
+  }
 };
 
-export const reset = (email, token) => {
-  return fetch(`${API}/user/reset/${token}`, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(email),
-  })
-    .then((response) => response.json())
-    .catch((error) => {
-      console.warn(error);
-    });
-};
+// export const reset = async (email, token) => {
+//   try {
+//     const response = await fetch(`${API}/user/reset/${token}`, {
+//       method: "GET",
+//       headers: {
+//         Accept: "application/json",
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify(email),
+//     });
+//     return await response.json();
+//   } catch (error) {
+//     console.warn(error);
+//   }
+// };
 
-export const resetPassword = (password, token) => {
-  return fetch(`${API}/user/reset/${token}`, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(password),
-  })
-    .then((response) => response.json())
-    .catch((error) => {
-      console.warn(error);
-    });
+export const resetPassword =  (password) => {
+  try {
+    let token = localStorage.getItem('resetToken');
+    return  fetch(`${API}/user/reset/${token}`, {
+      mode: "no-cors",
+      method: "POST",
+      headers: {
+      
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(password),
+    })
+    .then((response) => {return response})
+    .catch((error) => console.log(error));
+  } catch (error) {
+    console.warn("error", error);
+  }
 };

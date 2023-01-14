@@ -23,11 +23,12 @@ export const getCategories = () => {
     method: "GET"
   })
     .then(response => {
+      console.log("response", response);
       return response.json();
     })
     .catch(err => console.log(err));
 };
-
+ 
 //products calls
 
 //create a product

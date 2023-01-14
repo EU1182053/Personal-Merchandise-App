@@ -10,12 +10,12 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 exports.signup = (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.json({ error: errors.array()[0].msg });
+    return res.json({ Error: errors.array()[0].msg });
   }
 
-  
+
   var email = req.body.email;
-  
+
   User.findOne({ email }, (err, user) => {
     if (err || !user) {
       const user = new User(req.body);
@@ -28,13 +28,13 @@ exports.signup = (req, res) => {
         res.json(user);
       });
     }
-    else{
+    else {
       return res.status(400).json({
         Message: "Email exists",
       });
     }
   })
-  
+
   // res.send('signup works')
 };
 
@@ -44,7 +44,7 @@ exports.signout = (req, res) => {
     message: "User signout successful",
   });
 };
- 
+
 exports.signin = (req, res) => {
   const { email, password } = req.body;
   const errors = validationResult(req);
@@ -89,7 +89,7 @@ exports.isSignIn = expressJwt({
 // custom middlewares
 // is Authenticated remaining sec-7 v-7
 
-exports.getUserID = (req, res) => { 
+exports.getUserID = (req, res) => {
   console.log(req)
   jwt_token = req.headers.authorization.split(' ')[1]
   console.log(jwt_token)
@@ -97,20 +97,20 @@ exports.getUserID = (req, res) => {
   jwt_token = jwt_deocde(jwt_token)
   return jwt_token._id
 }
- 
+
 exports.isAuthenticated = (req, res, next) => {
   jwt_token = req.headers.authorization.split(' ')[1]
 
-  jwt_token = jwt_deocde(jwt_token)  
+  jwt_token = jwt_deocde(jwt_token)
   User.findById(jwt_token, (err, data) => {
     if (err) {
       return res.json({
         error: "Do the Sign In First."
       })
     }
-    next() 
+    next()
   })
-} 
+}
 
 exports.isAdmin = (req, res, next) => {
   jwt_token = req.headers.authorization.split(' ')[1]
@@ -132,11 +132,14 @@ exports.recover = (req, res) => {
       //Generate and set password reset token
       user.generatePasswordReset();
       // Save the updated user object
+      
       user.save()
         .then(user => {
+          console.log("user", user)
           // send email
           let link = "http://" + req.headers.host + "/api/user/reset/" + user.resetPasswordToken;
-          const mailOptions = {
+          let token = user.resetPasswordToken;
+          const mailOptions = { 
             to: user.email,
             from: process.env.FROM_EMAIL,
             subject: "Password change request",
@@ -144,24 +147,30 @@ exports.recover = (req, res) => {
                   Please click on the following link ${link} to reset your password. \n\n 
                   If you did not request this, please ignore this email and your password will remain unchanged.\n`,
           };
-          return res.status(200).json({ message: 'A reset email has been sent to ' + user.email + '.' });
-          // sgMail.send(mailOptions, (error, result) => {
-          //   if (error) return res.status(500).json({ Message: error.message });
+          return res.status(200).json({
+            "text": `Hi ${user.name} Please click on the following link ${link} to reset your password. 
+            If you did not request this, please ignore this email and your password will remain unchanged.\n`,
 
-          //   res.status(200).json({ message: 'A reset email has been sent to ' + user.email + '.' });
-          // });
+            message: 'A reset email has been sent to ' + user.email + '.',
+            token: token
+          });
+          sgMail.send(mailOptions, (error, result) => {
+            if (error) return res.status(500).json({ Message: error.message });
+
+            res.status(200).json({ message: 'A reset email has been sent to ' + user.email + '.' });
+          });
         })
         .catch(err => res.status(500).json({ message: err.message }));
     })
     .catch(err => res.status(500).json({ message: err.message }));
 };
 
-exports.reset = (req, res) => {
+exports.reset = (req, res, next) => {
   User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } })
     .then((user) => {
       if (!user) return res.status(401).json({ message: 'Password reset token is invalid or has expired.' });
       //Redirect user to form with the email address
-      return res.json({ Message: "Token is valid." });
+      next()
     })
     .catch(err => res.status(500).json({ message: err.message }));
 };
@@ -181,19 +190,20 @@ exports.resetPassword = (req, res) => {
         if (err) return res.status(500).json({ message: err.message });
 
         // send email
-        const mailOptions = {
-          to: user.email,
-          from: process.env.FROM_EMAIL,
-          subject: "Your password has been changed",
-          text: `Hi ${user.name} \n 
-                  This is a confirmation that the password for your account ${user.email} has just been changed.\n`
-        };
-        return res.status(200).json({ message: 'Your password has been updated.' });
+        // const mailOptions = {
+        //   to: user.email,
+        //   from: process.env.FROM_EMAIL,
+        //   subject: "Your password has been changed",
+        //   text: `Hi ${user.name} \n 
+        //           This is a confirmation that the password for your account ${user.email} has just been changed.\n`
+        // };
         // sgMail.send(mailOptions, (error, result) => {
-        //     if (error) return res.status(500).json({message: error.message});
+        //   if (error) return res.status(500).json({ message: error});
 
-        //     res.status(200).json({message: 'Your password has been updated.'});
+          return  res.status(200).json({ message: 'Your password has been updated.' });
         // });
+        
+
       });
     });
 };

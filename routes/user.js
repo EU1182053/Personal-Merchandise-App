@@ -11,8 +11,8 @@ router.get("/user/:userId",  isSignIn,isAuthenticated, getUser);
 router.put("/user/:userId",  isSignIn,isAuthenticated, isAdmin, updateUser)
 router.put("order/user/:userId",  isSignIn,isAuthenticated, userPurchaseList)
 router.post("/user/recover", recover)
-router.get("/user/reset/:token", reset)
-router.post("/user/reset/:token", resetPassword)
+
+router.post("/user/reset/:token", reset, resetPassword)
 
 module.exports = router;
  

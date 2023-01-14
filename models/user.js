@@ -30,13 +30,15 @@ var userSchema = new mongoose.Schema({
   },
   resetPasswordToken: {
     type: String,
-    required: false
+    required: false,
+    default:"abcd"
   },
 
   resetPasswordExpires: {
     type: Date,
-    required: false
-  }
+    required: false,
+    default:new Date().getTime()
+  } 
 });
 
 userSchema
@@ -66,11 +68,12 @@ userSchema.methods = {
       return "";
     }
   },
-};
+  generatePasswordReset : function() { 
+    this.resetPasswordToken = crypto.randomBytes(20).toString('hex');
+    this.resetPasswordExpires = Date.now() + 3600000; //expires in an hour
+}
 
-userSchema.methods.generatePasswordReset = function() { 
-  this.resetPasswordToken = crypto.randomBytes(20).toString('hex');
-  this.resetPasswordExpires = Date.now() + 3600000; //expires in an hour
+
 };
 module.exports = mongoose.model("User", userSchema);
 

@@ -12,7 +12,7 @@ router.param("categoryId", getCategoryById);
 
 
 router.post("/category/create/:userId",  isSignIn, isAdmin, createCategory);
-router.get("/category/show", isAuthenticated,  showAllCategory);
+router.get("/category/show",   showAllCategory);
 router.put("/category/update/:userId/:categoryId",isSignIn, isAdmin, updateCategory )
 
 module.exports = router

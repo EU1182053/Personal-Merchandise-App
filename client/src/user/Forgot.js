@@ -8,38 +8,36 @@ import { recover } from "../auth/helper/index";
 const Forgot = () => {
   const [values, setValues] = useState({
     email: "",
+    
     error: "",
     loading: false,
     didRedirect: false,
+    gotTheToken: false
   });
-  const { email, error, loading, didRedirect } = values;
+  const { email,  error, loading, didRedirect, gotTheToken } = values;
   const { user } = isAuthenticated();
   const handleChange = (name) => (event) => {
     setValues({ ...values, error: false, [name]: event.target.value });
   };
   const onSubmit = (event) => {
     event.preventDefault();
-    setValues({ ...values, error: false, loading: false });
-    recover({ email })
+    setValues({ ...values, error: false, loading: false, gotTheToken: false });
+    recover({ email }) 
       .then((data) => {
-        console.log(data)
+        
+        localStorage.setItem('resetToken', data.token)
         if (data.message) {
-          setValues({ ...values, error: data.message, loading: false });
+          setValues({ ...values, error: data.message, loading: false, gotTheToken: true });
+          console.log("", gotTheToken)
         } else {
-          setValues({ ...values, loading: true, didRedirect: true });
+          setValues({ ...values, loading: true, didRedirect: true, gotTheToken: false });
         }
       })
       .catch(error => { return console.log("signin request failed", error) });
   }
   const loadingMessage = () => {
-    if (loading) {
-      return (
-        loading && (
-          <div className="alert alert-info">
-            <h4>A link has been sent to you via email.Please click on that for reset your password.</h4>
-          </div>
-
-        ))
+    if (gotTheToken) {
+      return <Redirect to="/user/newPassword"/>;
     }
 
     else {
@@ -70,6 +68,7 @@ const Forgot = () => {
     );
   };
   const signInForm = () => {
+
     return (
       <div className="row">
         <div className="col-md-6 offset-sm-3 text-left">
@@ -83,6 +82,7 @@ const Forgot = () => {
                 type="email"
               />
             </div>
+            
             <button onClick={onSubmit} className="btn btn-success btn-block">
               Submit
             </button>
@@ -90,11 +90,15 @@ const Forgot = () => {
 
         </div>
       </div>
-    );
+    )
+
+
+
+
   };
 
   return (
-    <Base title="Sign In page" description="A page for user to sign in!">
+    <Base title="Forgot Password page" description="A page for user to sign in!">
       {signInForm()}
       {errorMessage()}
       {loadingMessage()}

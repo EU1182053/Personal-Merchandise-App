@@ -66,10 +66,10 @@ exports.getAllProducts = (req, res) => {
         error:"There are no products right now in DB"
       })
     }
-    products.photo = "";
+    products.photo = undefined;
     return res.json(products)
   })
-}
+} 
 
 exports.getProduct = (req, res) => {
   req.product.photo = undefined; 

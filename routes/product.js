@@ -19,7 +19,7 @@ router.param("productId", getProductById);
 router.post("/product/create", isSignIn, isAdmin, createProduct);
 
 // get all the products
-router.get("/product/show",isAuthenticated,  getAllProducts);
+router.get("/product/show", getAllProducts);
 
 //get a specific product
 router.get("/product/show/:productId",isAdmin, getProduct);
@@ -28,7 +28,7 @@ router.get("/product/show/:productId",isAdmin, getProduct);
 router.delete("/product/:productId", isAdmin, deleteProduct);
 
 // route for photo
-router.get('/product/photo/:productId',isAdmin, photo)
+router.get('/product/photo/:productId', photo)
   
 // route for update
 router.put('/product/update/:productId', isAdmin, updateProduct )  

@@ -1,5 +1,6 @@
 # MERN
 A Full-Stack Development Project.
+Here are some project outputs - 
 
 
 Admin Page
@@ -27,3 +28,5 @@ sign in and sign up page
 ![signup-page](https://user-images.githubusercontent.com/65112935/235117898-c03e57fb-57cf-4ace-a376-2eb7be0a622f.png)
 
 
+
+In terms of future tasks, there are a few items to consider. Firstly, implementing a category-based filtering system for products is a priority. Additionally, setting up a system to receive product updates via email would be beneficial. Finally, deploying the system on a server is also necessary for its continued development and availability.

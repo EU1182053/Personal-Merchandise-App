@@ -1,5 +1,5 @@
 # MERN
-A Full-Stack Development Project.
+Built an e-commerce MERN Stack web application with Stripe as a payment gateway, and Postman as an API client. The application consists of user authentication with JWT tokens, grading systems for products, and Administrative operations.
 Here are some project outputs - 
 
 

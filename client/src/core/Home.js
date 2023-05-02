@@ -22,6 +22,7 @@ const Home = () => {
 
   useEffect(() => {
     showProducts();
+    
   }, []);
   return (
     <Base title="Home Page" description="Welcome to our T-shirt Store">
@@ -29,7 +30,7 @@ const Home = () => {
       <div className="row text-center">
         <h1>All Products</h1>
         </div>
-      <div className="row ">
+      <div className="row">
          
           
           {products.map((product, index) => {

@@ -25,7 +25,7 @@ router.get("/product/show", getAllProducts);
 router.get("/product/show/:productId",isAdmin, getProduct);
 
 //delete route 
-router.delete("/product/:productId", isAdmin, deleteProduct);
+router.delete("/product/:productId/:userId", isAdmin, deleteProduct);
 
 // route for photo
 router.get('/product/photo/:productId', photo)

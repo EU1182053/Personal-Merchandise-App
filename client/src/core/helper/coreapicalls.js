@@ -1,14 +1,17 @@
 const { API } = require("../../backend");
 
-export const getProducts = () => { 
-    return fetch(`${API}/product/show`, {method:"GET"})
-    .then(response => {
-        return response.json()
-    })
-    .catch(err => console.log(err))
+export const getProducts = async () => { 
+    try {
+    const response = await fetch(`${API}/product/show`, { method: "GET" });
+    console.log("response", response);
+    return await response.json();
+  } catch (err) {
+    return console.log(err);
+  }
 }
-export const createReview = (userId, token, data) => {
-    return fetch(`${API}/review/create/${userId}`, {
+export const createReview = async (userId, token, data) => {
+    try {
+    const response = await fetch(`${API}/review/create/${userId}`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -16,9 +19,9 @@ export const createReview = (userId, token, data) => {
         Authorization: `Bearer ${token}`
       },
       body: JSON.stringify(data)
-    })
-      .then(response => {
-        return response.json();
-      })
-      .catch(err => console.log(err));
+    });
+    return await response.json();
+  } catch (err) {
+    return console.log(err);
+  }
   };

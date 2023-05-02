@@ -7,13 +7,13 @@ import { recover } from "../auth/helper/index";
 
 
 const NewPassword = () => {
-  const [values, setValues] = useState({ 
+  const [values, setValues] = useState({
     password: "",
-    newPassword:"", 
+    newPassword: "",
     error: "",
     loading: false,
     didRedirect: false,
-    gotTheToken:false
+    gotTheToken: false
   });
   const { password, newPassword, error, loading, didRedirect, gotTheToken } = values;
   const { user } = isAuthenticated();
@@ -23,28 +23,29 @@ const NewPassword = () => {
   const onSubmit = (event) => {
     event.preventDefault();
     setValues({ ...values, error: false, loading: false, gotTheToken: false });
-   
-    resetPassword( {password} )
-    
+    console.log('resetPassword', password)
+    resetPassword({ password })
+
       .then((data) => {
-       
+
         if (data) {
-          setValues({ ...values, error: data.message, loading: false, gotTheToken: true });
+          setValues({ ...values, error: data.message, loading: true, gotTheToken: true });
         } else {
           setValues({ ...values, loading: true, didRedirect: true, gotTheToken: false });
         }
       })
       .catch(error => { return console.log("signin request failed", error) });
-  }
+  } 
   const loadingMessage = () => {
     if (loading) {
-      return (
-        loading && (
+      return ( 
+        loading && (  
           <div className="alert alert-info">
             <h4>Your password has been changed</h4>
           </div>
-  
+
         ))
+
     }
 
     else {
@@ -75,44 +76,39 @@ const NewPassword = () => {
     );
   };
   const signInForm = () => {
-    
-      return (
-    
-       
-          
-          <div className="row">
-          <div className="col-md-6 offset-sm-3 text-left">
-            <form>
-              <div className="form-group">
-                <label className="text-light">Password</label>
-                <input
-                  onChange={handleChange("password")}
-                  value={password}
-                  className="form-control"
-                  type="password"
-                />
-              </div>
-              <div className="form-group">
-                <label className="text-light">Confirm Password</label>
-                <input
-                  onChange={handleChange("newPassword")}
-                  value={newPassword}
-                  className="form-control"
-                  type="password"
-                />
-              </div>
-              <button onClick={onSubmit} className="btn btn-success btn-block">
-                Submit
-              </button>
-            </form>
-  
-          </div>
+
+    return (
+
+      <div className="row">
+        <div className="col-md-6 offset-sm-3 text-left">
+          <form>
+            <div className="form-group">
+              <label className="text-light">Password</label>
+              <input
+                onChange={handleChange("password")}
+                value={password}
+                className="form-control"
+                type="password"
+              />
+            </div>
+            <div className="form-group">
+              <label className="text-light">Confirm Password</label>
+              <input
+                onChange={handleChange("newPassword")}
+                value={newPassword}
+                className="form-control"
+                type="password"
+              />
+            </div>
+            <button onClick={onSubmit} className="btn btn-success btn-block">
+              Submit
+            </button>
+          </form>
+
         </div>
-        )
-      
-    
-    
-    
+      </div>
+    )
+
   };
 
   return (

@@ -31,13 +31,13 @@ var userSchema = new mongoose.Schema({
   resetPasswordToken: {
     type: String,
     required: false,
-    default:"abcd"
+    
   },
 
   resetPasswordExpires: {
-    type: Date,
+    type: Number,
     required: false,
-    default:new Date().getTime()
+    
   } 
 });
 
@@ -70,7 +70,8 @@ userSchema.methods = {
   },
   generatePasswordReset : function() { 
     this.resetPasswordToken = crypto.randomBytes(20).toString('hex');
-    this.resetPasswordExpires = Date.now() + 3600000; //expires in an hour
+    // console.log('new Date().getTime() + 300000', new Date().getTime() + 300000)
+    this.resetPasswordExpires = new Date().getTime() + 300000; //expires in 5 minutes
 }
 
 

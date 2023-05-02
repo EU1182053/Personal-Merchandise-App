@@ -1,104 +1,134 @@
 import { API } from "../../backend";
+import axios from "axios";
 
 //category calls
-export const createCategory = (userId, token, category) => {
-  return fetch(`${API}/category/create/${userId}`, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
-    },
-    body: JSON.stringify(category)
-  })
-    .then(response => {
-      return response.json();
-    })
-    .catch(err => console.log(err));
+export const createCategory = async (userId, token, category) => {
+  try {
+    const response = await fetch(`${API}/category/create/${userId}`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(category)
+    });
+    return await response.json();
+  } catch (err) {
+    return console.log(err);
+  }
 };
 
 //get all categories
-export const getCategories = () => {
-  return fetch(`${API}/category/show`, {
-    method: "GET"
-  })
-    .then(response => {
-      console.log("response", response);
-      return response.json();
-    })
-    .catch(err => console.log(err));
+export const getCategories = async () => {
+  try {
+    const response = await fetch(`${API}/category/show`, {
+      method: "GET"
+    });
+    console.log("response", response);
+    return await response.json();
+  } catch (err) {
+    return console.log(err);
+  }
 };
- 
+
 //products calls
 
 //create a product
-export const createaProduct = ( token, product) => {
-  return fetch(`${API}/product/create`, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`
-    },
-    body: product
-  })
-    .then(response => {
-      return response.json();
-    })
-    .catch(err => console.log(err));
+export const createaProduct = async (token, product) => {
+  try {
+    const response = await fetch(`${API}/product/create`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: product
+    });
+    return await response.json();
+  } catch (err) {
+    return console.log(err);
+  }
 };
 
 //get all products
-export const getAllProducts = () => {
-  return fetch(`${API}/product/show`, {
-    method: "GET"
-  })
-    .then(response => {
-      return response.json();
-    })
-    .catch(err => console.log(err));
+export const getAllProducts = async () => {
+  try {
+    const response = await fetch(`${API}/product/show`, {
+      method: "GET"
+    });
+    return await response.json();
+  } catch (err) {
+    return console.log(err);
+  }
 };
 
 //delete a product
 
-export const deleteProduct = (productId, userId, token) => {
-  return fetch(`${API}/product/${productId}/${userId}`, {
-    method: "DELETE",
-    headers: {
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`
-    }
-  })
-    .then(response => {
-      return response.json();
-    })
-    .catch(err => console.log(err));
+export const deleteProduct = async (productId, userId, token) => {
+  try {
+    const response = await fetch(`${API}/product/${productId}/${userId}`, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return await response.json();
+  } catch (err) {
+    return console.log(err);
+  }
 };
 
 //get a product
 
-export const getProduct = productId => {
-  return fetch(`${API}/product/show/${productId}`, {
-    method: "GET"
-  })
-    .then(response => {
-      return response.json();
-    })
-    .catch(err => console.log(err));
+export const getProduct = async productId => {
+  try {
+    const response = await fetch(`${API}/product/show/${productId}`, {
+      method: "GET"
+    });
+    return await response.json();
+  } catch (err) {
+    return console.log(err);
+  }
 };
 
 //update a product
 
-export const updateProduct = (productId, userId, token, product) => {
-  return fetch(`${API}/product/${productId}/${userId}`, {
-    method: "PUT",
-    headers: {
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`
-    },
-    body: product
-  })
-    .then(response => {
-      return response.json();
-    })
-    .catch(err => console.log(err));
+export const updateProduct = async (productId, userId, token, product) => {
+  console.log("product", product);
+
+  try {
+
+    await axios.put(`${API}/product/update/${productId}`, { product }).then(response => {
+      return response.json()
+    }).catch()
+
+  } catch (err) {
+    return console.log(err);
+  }
+};
+
+export const updateRating = async (productId, userId, token, product) => {
+  console.log("product", product);
+
+  const config = { headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`, 'Access-Control-Allow-Origin': '*', } };
+  try {
+
+    const response = await axios.put(`${API}/product/update/${productId}`,
+      {
+        _id: productId,
+        rating_value: product.rating_value
+
+
+      },
+      config
+    ).then(data => {
+      console.log("success", data);
+
+    }).catch()
+
+  } catch (err) {
+    return console.log(err);
+  }
 };

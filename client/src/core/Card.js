@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Redirect } from "react-router-dom";
 import { isAuthenticated } from "../auth/helper";
-import { addItemToCart , loadCart, removeItemFromCart} from "./helper/cartHelper";
+import { addItemToCart, loadCart, removeItemFromCart } from "./helper/cartHelper";
 import ImageHelper from "./helper/ImageHelper";
+import { getProducts } from "./helper/coreapicalls";
 
-const Card = ({ product, addToCart = true, removeFromCart = false, setReload= true, reload=true }) => {
+const Card = ({ product, addToCart = true, removeFromCart = false, setReload = true, reload = true }) => {
   // const { user, token } = isAuthenticated();
   // const [categories, setCategories] = useState([]);
   const cardTitle = product ? product.name : "Default";
@@ -13,14 +14,23 @@ const Card = ({ product, addToCart = true, removeFromCart = false, setReload= tr
   const cardStock = product ? product.stock : "0";
   const cardSold = product ? product.sold : "0";
   const [products, setProducts] = useState([]);
-  
-const [redirect, setRedirect] = useState(false)
-// const [count, setCount] = useState(product.count)
-useEffect(() => {
-  setProducts(loadCart())
-}, [reload])
+
+  const [ratingValue, setRatingValue] = useState(0);
+
+  const [redirect, setRedirect] = useState(false)
+  // const [count, setCount] = useState(product.count)
+
+
+  useEffect(() => {
+    setRatingValue((product.rating_value).reduce((a, b) => a + b, 0) / ((product.rating_value).length) - 1);
+
+    setProducts(getProducts());
+    console.log("products", products);
+  }, [reload]);
+
+
   const showAddToCart = (addToCart) => {
-    
+
     return (
       (isAuthenticated() && addToCart) && (
         <div className="col-12">
@@ -35,13 +45,16 @@ useEffect(() => {
         </div>
       )
     );
-      
+
   };
+
+
   const getRedirect = () => {
-    if(redirect){
-      return<Redirect to="/"/>
+    if (redirect) {
+      return <Redirect to="/" />
     }
   }
+
 
   const showRemoveFromCart = (removeFromCart) => {
     return (
@@ -60,8 +73,7 @@ useEffect(() => {
       )
     );
   };
-  return (
-    <div className="card text-white bg-dark border border-info ">
+  return ( (products) ? (<div className="card text-white bg-dark border border-info ">
       <div className="card-header lead">{cardTitle}</div>
       <div className="card-body">
         {getRedirect()}
@@ -70,14 +82,16 @@ useEffect(() => {
           {cardDescription}
         </p>
         <p className="btn btn-success rounded  btn-sm px-4">Rs.{cardPrice}</p>
-        <p className="">InStock : { cardStock}</p>
+        <p className="">InStock : {cardStock}</p>
         <p className="">SOLD : {cardSold}</p>
         <div className="row">{showAddToCart(addToCart)}</div>
         <div className="row">{showRemoveFromCart(removeFromCart)}</div>
+        <p>Previous Ratings is {ratingValue.toFixed(2)} / 5 .</p>
 
       </div>
-    </div>
-  );
+    </div>) : <h2>No products</h2>
+    
+  ); 
 };
 
 export default Card;

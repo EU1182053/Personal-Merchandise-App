@@ -9,12 +9,13 @@ const paymentRoute = require("./routes/paymentBRoutes");
 const reviewRoute = require("./routes/review");
 
 const express = require("express");
+const app = express();
+
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const path = require("path");
 const cors = require("cors");
-const app = express();
 mongoose
   .connect(process.env.DATABASE, {
     useNewUrlParser: true,

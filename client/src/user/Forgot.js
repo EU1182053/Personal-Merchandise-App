@@ -15,7 +15,7 @@ const Forgot = () => {
     gotTheToken: false
   });
   const { email,  error, loading, didRedirect, gotTheToken } = values;
-  const { user } = isAuthenticated();
+ 
   const handleChange = (name) => (event) => {
     setValues({ ...values, error: false, [name]: event.target.value });
   };
@@ -25,10 +25,12 @@ const Forgot = () => {
     recover({ email }) 
       .then((data) => {
         
-        localStorage.setItem('resetToken', data.token)
-        if (data.message) {
+        
+        if (data.token) {
+          console.log('resetToken', data)
+          localStorage.setItem('resetToken', data.token)
           setValues({ ...values, error: data.message, loading: false, gotTheToken: true });
-          console.log("", gotTheToken)
+          console.log("gotTheToken", gotTheToken)
         } else {
           setValues({ ...values, loading: true, didRedirect: true, gotTheToken: false });
         }

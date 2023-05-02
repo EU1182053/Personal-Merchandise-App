@@ -36,6 +36,10 @@ const productSchema = new mongoose.Schema(
     photo: {
       data: Buffer,
       contentType: String
+    },
+    rating_value:{
+      type: Array,
+      default: 0
     }
   },
   { timestamps: true }

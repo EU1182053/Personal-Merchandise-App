@@ -5,17 +5,17 @@ const fs = require('fs');
 
 exports.getProductById = (req, res, next, id) => {
   Product.findById(id)
-  .populate('category')
-  .exec((err, product) => {
-    if (err) {
-      return res.json({
-        error: "Not Found",
-      });
-    }
+    .populate('category')
+    .exec((err, product) => {
+      if (err) {
+        return res.json({
+          error: "Not Found",
+        });
+      }
 
-    req.product = product;
-    next();
-  });
+      req.product = product;
+      next();
+    });
 };
 exports.createProduct = (req, res) => {
   let form = new formidable.IncomingForm();
@@ -29,7 +29,7 @@ exports.createProduct = (req, res) => {
     }
     //compulsion
     let product = new Product(fields);
-    const{name, description, stock, price, photo, category } = fields
+    const { name, description, stock, price, photo, category } = fields
     // if(!name || !description || !stock || !price || !photo || !category){
     //     return res.json({
     //         error:"All the fields should be filled"
@@ -49,30 +49,30 @@ exports.createProduct = (req, res) => {
 
     //save to DB
     product.save((err, product) => {
-        if(err){
-            return res.json({
-                error:"SAving in DB failed"
-            })
-        }
-        return res.json(product)
+      if (err) {
+        return res.json({
+          error: "SAving in DB failed"
+        })
+      }
+      return res.json(product)
     })
   });
 };
 exports.getAllProducts = (req, res) => {
   Product.find()
-  .exec((err, products) => {
-    if(err){
-      return res.json({
-        error:"There are no products right now in DB"
-      })
-    }
-    products.photo = undefined;
-    return res.json(products)
-  })
-} 
+    .exec((err, products) => {
+      if (err) {
+        return res.json({
+          error: "There are no products right now in DB"
+        })
+      }
+      products.photo = undefined;
+      return res.json(products)
+    })
+}
 
 exports.getProduct = (req, res) => {
-  req.product.photo = undefined; 
+  req.product.photo = undefined;
   return res.json(req.product);
 };
 // delete controllers
@@ -92,7 +92,7 @@ exports.deleteProduct = (req, res) => {
 };
 //middlewares
 exports.photo = (req, res, next) => {
-  if(req.product.photo.data){
+  if (req.product.photo.data) {
     res.set("Content-Type", req.product.photo.contentType)
     return res.send(req.product.photo.data)
   }
@@ -100,7 +100,7 @@ exports.photo = (req, res, next) => {
 }
 exports.updateStock = (req, res, next) => {
   let myOperations = req.body.order.products.map(prod => {
-    console.log("prod", prod) 
+    console.log("prod", prod)
     return {
       updateOne: {
         filter: { _id: prod._id },
@@ -116,14 +116,17 @@ exports.updateStock = (req, res, next) => {
       });
     }
     // console.log(products)
-    next(); 
+    next();
   });
 };
+
+
 exports.updateProduct = (req, res) => {
-  Product.findByIdAndUpdate({_id: req.product._id},{$set: req.body},{new: true}).then(product => {
-    return res.status(200).json(product)
-  })
-  .catch(err => {
-    return res.json(err)
-  })
+  
+    const query = req.body._id ;
+    
+    Product.findByIdAndUpdate(query, req.body,{ overwrite: true}, function(err, doc) {
+      if (err) return res.send(500, {error: err});
+      return res.send(doc).json();
+  });
 } 

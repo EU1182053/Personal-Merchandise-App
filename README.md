@@ -7,29 +7,33 @@ Clone the Repository
 git clone <repository-url>
 cd Personal-Merchandise-App
 
-
+# Backend
 Install Backend Dependencies
 
 1. Install the required Node packages:
 npm install
-2. Environment Variable Setup
+
+# Environment Variable Setup
 To configure the necessary environment variables for this project, follow these steps:
 
 Create the .env File
 
  Add the following variables to the .env file
-   # MongoDB Connection URI
+  MongoDB Connection URI
   MONGO_URI=mongodb://localhost:27017/personal-merchandise
   
-  # JWT Secret for Authentication
+  JWT Secret for Authentication
   JWT_SECRET=your_jwt_secret_key
   
-  # Server Port
+  Server Port
   PORT=5000
+
+  SendGrid API Key
+  SENDGRID_API_KEY=your_sendgrid_api_key
+
   
-  # Optional: API Keys for Payment Providers
-  STRIPE_SECRET_KEY=your_stripe_secret_key
-  PAYPAL_CLIENT_ID=your_paypal_client_id
+
+   
 
 # Front End
 Install Frontend Dependencies
@@ -39,7 +43,7 @@ Install Frontend Dependencies
 Environment Variable Setup
 To configure the necessary environment variables for this project, follow these steps:
 
-# Node JS server connection
+Node JS server connection
   REACT_APP_BACKEND=mongodb://localhost:27017/personal-merchandise
 
   REACT_APP_BACKEND

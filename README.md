@@ -23,7 +23,7 @@ Create the .env File
   MONGO_URI=mongodb://localhost:27017/personal-merchandise
   
   JWT Secret for Authentication
-  JWT_SECRET=your_jwt_secret_key
+  SECRET=your_jwt_secret_key
   
   Server Port
   PORT=5000

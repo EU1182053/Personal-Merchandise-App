@@ -26,7 +26,7 @@ Create the .env File
   SECRET=your_jwt_secret_key
   
   Server Port
-  PORT=5000
+  PORT=PORT_NUMBER
 
   SendGrid API Key
   SENDGRID_API_KEY=your_sendgrid_api_key
@@ -34,6 +34,10 @@ Create the .env File
   Sender Email (Verified Sender)
   FROM_EMAIL=your_verified_sender
    
+Run the Application
+1. Start the backend server:
+ npm start
+
 
 # Front End
 Install Frontend Dependencies
@@ -44,19 +48,13 @@ Environment Variable Setup
 To configure the necessary environment variables for this project, follow these steps:
 
 Node JS server connection
-  REACT_APP_BACKEND=mongodb://localhost:27017/personal-merchandise
-
-  REACT_APP_BACKEND
+  REACT_APP_BACKEND=http://localhost:PORT
+  
 Create the .env File
-2.Install the required Node packages:
+Install the required Node packages:
  npm install
 
-
-Run the Application
-1. Start the backend server:
- npm start
-
-2.In a separate terminal, start the frontend server:
+In a separate terminal, start the frontend server:
  npm start
 
 

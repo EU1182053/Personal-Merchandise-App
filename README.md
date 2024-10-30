@@ -32,7 +32,7 @@ Create the .env File
   SENDGRID_API_KEY=your_sendgrid_api_key
   
   Sender Email (Verified Sender)
-  FROM_EMAIL=your_verified_sender@example.com
+  FROM_EMAIL=your_verified_sender
    
 
 # Front End

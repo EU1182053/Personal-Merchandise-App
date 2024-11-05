@@ -48,7 +48,7 @@ Environment Variable Setup
 To configure the necessary environment variables for this project, follow these steps:
 
 Node JS server connection
-  REACT_APP_BACKEND=http://localhost:PORT
+  REACT_APP_BACKEND=http://localhost:PORT/api
   
 Create the .env File
 Install the required Node packages:

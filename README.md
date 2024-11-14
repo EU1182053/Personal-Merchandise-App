@@ -42,7 +42,8 @@ An e-commerce platform built using the MERN stack (MongoDB, Express, React, Node
 <span style="font-size: 20px; font-weight: bold;">Prerequisites</span>
 Ensure you have the following installed:
 
-- Node.js (v18 or later)
+- Node.js (v14)
+- React@5.2.0, react-router-dom@5.2.0
 - MongoDB (Local instance or MongoDB Atlas)
 
 <span style="font-size: 20px; font-weight: bold;">Step 1: Clone the Repository</span>

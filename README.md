@@ -81,7 +81,7 @@ Ensure you have the following installed:
         - **SENDGRID_API_KEY**, **FROM_EMAIL** for email service
      
     - **Client-side (.env)**: Add the following configuration:
-        - `REACT_APP_BACKEND=http://localhost:8000` (URL of the backend server)
+        - `REACT_APP_BACKEND=http://localhost:8000/api` (URL of the backend server)
      
 
 ### Accessing the Application

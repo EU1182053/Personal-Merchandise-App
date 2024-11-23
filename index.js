@@ -17,7 +17,7 @@ const cookieParser = require("cookie-parser");
 const path = require("path");
 const cors = require("cors");
 mongoose
-  .connect(process.env.DATABASE, {
+  .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,

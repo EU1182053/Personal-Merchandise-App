@@ -25,7 +25,6 @@ export const getCategories = async () => {
     const response = await fetch(`${API}/category/show`, {
       method: "GET"
     });
-    console.log("response", response);
     return await response.json();
   } catch (err) {
     return console.log(err);

@@ -25,13 +25,13 @@ const Card = ({ product, addToCart = true, removeFromCart = false, setReload = t
     setRatingValue((product.rating_value).reduce((a, b) => a + b, 0) / ((product.rating_value).length) - 1);
 
     setProducts(getProducts());
-    console.log("products", products);
+    
   }, [reload]);
 
 
   const showAddToCart = (addToCart) => {
 
-    return (
+    return ( 
       (isAuthenticated() && addToCart) && (
         <div className="col-12">
           <button

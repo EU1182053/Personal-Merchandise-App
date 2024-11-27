@@ -30,11 +30,11 @@ const ReviewCard = ({ product, reload = true }) => {
     setRatingValue((product.rating_value).reduce((a, b) => a + b, 0) / ((product.rating_value).length) - 1);
 
   }, [reload]);
-  
+
   const onSubmit = async (rating) => {
     product.rating_value.push(rating);
 
-    console.log((product.rating_value).length);
+    console.log("(product.rating_value).length", (product.rating_value).length);
     setRatingValue((product.rating_value).reduce((a, b) => a + b, 0) / ((product.rating_value).length) - 1);
     await updateRating(product._id, user._id, token, product)
       .then(data => {
@@ -110,7 +110,7 @@ const ReviewCard = ({ product, reload = true }) => {
         </p>
         <p className="btn btn-success rounded  btn-sm px-4">Rs.{cardPrice}</p>
         {StarRating()}
-        
+
         <p>Previous Ratings is {ratingValue.toFixed(2)} / 5 .</p>
       </div>
     </div>

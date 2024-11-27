@@ -60,16 +60,16 @@ exports.createProduct = (req, res) => {
 };
 exports.getAllProducts = (req, res) => {
   Product.find()
+    .select("-photo") // Exclude the 'photo' field
     .exec((err, products) => {
       if (err) {
-        return res.json({
-          error: "There are no products right now in DB"
-        })
+        return res.status(400).json({
+          error: "There are no products right now in DB",
+        });
       }
-      products.photo = undefined;
-      return res.json(products)
-    })
-}
+      return res.json(products);
+    });
+};
 
 exports.getProduct = async (req, res) => {
   const { productId } = req.params;
@@ -116,9 +116,10 @@ exports.photo = (req, res, next) => {
   }
   next()
 }
+
+
 exports.updateStock = (req, res, next) => {
   let myOperations = req.body.order.products.map(prod => {
-    console.log("prod", prod)
     return {
       updateOne: {
         filter: { _id: prod._id },

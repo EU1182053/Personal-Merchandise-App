@@ -22,7 +22,6 @@ const Card = ({ product, addToCart = true, removeFromCart = false, setReload = t
 
 
   useEffect(() => {
-    setRatingValue((product.rating_value).reduce((a, b) => a + b, 0) / ((product.rating_value).length) - 1);
 
     setProducts(getProducts());
     
@@ -86,7 +85,7 @@ const Card = ({ product, addToCart = true, removeFromCart = false, setReload = t
         <p className="">SOLD : {cardSold}</p>
         <div className="row">{showAddToCart(addToCart)}</div>
         <div className="row">{showRemoveFromCart(removeFromCart)}</div>
-        <p>Previous Ratings is {ratingValue.toFixed(2)} / 5 .</p>
+        <p>Average Ratings is : {product.rating.average}</p>
 
       </div>
     </div>) : <h2>No products</h2>

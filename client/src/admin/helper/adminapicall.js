@@ -53,7 +53,7 @@ export const createaProduct = async (token, product) => {
 //get all products
 export const getAllProducts = async () => {
   try {
-    const response = await fetch(`${API}/product/show`, {
+    const response = await fetch(`${API}/product/showAll`, {
       method: "GET"
     });
     return await response.json();
@@ -107,27 +107,35 @@ export const updateProduct = async (productId, userId, token, product) => {
     return console.log(err);
   }
 };
+// last step
+export const updateRating = async (productId, userId, token, ratingValue) => {
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      "Access-Control-Allow-Origin": "*",
+    },
+  };
 
-export const updateRating = async (productId, userId, token, product) => {
-  console.log("product", product);
-
-  const config = { headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`, 'Access-Control-Allow-Origin': '*', } };
   try {
-
-    const response = await axios.put(`${API}/product/update/${productId}`,
+    // Making the POST request
+    const response = await axios.post(
+      `${API}/create/review/${productId}`,
       {
-        _id: productId,
-        rating_value: product.rating_value
-
-
+        user_id: userId,
+        product_id: productId,
+        rating_value: ratingValue,
       },
       config
-    ).then(data => {
-      console.log("success", data);
+    );
 
-    }).catch()
-
-  } catch (err) {
-    return console.log(err);
+    // Log success and return the response data
+    console.log("Rating updated successfully:", response.data);
+    return response.data;
+  } catch (error) {
+    // Catch and log errors for debugging
+    console.error("Error updating rating:", error?.response?.data || error.message);
+    throw error; // Re-throw the error for the calling function to handle
   }
 };
+// 

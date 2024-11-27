@@ -9,52 +9,64 @@ import { loadCart } from "./helper/cartHelper";
 import ImageHelper from "./helper/ImageHelper";
 import { updateProduct, updateRating } from "../admin/helper/adminapicall";
 const ReviewCard = ({ product, reload = true }) => {
+
   const cardTitle = product ? product.name : "Default";
   const cardDescription = product ? product.description : "Default";
   const cardPrice = product ? product.price : "Default";
+
   const [rating, setRating] = useState(null);
   const [hover, setHover] = useState(null);
   const [redirect, setRedirect] = useState(false);
   const { user, token } = isAuthenticated();
-
+  const [isSubmitting, setIsSubmitting] = useState(false); // Handle submission state
   const [ratingValue, setRatingValue] = useState(0);
 
-  const getRedirect = () => {
-    if (redirect) {
-      console.log("product", product)
-      return <Redirect to="/" />;
-    }
-  };
+  const [averageRating, setAverageRating] = useState(0);
 
+  // Redirect handler
+  const getRedirect = () => redirect && <Redirect to="/" />;
+
+
+  // Initialize average rating
   useEffect(() => {
-    setRatingValue((product.rating_value).reduce((a, b) => a + b, 0) / ((product.rating_value).length) - 1);
+    setAverageRating(product?.rating?.average || 0);
+  }, [product?.rating?.average]);
 
-  }, [reload]);
 
-  const onSubmit = async (rating) => {
-    product.rating_value.push(rating);
+  // Submit a new rating
+  const handleRatingSubmit = async (rating) => {
+    if (!isAuthenticated()) return;
 
-    console.log("(product.rating_value).length", (product.rating_value).length);
-    setRatingValue((product.rating_value).reduce((a, b) => a + b, 0) / ((product.rating_value).length) - 1);
-    await updateRating(product._id, user._id, token, product)
-      .then(data => {
+    setIsSubmitting(true); // Disable button during submission
 
-        return <Redirect to={'/'} />
+    try {
 
-      })
-      .catch(error => console.log(error));
+      const response = await updateRating(product._id, user._id, token, rating);
+      if (response?.success) {
+        setAverageRating(response.averageRating); // Assuming the response contains updated average
+        setRedirect(true);
+      } else {
+        console.error("Failed to update rating:", response.message);
+      }
+    } catch (error) {
+      console.error("Error during rating submission:", error);
+    }
+    finally {
+      setIsSubmitting(false);
+    }
+    setRatingValue(rating);
 
   };
-
+  // third last step and half code is on backend
   const StarRating = () => {
     return (
       <div>
         {
 
-          [...Array(5)].map((index, i) => {
+          [...Array(5)].map((_, i) => {
             const ratingValue = i + 1;
             return (
-              <div key={index}>
+              <div key={i}>
 
 
                 <label >
@@ -65,6 +77,7 @@ const ReviewCard = ({ product, reload = true }) => {
                     onClick={() => {
                       setRating(ratingValue);
                     }}
+                    style={{ display: "none" }}
                   />
                   <FaStar
                     size={40}
@@ -76,22 +89,24 @@ const ReviewCard = ({ product, reload = true }) => {
                     onMouseLeave={() => {
                       setHover(null);
                     }}
+                    aria-label={`${ratingValue} Star`}
                   />
                 </label>
               </div>
             );
           })}
-        <p>Rating is... {rating}</p>
+        {/* <p>Rating is... {rating}</p> */}
+
+
 
         {
           (isAuthenticated() && (rating >= 1)) ?
             <button
               className="btn btn-block btn-outline-success mt-2 mb-2"
-              onClick={() => {
-                onSubmit(rating);
-              }}
+              onClick={handleRatingSubmit}
+              disabled={isSubmitting}
             >
-              Done
+              {isSubmitting ? "Submitting..." : "Done"}
             </button> :
             <div></div>
         }
@@ -101,17 +116,21 @@ const ReviewCard = ({ product, reload = true }) => {
 
   return (
     <div className="card text-white bg-dark border border-info ">
-      <div className="card-header lead">{cardTitle}</div>
+      <div className="card-header lead">{cardTitle || "Default Name"}</div>
       <div className="card-body">
         {getRedirect()}
         <ImageHelper product={product} />
         <p className="lead bg-success font-weight-normal text-wrap">
-          {cardDescription}
+          {cardDescription || "Default Description"}
         </p>
-        <p className="btn btn-success rounded  btn-sm px-4">Rs.{cardPrice}</p>
+        <p className="btn btn-success rounded  btn-sm px-4">Rs.{cardPrice || "Default Price"}</p>
         {StarRating()}
 
-        <p>Previous Ratings is {ratingValue.toFixed(2)} / 5 .</p>
+        <p>
+          {averageRating > 0
+            ? `Average Ratings is ${averageRating.toFixed(1)} / 5.`
+            : "Be the first to rate this product!"}
+        </p>
       </div>
     </div>
   );

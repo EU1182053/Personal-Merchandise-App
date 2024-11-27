@@ -23,7 +23,6 @@ const Paymentb = ({ products, setReload = (f) => f, reload = undefined }) => {
       .then((info) => {
         const clientToken = info.clientToken;
         setInfo({ clientToken });
-        console.log("INFORMATION", info);
       })
       .catch((info) => console.log(info.error));
   };
@@ -50,11 +49,9 @@ const Paymentb = ({ products, setReload = (f) => f, reload = undefined }) => {
 
   useEffect(() => {
     getToken(userId, token);
-    {
-      console.log(userId, token);
-    }
+
   }, []);
-const makeId = (len) => {
+  const makeId = (len) => {
     var result = "";
     var characters = "abcdefghijklmnopqrstuvwxyz0123456789";
     var charactersLength = characters.length;

@@ -1,131 +1,99 @@
 import React, { useEffect, useState } from "react";
 import { Redirect } from "react-router-dom";
 import "../styles.css";
-import { createReview } from "./helper/coreapicalls";
-import { isAuthenticated } from "../auth/helper";
 import { FaStar } from "react-icons/fa";
-import ReactStars from "react-rating-stars-component";
-import { loadCart } from "./helper/cartHelper";
+import { updateRating } from "../admin/helper/adminapicall";
 import ImageHelper from "./helper/ImageHelper";
-import { updateProduct, updateRating } from "../admin/helper/adminapicall";
-const ReviewCard = ({ product, reload = true }) => {
+import { isAuthenticated } from "../auth/helper";
 
-  const cardTitle = product ? product.name : "Default";
-  const cardDescription = product ? product.description : "Default";
-  const cardPrice = product ? product.price : "Default";
-
+const ReviewCard = ({ product }) => {
   const [rating, setRating] = useState(null);
   const [hover, setHover] = useState(null);
   const [redirect, setRedirect] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { user, token } = isAuthenticated();
-  const [isSubmitting, setIsSubmitting] = useState(false); // Handle submission state
-  const [ratingValue, setRatingValue] = useState(0);
-
   const [averageRating, setAverageRating] = useState(0);
-
-  // Redirect handler
-  const getRedirect = () => redirect && <Redirect to="/" />;
-
 
   // Initialize average rating
   useEffect(() => {
     setAverageRating(product?.rating?.average || 0);
   }, [product?.rating?.average]);
 
+  const getRedirect = () => redirect && <Redirect to="/" />;
 
-  // Submit a new rating
   const handleRatingSubmit = async (rating) => {
     if (!isAuthenticated()) return;
 
-    setIsSubmitting(true); // Disable button during submission
-
+    setIsSubmitting(true);
     try {
-
       const response = await updateRating(product._id, user._id, token, rating);
       if (response?.success) {
-        setAverageRating(response.averageRating); // Assuming the response contains updated average
+        setAverageRating(response.averageRating); // Update average rating from response
         setRedirect(true);
       } else {
-        console.error("Failed to update rating:", response.message);
+        console.error("Failed to update rating:", response);
       }
     } catch (error) {
       console.error("Error during rating submission:", error);
-    }
-    finally {
+    } finally {
       setIsSubmitting(false);
     }
-    setRatingValue(rating);
-
   };
-  // third last step and half code is on backend
-  const StarRating = () => {
-    return (
-      <div>
-        {
 
-          [...Array(5)].map((_, i) => {
-            const ratingValue = i + 1;
-            return (
-              <div key={i}>
+  const StarRating = () => (
+    <div>
+      {[...Array(5)].map((_, i) => {
+        const ratingValue = i + 1;
+        return (
+          <div key={i}>
+            <label>
+              <input
+                type="radio"
+                name="rating"
+                value={ratingValue}
+                onClick={() => {
+                  setRating(ratingValue);
+                }}
+                style={{ display: "none" }}
+              />
+              <FaStar
+                size={40}
+                className="star"
+                color={ratingValue <= (hover || rating) ? "yellow" : "gray"}
+                onMouseEnter={() => {
+                  setHover(ratingValue);
+                }}
+                onMouseLeave={() => {
+                  setHover(null);
+                }}
+                aria-label={`${ratingValue} Star`}
+              />
+            </label>
+          </div>
+        );
+      })}
 
-
-                <label >
-                  <input
-                    type="radio"
-                    name="rating"
-                    value={ratingValue}
-                    onClick={() => {
-                      setRating(ratingValue);
-                    }}
-                    style={{ display: "none" }}
-                  />
-                  <FaStar
-                    size={40}
-                    className="star"
-                    color={ratingValue <= (hover || rating) ? "yellow" : "gray"}
-                    onMouseEnter={() => {
-                      setHover(ratingValue);
-                    }}
-                    onMouseLeave={() => {
-                      setHover(null);
-                    }}
-                    aria-label={`${ratingValue} Star`}
-                  />
-                </label>
-              </div>
-            );
-          })}
-        {/* <p>Rating is... {rating}</p> */}
-
-
-
-        {
-          (isAuthenticated() && (rating >= 1)) ?
-            <button
-              className="btn btn-block btn-outline-success mt-2 mb-2"
-              onClick={handleRatingSubmit}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Submitting..." : "Done"}
-            </button> :
-            <div></div>
-        }
-      </div>
-    );
-  };
+      {isAuthenticated() && rating >= 1 && (
+        <button
+          className="btn btn-block btn-outline-success mt-2 mb-2"
+          onClick={() => handleRatingSubmit(rating)}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Submitting..." : "Done"}
+        </button>
+      )}
+    </div>
+  );
 
   return (
-    <div className="card text-white bg-dark border border-info ">
-      <div className="card-header lead">{cardTitle || "Default Name"}</div>
+    <div className="card text-white bg-dark border border-info">
+      <div className="card-header lead">{product?.name || "Default Name"}</div>
       <div className="card-body">
         {getRedirect()}
         <ImageHelper product={product} />
-        <p className="lead bg-success font-weight-normal text-wrap">
-          {cardDescription || "Default Description"}
-        </p>
-        <p className="btn btn-success rounded  btn-sm px-4">Rs.{cardPrice || "Default Price"}</p>
+        <p className="lead bg-success font-weight-normal text-wrap">{product?.description || "Default Description"}</p>
+        <p className="btn btn-success rounded btn-sm px-4">Rs.{product?.price || "Default Price"}</p>
         {StarRating()}
-
         <p>
           {averageRating > 0
             ? `Average Ratings is ${averageRating.toFixed(1)} / 5.`

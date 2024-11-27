@@ -136,7 +136,6 @@ exports.recover = (req, res) => {
       
       user.save()
         .then(user => {
-          console.log("recover", user)
           // send email
           let link = "http://" + req.headers.host + "/api/user/reset/" + user.resetPasswordToken;
           let token = user.resetPasswordToken;

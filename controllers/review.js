@@ -15,12 +15,13 @@ exports.createReview = (req, res) => {
   });
   // res.send('signup works')
 };
+   
 
-
-exports.getAllReviews = (req, res, id) => {
-
-  Review.find({ "product_id": id })
-  .populate("user_id", "_id name")
+exports.getAllReviews = (req, res) => {
+  const { productId } = req.params;
+  
+  Review.find({ "data.product_id": productId })
+  .populate("data.user_id", "_id name")
   .then(data => {
     return res.json(data)
   })

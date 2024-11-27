@@ -54,7 +54,7 @@ exports.createProduct = (req, res) => {
           error: "SAving in DB failed"
         })
       }
-      return res.json(product)
+      return res.status(200).send();
     })
   });
 };
@@ -71,8 +71,26 @@ exports.getAllProducts = (req, res) => {
     })
 }
 
-exports.getProduct = (req, res) => {
-  req.product.photo = undefined;
+exports.getProduct = async (req, res) => {
+  const { productId } = req.params;
+  try {
+    // Find product by productId
+    const product = await Product.findById(productId);
+
+    // Check if product exists
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    // Optionally, you can exclude sensitive fields, like `photo` (if you need to)
+    // product.photo = undefined;
+
+    return res.json(product); // Send the product data as the response
+  } catch (error) {
+    console.error('Error fetching product:', error);
+    return res.status(500).json({ error: 'An error occurred while fetching the product' });
+  }
+  // req.product.photo = undefined;
   return res.json(req.product);
 };
 // delete controllers
@@ -122,11 +140,11 @@ exports.updateStock = (req, res, next) => {
 
 
 exports.updateProduct = (req, res) => {
-  
-    const query = req.body._id ;
-    
-    Product.findByIdAndUpdate(query, req.body,{ overwrite: true}, function(err, doc) {
-      if (err) return res.send(500, {error: err});
-      return res.send(doc).json();
+
+  const query = req.body._id;
+
+  Product.findByIdAndUpdate(query, req.body, { overwrite: true }, function (err, doc) {
+    if (err) return res.send(500, { error: err });
+    return res.send(doc).json();
   });
 } 

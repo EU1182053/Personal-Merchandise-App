@@ -56,21 +56,28 @@ export const isAuthenticated = () => {
   }
 };
 
-export const recover = async (email) => {
+export const recover = async ({ email }) => {
   try {
-    const data = await fetch(`${API}/user/recover`, {
+    const response = await fetch(`${API}/user/recover`, {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(email),
+      body: JSON.stringify({ email }),
     });
-    
-    
-    return await data.json();
+
+    // Check for non-2xx HTTP status codes
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to recover password");
+    }
+
+    // Parse and return the JSON response
+    return await response.json();
   } catch (error) {
-    console.warn(error);
+    console.error("Recover request failed:", error);
+    throw error; // Re-throw to propagate error to caller
   }
 };
 
@@ -90,23 +97,29 @@ export const recover = async (email) => {
 //   }
 // };
 
-export const resetPassword =  (password) => {
+export const resetPassword = async ({ password, token }) => {
   try {
-    let token = localStorage.getItem('resetToken');
-    return  fetch(`${API}/user/reset/${token}`, {
-      mode: "no-cors",
+    const response = fetch(`${API}/user/reset/${token}`, {
       method: "POST",
       headers: {
-      
+
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      
+
       body: JSON.stringify(password),
-    })
-    .then((response) => {return response})
-    .catch((error) => console.log(error));
+    });
+    // Check for non-2xx HTTP status codes
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to reset password");
+    }
+
+    // Parse and return the JSON response
+    return await response.json();
+
   } catch (error) {
-    console.warn("error", error);
+    console.error("Reset password request failed:", error);
+    throw error; // Re-throw the error to propagate it to the caller
   }
 };

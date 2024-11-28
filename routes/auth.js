@@ -7,7 +7,7 @@ var router = express.Router();
 
 router.post(
   "/signup",
-
+ 
   [
     check("email").isEmail(),
 

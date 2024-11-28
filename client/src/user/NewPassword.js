@@ -12,54 +12,47 @@ const NewPassword = () => {
     newPassword: "",
     error: "",
     loading: false,
-    didRedirect: false,
     gotTheToken: false
   });
-  const { password, newPassword, error, loading, didRedirect, gotTheToken } = values;
+  const { password, newPassword, error, loading, gotTheToken } = values;
   const { user } = isAuthenticated();
+
   const handleChange = (name) => (event) => {
     setValues({ ...values, error: false, [name]: event.target.value });
   };
+
   const onSubmit = (event) => {
     event.preventDefault();
-    setValues({ ...values, error: false, loading: false, gotTheToken: false });
-    console.log('resetPassword', password)
-    resetPassword({ password })
+    setValues({ ...values, error: false, loading: true });
+    const token = localStorage.getItem("resetToken"); // **Retrieve Token**
+    resetPassword({ password, token })
 
       .then((data) => {
 
-        if (data) {
-          setValues({ ...values, error: data.message, loading: true, gotTheToken: true });
+        if (data.success) {
+          setValues({ ...values, loading: false, gotTheToken: true });
         } else {
-          setValues({ ...values, loading: true, didRedirect: true, gotTheToken: false });
+          setValues({ ...values, loading: false, error: data.message });
         }
       })
-      .catch(error => { return console.log("signin request failed", error) });
-  } 
+      .catch((error) => { 
+        console.log("Reset password request failed", error);
+        setValues({
+          ...values,
+          loading: false,
+          error: "Failed to reset password. Please try again.",
+        }); 
+      });
+  }
+
   const loadingMessage = () => {
-    if (loading) {
-      return ( 
-        loading && (  
-          <div className="alert alert-info">
-            <h4>Your password has been changed</h4>
-          </div>
-
-        ))
-
-    }
-
-    else {
-      return (
-        loading && (
-          <div className="alert alert-info">
-            <h4>{error}</h4>
-          </div>
-
-        ))
-    }
-
-
-
+    return (
+      loading && (
+        <div className="alert alert-info">
+          <h4>Your password is being reset...</h4>
+        </div>
+      )
+    );
   };
   const errorMessage = () => {
     return (
@@ -100,8 +93,12 @@ const NewPassword = () => {
                 type="password"
               />
             </div>
-            <button onClick={onSubmit} className="btn btn-success btn-block">
-              Submit
+            <button 
+            onClick={onSubmit} 
+            className="btn btn-success btn-block"
+            disabled={loading} // **Disable while loading**
+            >
+              {loading ? "Submitting..." : "Submit"} {/* **Dynamic Button Text** */}
             </button>
           </form>
 
@@ -111,6 +108,11 @@ const NewPassword = () => {
 
   };
 
+  if (gotTheToken) {
+    return <Redirect to="/signin" />; // **Redirect to Sign In**
+  }
+
+  
   return (
     <Base title="Reset Password page" description="A page for user to reset password!">
       {signInForm()}

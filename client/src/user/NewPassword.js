@@ -1,50 +1,67 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Base from "../core/Base";
-import { Redirect } from "react-router-dom";
-import '../styles.css'
 import { resetPassword } from "../auth/helper";
+import { useLocation, Redirect } from "react-router-dom"; // Import Redirect
 
 const NewPassword = () => {
   const [values, setValues] = useState({
     password: "",
-    newPassword: "",
+    confirmPassword: "",
     error: "",
     loading: false,
-    gotTheToken: false,
-    passwordMismatch: false, // State to track password mismatch
+    passwordMismatch: false,
+    redirectToSignin: false, // New state for redirection
   });
-  const { password, newPassword, error, loading, gotTheToken, passwordMismatch } = values;
+
+  const { password, confirmPassword, error, loading, passwordMismatch, redirectToSignin } = values;
+
+  const location = useLocation();
+
+  // Extract the token and store it in localStorage
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const token = queryParams.get("token");
+    if (token) {
+      localStorage.setItem("resetToken", token);
+    }
+  }, [location]);
 
   const handleChange = (name) => (event) => {
-    setValues({ ...values, error: false, passwordMismatch: false, [name]: event.target.value });
+    setValues({ ...values, error: false, [name]: event.target.value });
   };
 
   const onSubmit = (event) => {
     event.preventDefault();
-    
-    // Check if the passwords match before submitting
-    if (password !== newPassword) {
+
+    // Validate password and confirmPassword
+    if (password !== confirmPassword) {
       setValues({ ...values, passwordMismatch: true });
       return;
     }
 
-    setValues({ ...values, error: false, loading: true });
-    const token = localStorage.getItem("resetToken"); // **Retrieve Token**
+    setValues({ ...values, loading: true, error: false });
+
+    // Retrieve token from localStorage
+    const token = localStorage.getItem("resetToken");
 
     resetPassword({ password, token })
       .then((data) => {
         if (data && data.message === "Your password has been updated.") {
-          setValues({ ...values, loading: false, gotTheToken: true });
+          alert("Password reset successful. Please log in.");
+          setValues({ ...values, redirectToSignin: true }); // Set redirect state
         } else {
-          setValues({ ...values, loading: false, error: data.message || "Failed to reset password." });
+          setValues({
+            ...values,
+            loading: false,
+            error: data.message || "Failed to reset password.",
+          });
         }
       })
-      .catch((error) => {
-        console.log("Reset password request failed", error);
+      .catch(() => {
         setValues({
           ...values,
           loading: false,
-          error: "Failed to reset password. Please try again.",
+          error: "An error occurred. Please try again.",
         });
       });
   };
@@ -53,7 +70,7 @@ const NewPassword = () => {
     return (
       loading && (
         <div className="alert alert-info">
-          <h4>Your password is being reset...</h4>
+          <h4>Resetting your password...</h4>
         </div>
       )
     );
@@ -61,16 +78,11 @@ const NewPassword = () => {
 
   const errorMessage = () => {
     return (
-      <div className="row">
-        <div className="col-md-6 offset-sm-3 text-left">
-          <div
-            className="alert alert-danger"
-            style={{ display: error ? "" : "none" }}
-          >
-            {error}
-          </div>
+      error && (
+        <div className="alert alert-danger">
+          <h4>{error}</h4>
         </div>
-      </div>
+      )
     );
   };
 
@@ -84,52 +96,45 @@ const NewPassword = () => {
     );
   };
 
-  const signInForm = () => {
+  const passwordResetForm = () => {
     return (
-      <div className="row">
-        <div className="col-md-6 offset-sm-3 text-left">
-          <form>
-            <div className="form-group">
-              <label className="text-light">Password</label>
-              <input
-                onChange={handleChange("password")}
-                value={password}
-                className="form-control"
-                type="password"
-              />
-            </div>
-            <div className="form-group">
-              <label className="text-light">Confirm Password</label>
-              <input
-                onChange={handleChange("newPassword")}
-                value={newPassword}
-                className="form-control"
-                type="password"
-              />
-            </div>
-            <button
-              onClick={onSubmit}
-              className="btn btn-success btn-block"
-              disabled={loading} // **Disable while loading**
-            >
-              {loading ? "Submitting..." : "Submit"} {/* **Dynamic Button Text** */}
-            </button>
-          </form>
+      <form>
+        <div className="form-group">
+          <label className="text-light">New Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={handleChange("password")}
+            className="form-control"
+          />
         </div>
-      </div>
+        <div className="form-group">
+          <label className="text-light">Confirm Password</label>
+          <input
+            type="password"
+            value={confirmPassword}
+            onChange={handleChange("confirmPassword")}
+            className="form-control"
+          />
+        </div>
+        <button
+          onClick={onSubmit}
+          className="btn btn-success btn-block"
+          disabled={loading}
+        >
+          {loading ? "Submitting..." : "Submit"}
+        </button>
+      </form>
     );
   };
 
-  if (gotTheToken) {
-    return <Redirect to="/signin" />; // **Redirect to Sign In**
-  }
-
   return (
-    <Base title="Reset Password page" description="A page for user to reset password!">
+    <Base title="Reset Password" description="Enter your new password">
+      {redirectToSignin && <Redirect to="/signin" />} {/* Redirect on success */}
       {passwordMismatchMessage()}
-      {signInForm()}
       {errorMessage()}
       {loadingMessage()}
+      {passwordResetForm()}
     </Base>
   );
 };

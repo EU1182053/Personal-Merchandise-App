@@ -1,28 +1,26 @@
 import React, { useState } from "react";
 import Base from "../core/Base";
-import { Link, Redirect } from "react-router-dom";
-import '../styles.css'
-import { signin, authenticate, isAuthenticated } from "../auth/helper";
+import "../styles.css";
 import { recover } from "../auth/helper/index";
 
 const Forgot = () => {
   const [values, setValues] = useState({
     email: "",
     error: "",
+    successMessage: "", // State for success message
     loading: false,
-    didRedirect: false,
-    gotTheToken: false
   });
-  const { email, error, loading, didRedirect, gotTheToken } = values;
+
+  const { email, error, successMessage, loading } = values;
 
   // Handle input changes
   const handleChange = (name) => (event) => {
-    setValues({ ...values, error: false, [name]: event.target.value });
+    setValues({ ...values, error: false, successMessage: "", [name]: event.target.value });
   };
 
-  // **Added** Form Validation
+  // Form Validation
   const validateForm = () => {
-    if (!email || !/\S+@\S+\.\S+/.test(email)) { // **Email validation** regex
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
       return "Please enter a valid email address.";
     }
     return null;
@@ -31,57 +29,66 @@ const Forgot = () => {
   // Handle form submission
   const onSubmit = (event) => {
     event.preventDefault();
-    const formError = validateForm(); // **Calling validateForm**
+    const formError = validateForm();
 
     if (formError) {
-      setValues({ ...values, error: formError }); // **Display error if form is invalid**
+      setValues({ ...values, error: formError });
       return;
     }
 
-    setValues({ ...values, error: false, loading: false, gotTheToken: false });
+    setValues({ ...values, error: false, loading: true, successMessage: "" });
+
     recover({ email })
-    .then((data) => {
-      console.log(data)
-      if (data && data.resetLink) {
-        // Extract the token from the resetLink
-        const resetToken = data.resetLink.split("/").pop(); // Assumes token is at the end of the URL
-        console.log("resetToken", resetToken);
-        localStorage.setItem("resetToken", resetToken); // Store the token
-        setValues({ ...values, error: "", loading: false, gotTheToken: true });
-      } else {
-        // Handle case where resetLink is missing
+      .then((data) => {
+        if (data && data.resetLink) {
+          // Extract and store reset token
+          const resetToken = data.resetLink.split("/").pop();
+          localStorage.setItem("resetToken", resetToken);
+
+          // Show success message
+          setValues({
+            ...values,
+            error: "",
+            successMessage: "A reset link has been sent to your email.",
+            loading: false,
+          });
+        } else {
+          // Handle case where resetLink is missing
+          setValues({
+            ...values,
+            loading: false,
+            error: data.message || "Failed to retrieve reset link.",
+          });
+        }
+      })
+      .catch((error) => {
+        console.log("Recover request failed", error);
         setValues({
           ...values,
           loading: false,
-          error: data.message || "Failed to retrieve reset link.",
+          error: "An error occurred. Please try again.",
         });
-      }
-    })
-    .catch((error) => {
-      console.log("Recover request failed", error);
-      setValues({
-        ...values,
-        loading: false,
-        error: "An error occurred. Please try again.",
       });
-    });
-  
-  }
-  const loadingMessage = () => {
-    if (gotTheToken) {
-      return <Redirect to="/user/newPassword" />;
-    }
-    return (
-      loading && (
-        <div className="alert alert-info">
-          <h4>Processing...</h4>
-        </div>
-
-      ))
   };
 
-  // Display error message
-  const errorMessage = () => {
+  // Success Message
+  const successMessageComponent = () => {
+    return (
+      <div className="row">
+        <div className="col-md-6 offset-sm-3 text-left">
+          <div
+            className="alert alert-success"
+            style={{ display: successMessage ? "" : "none" }}
+          >
+            {successMessage}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Error Message
+  const errorMessageComponent = () => {
     return (
       <div className="row">
         <div className="col-md-6 offset-sm-3 text-left">
@@ -93,6 +100,17 @@ const Forgot = () => {
           </div>
         </div>
       </div>
+    );
+  };
+
+  // Loading Message
+  const loadingMessage = () => {
+    return (
+      loading && (
+        <div className="alert alert-info">
+          <h4>Processing...</h4>
+        </div>
+      )
     );
   };
 
@@ -112,24 +130,21 @@ const Forgot = () => {
               />
             </div>
 
-            <button 
-            onClick={onSubmit} 
-            className="btn btn-success btn-block"
-            >
-              {loading ? "Submitting..." : "Submit"} {/* **Button text change while loading** */}
+            <button onClick={onSubmit} className="btn btn-success btn-block">
+              {loading ? "Submitting..." : "Submit"}
             </button>
           </form>
-
         </div>
       </div>
-    )
+    );
   };
 
   return (
-    <Base title="Forgot Password page" description="A page for user to sign in!">
-      {signInForm()}
-      {errorMessage()}
+    <Base title="Forgot Password page" description="A page for user to reset password!">
+      {successMessageComponent()}
+      {errorMessageComponent()}
       {loadingMessage()}
+      {signInForm()}
     </Base>
   );
 };

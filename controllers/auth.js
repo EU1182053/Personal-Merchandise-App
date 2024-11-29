@@ -142,19 +142,19 @@ exports.recover = async (req, res) => {
     await user.save(); 
 
     // Construct reset link
-    const protocol = req.protocol || "http"; // Use request protocol
-    const resetLink = `${protocol}://${req.headers.host}/api/user/reset/${user.resetPasswordToken}`;
- 
-    // const mailOptions = {
-    //   to: user.email,
-    //   from: process.env.FROM_EMAIL,
-    //   subject: "Password change request",
-    //   text: `Hi ${user.name} \n 
-    //         Please click on the following link ${resetLink} to reset your password. \n\n 
-    //         If you did not request this, please ignore this email and your password will remain unchanged.\n`,
-    // }
+    const protocol = req.protocol; // 'http' or 'https'
+    const resetLink = `${protocol}://localhost:3000/user/newPassword?token=${user.resetPasswordToken}`;
+    
+    const mailOptions = {
+      to: user.email,
+      from: process.env.FROM_EMAIL,
+      subject: "Password change request",
+      text: `Hi ${user.name} \n 
+            Please click on the following link ${resetLink} to reset your password. \n\n 
+            If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+    } 
 
-    // await sgMail.send(mailOptions);
+    await sgMail.send(mailOptions);
     return res.status(200).json({
       message: `A reset email has been sent to ${user.email}.`,
       resetLink: resetLink,

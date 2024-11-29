@@ -67,7 +67,6 @@ export const recover = async ({ email }) => {
       body: JSON.stringify({ email }),
     });
 
-    console.log("index.js response", response)
     // Check for non-2xx HTTP status codes
     if (!response.ok) {
       const errorData = await response.json();
@@ -110,7 +109,6 @@ export const resetPassword = async ({ password, token }) => {
 
       body: JSON.stringify({password}),
     });
-    console.log("index.js resetPassword", response)
     // Check for non-2xx HTTP status codes
     if (!response.ok) {
       const errorData = await response.json();

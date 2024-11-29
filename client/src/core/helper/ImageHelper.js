@@ -8,7 +8,7 @@ const ImageHelper = ({product}) => {
     return (
        <img
        src={imageUrl}
-       alt="photo"
+       alt=""
        width="400"
        height="275"
        ></img>

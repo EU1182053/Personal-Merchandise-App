@@ -5,7 +5,7 @@ import { createaProduct, getCategories } from "./helper/adminapicall";
 import { isAuthenticated } from "../auth/helper";
 
 const AddProduct = () => {
-  const { user, token } = isAuthenticated();
+  const {  token } = isAuthenticated();
   const [values, setValues] = useState({
     name: "",
     description: "",

@@ -40,22 +40,32 @@ const Forgot = () => {
 
     setValues({ ...values, error: false, loading: false, gotTheToken: false });
     recover({ email })
-      .then((data) => {
-
-
-        if (data.token) {
-          console.log('resetToken', data)
-          localStorage.setItem('resetToken', data.token)
-          setValues({ ...values, error: data.message, loading: false, gotTheToken: true });
-          console.log("gotTheToken", gotTheToken)
-        } else {
-          setValues({ ...values, loading: false, error: data.message });
-        }
-      })
-      .catch((error) => {
-        console.log("signin request failed", error);
-        setValues({ ...values, loading: false, error: "An error occurred. Please try again." }); // **Error handling improvement**
+    .then((data) => {
+      console.log(data)
+      if (data && data.resetLink) {
+        // Extract the token from the resetLink
+        const resetToken = data.resetLink.split("/").pop(); // Assumes token is at the end of the URL
+        console.log("resetToken", resetToken);
+        localStorage.setItem("resetToken", resetToken); // Store the token
+        setValues({ ...values, error: "", loading: false, gotTheToken: true });
+      } else {
+        // Handle case where resetLink is missing
+        setValues({
+          ...values,
+          loading: false,
+          error: data.message || "Failed to retrieve reset link.",
+        });
+      }
+    })
+    .catch((error) => {
+      console.log("Recover request failed", error);
+      setValues({
+        ...values,
+        loading: false,
+        error: "An error occurred. Please try again.",
       });
+    });
+  
   }
   const loadingMessage = () => {
     if (gotTheToken) {

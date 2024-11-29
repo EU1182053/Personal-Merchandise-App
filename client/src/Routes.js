@@ -5,7 +5,6 @@ import Signup from './user/Signup'
 import Signin from './user/Signin'
 import Signout from './user/Signout'
 import AdminRoute from "./auth/helper/AdminRoutes";
-import PrivateRoute from "./auth/helper/PrivateRoutes";
 import ReviewBoard from "./user/ReviewBoard";
 import AdminDashBoard from "./user/AdminDashBoard";
 import AddCategory from './admin/AddCategory'

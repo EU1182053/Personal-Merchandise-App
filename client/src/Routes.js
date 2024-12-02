@@ -14,6 +14,7 @@ import ManageProducts from './admin/ManageProducts'
 import Cart from './core/Cart'
 import Forgot from './user/Forgot'
 import NewPassword from './user/NewPassword'
+import Order from './core/Order'
 
 const Routes = () => {
     
@@ -34,6 +35,7 @@ const Routes = () => {
         <Route path='/cart' exact component={Cart} ></Route>
         <Route path='/user/recover' exact component={Forgot} ></Route>
         <Route path='/user/newPassword' exact component={NewPassword} ></Route>
+        <Route path='/user/order' exact component={Order} ></Route>
 
     </Switch>
     </BrowserRouter>

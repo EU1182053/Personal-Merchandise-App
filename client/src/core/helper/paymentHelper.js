@@ -13,7 +13,7 @@ export const getmeToken = async (userId, token) => {
     return await response.json();
   } catch (err) {
     return console.log(err);
-  }
+  } 
 };
 
 export const processPayment = async (userId, token, paymentInfo) => {

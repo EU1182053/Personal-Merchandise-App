@@ -85,7 +85,7 @@ const Card = ({ product, addToCart = true, removeFromCart = false, setReload = t
         <p className="">SOLD : {cardSold}</p>
         <div className="row">{showAddToCart(addToCart)}</div>
         <div className="row">{showRemoveFromCart(removeFromCart)}</div>
-        <p>Average Ratings is : {product.rating.average}</p>
+        <p>Average Ratings is : {product.rating.average}/5</p>
 
       </div>
     </div>) : <h2>No products</h2>

@@ -37,7 +37,6 @@ exports.processPayment = (req, res) => {
       return res.status(500).json({ error: "Transaction failed. Please try again." });
     }
     if (result.success) { 
-      console.log("Transaction successful:", result);
       return res.status(200).json({
         success: true,
         transaction: result.transaction,

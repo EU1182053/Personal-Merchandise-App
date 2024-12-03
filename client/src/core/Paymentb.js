@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-// import { Link } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { getmeToken, processPayment } from "./helper/paymentHelper";
 import { createOrder } from "./helper/orderHelper";
 import { isAuthenticated } from "../auth/helper";
@@ -15,13 +15,16 @@ const Paymentb = ({ products, setReload = (f) => f, reload = undefined }) => {
     error: "",
     instance: {},
   });
+  const [redirect, setRedirect] = useState(false); // State for handling redirection
 
   const userId = isAuthenticated() && isAuthenticated().user._id;
   const token = isAuthenticated() && isAuthenticated().token;
   // const [reload, setReload] = useState(undefined);
   const getToken = (userId, token) => {
+    console.log("Fetching client token");
     return getmeToken(userId, token)
       .then((info) => {
+        console.log("Token fetched:", info);
         const clientToken = info.clientToken;
         setInfo({ clientToken });
       })
@@ -34,11 +37,14 @@ const Paymentb = ({ products, setReload = (f) => f, reload = undefined }) => {
   const showbtdropIn = () => {
     return (
       <div>
-        {info.clientToken !== null && products.length > 0 ? (
+        {info.clientToken ? (
           <div>
             <DropIn
               options={{ authorization: info.clientToken }}
-              onInstance={(instance) => setInfo({ ...info, instance })}
+              onInstance={(instance) => {
+                console.log("Instance created:", instance);
+                setInfo((prevInfo) => ({ ...prevInfo, instance }))
+              }}
             />
             <button className="btn btn-block btn-success" onClick={onPurchase}>
               Buy
@@ -58,48 +64,79 @@ const Paymentb = ({ products, setReload = (f) => f, reload = undefined }) => {
     }
   }, [userId, token]);
 
-  const generateTransactionId  = (len) => {
+  const generateTransactionId = (len) => {
     return Array.from({ length: len }, () =>
       Math.random().toString(36).charAt(2)).join('');
   };
 
   const onPurchase = () => {
-    setInfo({ loading: true });
-    if (info?.instance) {
-      info.instance
-        .requestPaymentMethod()
-        .then((data) => {
-          const nonce = data.nonce;
-          const paymentData = {
-            paymentMethodNonce: nonce,
-            amount: totalAmount(),
-          };
-          return processPayment(userId, token, paymentData);
-        })
-        .then((response) => {
-          setInfo({ success: response.success, loading: false });
-          if (response.success) {
-            // Proceed with order creation
-            createOrder(userId, token, { order: { products, transaction_id: generateTransactionId(), amount: totalAmount() } });
-          } else {
-            setInfo({ error: response.error, loading: false });
-          }
-        })
-        .catch((err) => {
-          setInfo({ loading: false, error: "Payment process failed" });
-        });
-    }
-  
+    console.log("onPurchase called");
+    setInfo({ ...info, loading: true });
 
+
+    // Check if DropIn instance exists
+    if (!info?.instance) {
+      setInfo({ ...info, error: "Payment instance is not available", loading: false });
+      console.error("Payment instance is not available");
+      return;
+    }
+
+    console.log("80");
+
+    info.instance.
+      requestPaymentMethod()
+      .then((data) => {
+        console.log("Payment data:", data); // Log the returned data
+        const nonce = data.nonce;
+
+        // Prepare payment data
+        const paymentData = {
+          paymentMethodNonce: nonce,
+          amount: totalAmount,
+        };
+
+        // Process payment with the backend
+        return processPayment(userId, token, paymentData);
+      })
+      .then((response) => {
+        if (!response.success) {
+          throw new Error(response.error || "Payment failed");
+        }
+
+
+        // Prepare order data
+        const orderData = {
+          products,
+          transaction_id: generateTransactionId(10),
+          amount: totalAmount,
+        };
+
+        console.log("orderData", orderData);
+        // Create order in the backend
+        return createOrder(userId, token, { order: orderData });
+      })
+      .then(() => {
+        console.log("Order created successfully");
+        cartEmpty(() => console.log("Cart is emptied"));
+        setReload(!reload); // Force reload of components
+        setInfo({ ...info, success: true, loading: false }); // Reset loading before redirect
+        setRedirect(true); // Trigger redirect
+      })
+      .catch((err) => {
+        console.error("Payment or order creation failed:", err);
+        setInfo({ ...info, error: "Payment process failed", loading: false });
+      });
   };
+
+
 
   const totalAmount = useMemo(() => {
     return products.reduce((sum, p) => sum + p.price, 0);
   }, [products]);
 
-
-  if (info.loading) {
-    return <h3>Processing Payment...</h3>;
+  // Redirect after successful payment and order creation
+  if (redirect) {
+    return <Redirect to="/" />; // Redirect to "/user/order"
   }
 
 
@@ -115,10 +152,5 @@ const Paymentb = ({ products, setReload = (f) => f, reload = undefined }) => {
 };
 
 
-Paymentb.propTypes = {
-  products: PropTypes.array.isRequired,
-  setReload: PropTypes.func,
-  reload: PropTypes.any,
-};
 
 export default Paymentb;

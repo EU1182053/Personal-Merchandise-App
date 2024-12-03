@@ -18,9 +18,10 @@ export const getmeToken = async (userId, token) => {
 
 export const processPayment = async (userId, token, paymentInfo) => {
   try {
+    console.log("21");
     const response = await fetch(`${API}/payment/braintree/${userId}`, {
       method: "POST",
-      headers: {
+      headers: { 
         Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -30,7 +31,8 @@ export const processPayment = async (userId, token, paymentInfo) => {
 
     const data = await response.json();
 
-    if (response.ok) {
+
+    if (data.success) {
       return { success: true, transaction: data.transaction };
     } else {
       return { success: false, error: data.error || data.message };

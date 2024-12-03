@@ -123,7 +123,7 @@ exports.updateStock = (req, res, next) => {
     return {
       updateOne: {
         filter: { _id: prod._id },
-        update: { $inc: { stock: -prod.quantity, sold: +prod.quantity } }
+        update: { $inc: { stock: -prod.sold, sold: +prod.sold } }
       }
     };
   });

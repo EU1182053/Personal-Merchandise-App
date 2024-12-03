@@ -132,7 +132,7 @@ Ensure you have the following installed:
 | Method | Endpoint                        | Description                                        |
 |--------|---------------------------------|----------------------------------------------------|
 | `POST` | `/order/create`                 | Create a new order (requires authentication)      |
-| `GET`  | `/order/all/:userId`            | Get all orders for a user (admin only)             |
+| `GET`  | `/order/all/:userId`            | Get all orders by user id           |
 | `GET`  | `/order/status/:userId`         | Get the status of a user's order (requires authentication) |
 | `PUT`  | `/order/:orderId/status/:userId`| Update the status of an order (admin only)        |
 

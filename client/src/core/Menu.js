@@ -42,6 +42,17 @@ const Menu = ({ history }) => (
         </Link>
       </li>
       )}
+      {isAuthenticated() && (
+        <li className="nav-item">
+        <Link
+          style={currentTab(history, "/user/order")}
+          className="nav-link"
+          to="/user/order"
+        >
+          Orders
+        </Link>
+      </li>
+      )}
       {isAuthenticated() && (isAuthenticated().user.role === 1 || isAuthenticated().user.role === 1)&& (
         <li className="nav-item">
           <Link

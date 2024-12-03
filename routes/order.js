@@ -27,8 +27,7 @@ router.post(
 //read
 router.get(
   "/order/all/:userId",
-  
-  isAdmin,
+  isAuthenticated,
   getAllOrders
 );
 

@@ -30,17 +30,20 @@ exports.createOrder = (req, res) => {
 };
 
 exports.getAllOrders = (req, res) => {
-  Order.find()
-    .populate("user", "_id name")
-    .exec((err, order) => {
+  const { userId } = req.params.userId;  // Get the userId from the route parameter
+
+  Order.find({ user: userId })  // Find orders where the user field matches the provided userId
+    .populate("user", "_id name")  // Populate user details (optional)
+    .exec((err, orders) => {  // Handle the query result
       if (err) {
         return res.status(400).json({
-          error: "No orders found in DB"
+          error: "No orders found for this user"  // Adjust error message for clarity
         });
       }
-      res.json(order);
+      res.json(orders);  // Return the found orders
     });
 };
+
 
 exports.getOrderStatus = (req, res) => {
   res.json(Order.schema.path("status").enumValues);

@@ -115,7 +115,7 @@ const Paymentb = ({ products, setReload = (f) => f, reload = undefined }) => {
         // Create order in the backend
         return createOrder(userId, token, { order: orderData });
       })
-      .then(() => {
+      .then(() => { 
         console.log("Order created successfully");
         cartEmpty(() => console.log("Cart is emptied"));
         setReload(!reload); // Force reload of components
@@ -136,7 +136,7 @@ const Paymentb = ({ products, setReload = (f) => f, reload = undefined }) => {
 
   // Redirect after successful payment and order creation
   if (redirect) {
-    return <Redirect to="/" />; // Redirect to "/user/order"
+    return <Redirect to="/user/order" />; // Redirect to "/user/order"
   }
 
 

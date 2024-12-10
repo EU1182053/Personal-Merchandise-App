@@ -1,6 +1,6 @@
 const user = require("../models/user");
 const User = require("../models/user");
-const Order = require("../models/order");
+const { Order } = require("../models/order");
 const products = require("../models/products");
 exports.getUserById = (req, res, next, id) => {
   User.findById(id).exec((err, user) => {
@@ -41,7 +41,7 @@ exports.updateUser = (req, res) => {
 };
 
 exports.userPurchaseList = (req, res) => {
-  Order.find({ user: req.profile._id })
+  Order.find({ user: req.params._id })
     .populate("user", "_id name")
     .exec((err, order) => {
       if (err) {

@@ -103,7 +103,7 @@ Ensure you have the following installed:
 ### Order Management
 | Method | Endpoint                  | Description                                    |
 |--------|---------------------------|------------------------------------------------|
-| PUT    | `/order/user/:userId`      | Retrieve user purchase history (requires auth) |
+| GET    | `/order/user/:userId`      | Retrieve user purchase history (requires auth) |
 
 ### Review Management
 | Method | Endpoint                  | Description                                    |

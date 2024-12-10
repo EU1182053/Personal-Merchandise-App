@@ -9,7 +9,7 @@ const router = express.Router();
 router.param("userId", getUserById);
 router.get("/user/:userId",  isSignIn,isAuthenticated, getUser);
 router.put("/user/:userId",  isSignIn,isAuthenticated, isAdmin, updateUser)
-router.put("order/user/:userId",  isSignIn,isAuthenticated, userPurchaseList)
+router.get("/order/user/:userId",  isSignIn,isAuthenticated, userPurchaseList)
 router.post("/user/recover", recover)
 
 router.post("/user/reset/:token", reset, resetPassword)

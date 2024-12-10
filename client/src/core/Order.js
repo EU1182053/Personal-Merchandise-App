@@ -13,6 +13,7 @@ const Order = () => {
   const [loading, setLoading] = useState(true);  // To manage loading state
   const [error, setError] = useState(null);  // To handle errors
 
+    // Fetch orders when the component loads or when user._id or token changes
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -22,6 +23,7 @@ const Order = () => {
 
         // Call the helper function to fetch orders
         const data = await getAllOrders(user._id, token);
+        console.log("data", data)
         setOrders(data);
       } catch (err) {
         setError(err.message);
@@ -63,14 +65,22 @@ const Order = () => {
                     Rs. {order.amount}
                   </p>
                   <p className="">Transaction ID: {order.transaction_id}</p>
+                  <p className=""><strong>Order Created At:</strong>{" "}
+                  {new Date(order.createdAt).toLocaleString()}</p>
                   
                   <p className="">Products:</p>
                   <ul>
                     {order.products.map((product) => (
                       <li key={product._id}>
-                        <p>{product.name}</p>
-                        <p>Count: {product.count}</p>
-                        <p>Price: Rs. {product.price}</p>
+                        <p>
+                          <strong>Product Name:</strong> {product.name}
+                        </p>
+                        <p>
+                          <strong>Quantity:</strong> {product.count}
+                        </p>
+                        <p>
+                          <strong>Price:</strong> ₹{product.price}
+                        </p>
                       </li>
                     ))}
                   </ul> 

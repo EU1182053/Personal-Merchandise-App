@@ -49,7 +49,7 @@ const Menu = ({ history }) => (
           className="nav-link"
           to="/user/order"
         >
-          Orders
+          My_Orders
         </Link>
       </li>
       )}
@@ -68,18 +68,18 @@ const Menu = ({ history }) => (
         <Fragment>
           <li className="nav-item">
             <Link
-              style={currentTab(history, "/signup")}
+              style={currentTab(history, "/user/signup")}
               className="nav-link"
-              to="/signup"
+              to="/user/signup"
             >
               Signup
             </Link>
           </li>
           <li className="nav-item">
             <Link
-              style={currentTab(history, "/signin")}
+              style={currentTab(history, "/user/signin")}
               className="nav-link"
-              to="/signin"
+              to="/user/signin"
             >
               Sign In
             </Link>

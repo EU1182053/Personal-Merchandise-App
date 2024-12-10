@@ -147,9 +147,9 @@ Ensure you have the following installed:
 ### Authentication Management
 | Method | Endpoint            | Description                                           |
 |--------|---------------------|-------------------------------------------------------|
-| `POST` | `/signup`           | Register a new user with email, password, and name    |
-| `POST` | `/signin`           | Sign in an existing user (email and password required)|
-| `GET`  | `/signout`          | Sign out the current user                             |
+| `POST` | `/user/signup`           | Register a new user with email, password, and name    |
+| `POST` | `/user/signin`           | Sign in an existing user (email and password required)|
+| `GET`  | `/user/signout`          | Sign out the current user                             |
 | `GET`  | `/testroute`        | Test route to check authentication (requires sign-in) |
 | `GET`  | `/`                 | API home page (basic route for testing)               |
 

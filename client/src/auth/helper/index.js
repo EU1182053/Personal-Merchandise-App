@@ -11,7 +11,7 @@ export const signup = user => {
 };
 
 export const signin = (user) => {
-  return fetch(`${API}/signin`, {
+  return fetch(`${API}/user/signin`, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -38,7 +38,7 @@ export const signout = (next) => {
     localStorage.removeItem("cart");
     next();
 
-    return fetch(`${API}/signout`, {
+    return fetch(`${API}user/signout`, {
       method: "GET",
     })
       .then((response) => console.log(response))

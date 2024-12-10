@@ -130,7 +130,7 @@ const NewPassword = () => {
 
   return (
     <Base title="Reset Password" description="Enter your new password">
-      {redirectToSignin && <Redirect to="/signin" />} {/* Redirect on success */}
+      {redirectToSignin && <Redirect to="/user/signin" />} {/* Redirect on success */}
       {passwordMismatchMessage()}
       {errorMessage()}
       {loadingMessage()}

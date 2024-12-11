@@ -30,14 +30,15 @@ export const getAllOrders = async (userId, token) => {
         Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,  // Include the token for authorization
-      }
+      } 
     });
 
     // Check if the response is successful
     if (!response.ok) {
-      throw new Error(`HTTP Error: ${response.status}`);
+      console.log(`HTTP Error: ${response.status}`);
     }
 
+    
     // Return the orders as JSON
     return await response.json();
   } catch (err) {

@@ -13,6 +13,8 @@ const  Cart = () => {
   }, [reload]);
 
   const loadAllProducts = () => {
+    console.log("Cart", products)
+
     return (
       <div className="row ">
         {products.map((product, index) => {

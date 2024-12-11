@@ -23,6 +23,7 @@ const Order = () => {
 
         // Call the helper function to fetch orders
         const data = await getAllOrders(user._id, token);
+        console.log("user", user)
         console.log("data", data)
         setOrders(data);
       } catch (err) {
@@ -62,7 +63,7 @@ const Order = () => {
                     Status: {order.status}
                   </p>
                   <p className="btn btn-success rounded btn-sm px-4">
-                    Rs. {order.amount}
+                    Order Total : Rs. {order.amount}
                   </p>
                   <p className="">Transaction ID: {order.transaction_id}</p>
                   <p className=""><strong>Order Created At:</strong>{" "}
@@ -79,7 +80,7 @@ const Order = () => {
                           <strong>Quantity:</strong> {product.count}
                         </p>
                         <p>
-                          <strong>Price:</strong> ₹{product.price}
+                          <strong>Price:</strong> ₹{order.amount}
                         </p>
                       </li>
                     ))}

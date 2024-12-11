@@ -123,10 +123,10 @@ exports.updateStock = (req, res, next) => {
     return {
       updateOne: {
         filter: { _id: prod._id },
-        update: { $inc: { stock: -prod.sold, sold: +prod.sold } }
+        update: { $inc: { stock: -prod.count, sold: +prod.count } }
       }
     };
-  });
+  }); 
 
   Product.bulkWrite(myOperations, {}, (err, products) => {
     if (err) {
@@ -140,12 +140,28 @@ exports.updateStock = (req, res, next) => {
 };
 
 
-exports.updateProduct = (req, res) => {
+exports.updateProduct = async (req, res) => {
+  try {
+    const productId = req.params.productId; // Get product ID from request parameters
+    const updatedData = req.body; // Get update data from request body
 
-  const query = req.body._id;
+    // Update product and return the updated document
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      { $set: req.body },
+      { new: true } // Returns the updated document
+    );
 
-  Product.findByIdAndUpdate(query, req.body, { overwrite: true }, function (err, doc) {
-    if (err) return res.send(500, { error: err });
-    return res.send(doc).json();
-  });
-} 
+    // If no product found, send a 404 error
+    if (!updatedProduct) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    // Return the updated product
+    return res.status(200).json(updatedProduct);
+  } catch (error) { 
+    // Log and return server error
+    console.error("Error updating product:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};

@@ -98,18 +98,36 @@ exports.getUserID = (req, res) => {
   return jwt_token._id
 }
 
-exports.isAuthenticated = (req, res, next) => {
-  jwt_token = req.headers.authorization.split(' ')[1]
-
-  jwt_token = jwt_deocde(jwt_token)
-  User.findById(jwt_token, (err, data) => {
-    if (err) {
-      return res.json({
-        error: "Do the Sign In First."
-      })
+exports.isAuthenticated = async(req, res, next) => {
+  try {
+    // Check if the authorization header exists
+    if (!req.headers.authorization) {
+      return res.status(401).json({ error: 'Authorization header missing' });
     }
-    next()
-  })
+
+    // Extract the token
+    const token = req.headers.authorization.split(' ')[1];
+
+    // Decode the token
+    const decoded = jwt.decode(token); // Or verify if needed (jwt.verify)
+
+    
+
+    // Check if the user exists in the database
+    const user = await User.findById(decoded._id);
+    if (!user) {
+      return res.status(401).json({ error: 'User not found. Please sign in.' });
+    }
+
+    // Attach user data to the request object for future use
+    req.user = user;
+
+    // Call the next middleware
+    next();
+  } catch (err) {
+    // Catch any other errors
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 }
 
 exports.isAdmin = (req, res, next) => {

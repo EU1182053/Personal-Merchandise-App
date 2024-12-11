@@ -1,45 +1,57 @@
 const express = require("express");
-const cors = require('cors')
-
-const { signup, signout, signin, isSignIn, isAdmin, isAuthenticated } = require("../controllers/auth");
 const { check, validationResult } = require("express-validator");
-var router = express.Router();
 
-router.post(
-  "/user/signup",
-  [
-    check("email").isEmail(),
+const {
+  signup,
+  signout,
+  signin,
+  isSignIn,
+  isAuthenticated,
+} = require("../controllers/auth");
 
-    check("password").isLength({ min: 3 }),
+const router = express.Router();
 
-    check("name").isLength({ min: 3 }),
-  ],
-  signup
-);
+// Middleware to handle validation errors
+const handleValidationErrors = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+  next();
+};
 
-router.post(
-  "/user/signin",
-  [
-    check("email").isEmail(),
+// Validation rules
+const validateSignup = [
+  check("email").isEmail().withMessage("Invalid email format"),
+  check("password")
+    .isLength({ min: 3 })
+    .withMessage("Password must be at least 3 characters long"),
+  check("name").isLength({ min: 3 }).withMessage("Name must be at least 3 characters long"),
+];
 
-    check("password").isLength({ min: 3 }),
-  ],
-  signin
-);
+const validateSignin = [
+  check("email").isEmail().withMessage("Invalid email format"),
+  check("password")
+    .isLength({ min: 3 })
+    .withMessage("Password must be at least 3 characters long"),
+];
 
-router.get("/user/signout", () => {
-  signout;
+// Routes
+router.post("/user/signup", validateSignup, handleValidationErrors, signup);
+router.post("/user/signin", validateSignin, handleValidationErrors, signin);
+router.get("/user/signout", signout);
+
+// Test route
+router.get("/user/testroute", isSignIn, isAuthenticated, (req, res) => {
+  res.json({
+    message: "Test route works successfully",
+    user: req.auth,
+  });
 });
 
-router.get("/testroute", isSignIn, isAuthenticated, (req, res) => {
-  res.send('testroute works successfully')
-}
-
-);
-
-
-router.get("/", (req, res) => {
-  res.send(" api page");
+// Basic API page
+router.get("/user", (req, res) => {
+  res.json({ message: "API is working" });
 });
 
 module.exports = router;

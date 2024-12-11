@@ -126,7 +126,7 @@ exports.isAdmin = (req, res, next) => {
   })
 };
 
-exports.recover = async (req, res) => {
+exports.requestPasswordRecovery = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
@@ -170,7 +170,7 @@ exports.recover = async (req, res) => {
 
 };
 
-exports.reset = (req, res, next) => {
+exports.validateResetToken = (req, res, next) => {
 
   User.findOne({
     resetPasswordToken: req.params.token,
@@ -190,7 +190,7 @@ exports.reset = (req, res, next) => {
 
 };
 
-exports.resetPassword = (req, res) => {
+exports.updatePassword = (req, res) => {
   User.findOne({ 
     resetPasswordToken: req.params.token, 
     resetPasswordExpires: { $gt: Date.now() } 

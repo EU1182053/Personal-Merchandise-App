@@ -1,33 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { API } from "../backend";
 import { isAuthenticated } from "../auth/helper";
 import { getAllOrders } from "./helper/orderHelper";
 import Base from "./Base";
-import Menu from "./Menu";
 
 const Order = () => {
+  const { user, token } = isAuthenticated(); // Retrieve userId and token
+  const [purchases, setPurchases] = useState([]); // To store purchases array
+  const [loading, setLoading] = useState(true); // To manage loading state
+  const [error, setError] = useState(null); // To handle errors
 
-  const { user, token } = isAuthenticated();  // Retrieve userId and token from isAuthenticated()
-
-  const [orders, setOrders] = useState([]);  // To store fetched orders
-  const [loading, setLoading] = useState(true);  // To manage loading state
-  const [error, setError] = useState(null);  // To handle errors
-
-    // Fetch orders when the component loads or when user._id or token changes
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        if (!user._id || !token) {
+        if (!user || !user._id || !token) {
           throw new Error("User is not authenticated");
         }
 
-        // Call the helper function to fetch orders
+        // Fetch orders
         const data = await getAllOrders(user._id, token);
-        console.log("user", user)
-        console.log("data", data)
-        setOrders(data);
+        if (data && data.purchases) {
+          setPurchases(data.purchases); // Set purchases array
+        } else {
+          throw new Error("No purchases found");
+        }
       } catch (err) {
-        setError(err.message);
+        setError(err.message || "Failed to fetch purchases");
       } finally {
         setLoading(false);
       }
@@ -35,65 +32,56 @@ const Order = () => {
 
     fetchOrders();
   }, [user._id, token]);
-  if (loading) {
-    return <div>Loading orders...</div>;
-  }
 
-  if (error) {
-    return <div>{error}</div>;
-  }
+  if (loading) return <div>Loading purchases...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
-
-    <Base title="Order Page" description="Welcome to your Order Page">
-     <div className="container">
-      <h2 className="mb-4 text-center">Your Orders</h2>
-      {orders.length === 0 ? (
-        <h2>No orders found</h2>
-      ) : (
-        <div className="row">
-          {orders.map((order) => (
-            <div className="col-md-4 mb-3" key={order._id}>
-              <div className="card text-white bg-dark border border-info">
-                <div className="card-header lead">
-                  Order ID: {order._id}
-                </div>
-                <div className="card-body">
-                  <p className="lead bg-success font-weight-normal text-wrap">
-                    Status: {order.status}
-                  </p>
-                  <p className="btn btn-success rounded btn-sm px-4">
-                    Order Total : Rs. {order.amount}
-                  </p>
-                  <p className="">Transaction ID: {order.transaction_id}</p>
-                  <p className=""><strong>Order Created At:</strong>{" "}
-                  {new Date(order.createdAt).toLocaleString()}</p>
-                  
-                  <p className="">Products:</p>
-                  <ul>
-                    {order.products.map((product) => (
-                      <li key={product._id}>
-                        <p>
-                          <strong>Product Name:</strong> {product.name}
-                        </p>
-                        <p>
-                          <strong>Quantity:</strong> {product.count}
-                        </p>
-                        <p>
-                          <strong>Price:</strong> ₹{order.amount}
-                        </p>
-                      </li>
-                    ))}
-                  </ul> 
+    <Base title="Your Purchases" description="Review your purchase history">
+      <div className="container">
+        <h2 className="mb-4 text-center">Your Purchases</h2>
+        {purchases.length === 0 ? (
+          <h2>No purchases found</h2>
+        ) : (
+          <div className="row">
+            {purchases.map((purchase, index) => (
+              <div className="col-md-4 mb-3" key={`${purchase.transaction_id}-${index}`}>
+                <div className="card text-white bg-dark border border-info">
+                  <div className="card-header lead">
+                    Purchase ID: {purchase._id}
+                  </div>
+                  <div className="card-body">
+                    <p className="lead bg-success font-weight-normal text-wrap">
+                      Name: {purchase.name}
+                    </p>
+                    <p>Description: {purchase.description}</p>
+                    <p>
+                      Category:{" "}
+                      <span className="badge badge-info">
+                        {purchase.category}
+                      </span>
+                    </p>
+                    <p>Quantity: {purchase.quantity}</p>
+                    <p>
+                      Amount: ₹{purchase.amount || "N/A"}
+                    </p>
+                    <p>
+                      Transaction ID: {purchase.transaction_id}
+                    </p>
+                    <p>
+                      Purchased On:{" "}
+                      {purchase.createdAt
+                        ? new Date(purchase.createdAt).toLocaleDateString("en-GB")
+                        : "N/A"}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+            ))}
+          </div>
+        )}
+      </div>
     </Base>
-    
   );
 };
 

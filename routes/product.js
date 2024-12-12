@@ -31,7 +31,7 @@ router.get("/product/showAll", getAllProducts);
 router.get("/product/show/:productId",isAdmin, getProduct);
 
 //delete route 
-router.delete("/product/:productId/:userId", adminMiddleware, deleteProduct);
+router.delete("/product/delete/:productId/:userId", adminMiddleware, deleteProduct);
 
 // route for photo
 router.get('/product/photo/:productId', photo)

@@ -41,9 +41,9 @@ exports.processPayment = (req, res) => {
         success: true,
         transaction: result.transaction,
       });
-    }
+    } 
     else {
-      console.warn("Transaction failed:", result.message);
+      console.warn("Transaction failed:", result);
       return res.status(400).json({
         success: false,
         error: result.message,

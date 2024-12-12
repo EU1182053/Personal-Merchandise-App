@@ -34,6 +34,10 @@ export const removeItemFromCart = (productId) => {
       }
     });
     localStorage.setItem("cart", JSON.stringify(cart));
+
+    // Reload the page to reflect changes
+    window.location.reload(); // Optional: only if you want to reload the page
+
   }
   return cart;
 };

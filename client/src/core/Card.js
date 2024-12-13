@@ -9,29 +9,27 @@ const Card = ({
   removeFromCart = false,
   setReload = (f) => f,
   reload = undefined,
-  isCartPage = false,  // New prop to check if we're on the cart page
+  isCartPage = false,
 }) => {
   const cardTitle = product ? product.name : "Default";
   const cardDescription = product ? product.description : "Default";
   const cardPrice = product ? product.price : "Default";
   const cardStock = product ? product.stock : "0";
   const cardSold = product ? product.sold : "0";
-  
+
   const [quantity, setQuantity] = useState(1);
 
-  // Fetch initial quantity from localStorage
   useEffect(() => {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const productInCart = cart.find(item => item._id === product._id);
+    const productInCart = cart.find((item) => item._id === product._id);
     if (productInCart) {
       setQuantity(productInCart.quantity);
     }
-  }, [product._id]); // Runs when the product changes
+  }, [product._id]);
 
-  // Update quantity in localStorage when it changes
   const updateLocalStorage = (newQuantity) => {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const updatedCart = cart.map(item => 
+    const updatedCart = cart.map((item) =>
       item._id === product._id ? { ...item, quantity: newQuantity } : item
     );
     localStorage.setItem("cart", JSON.stringify(updatedCart));
@@ -39,7 +37,11 @@ const Card = ({
   };
 
   const increaseQuantity = () => {
-    updateLocalStorage(quantity + 1);
+    if (quantity < cardStock) {
+      updateLocalStorage(quantity + 1);
+    } else {
+      alert("Cannot add more than available stock.");
+    }
   };
 
   const decreaseQuantity = () => {
@@ -49,8 +51,12 @@ const Card = ({
   };
 
   const handleAddToCart = () => {
-    if (isAuthenticated()) {
-      addItemToCart({ ...product, quantity }, () => {});
+    if (cardStock > 0) {
+      if (isAuthenticated()) {
+        addItemToCart({ ...product, quantity }, () => {});
+      }
+    } else {
+      alert("Product is out of stock.");
     }
   };
 
@@ -62,8 +68,9 @@ const Card = ({
           <button
             onClick={handleAddToCart}
             className="btn btn-block btn-outline-success mt-2 mb-2"
+            disabled={cardStock === 0}
           >
-            Add to Cart
+            {cardStock === 0 ? "Out of Stock" : "Add to Cart"}
           </button>
         </div>
       )
@@ -101,24 +108,25 @@ const Card = ({
         <p>Sold: {cardSold}</p>
         <p>Average Ratings: {product.rating.average}/5</p>
 
-        {/* Display quantity fetched from localStorage */}
-        {!isCartPage && 
-        <div className="quantity-controls">
-        <button
-          onClick={decreaseQuantity}
-          className="btn btn-sm btn-danger mx-1"
-        >
-          -
-        </button>
-        <span className="quantity-display mx-2">{quantity}</span>
-        <button
-          onClick={increaseQuantity}
-          className="btn btn-sm btn-success mx-1"
-        >
-          +
-        </button>
-      </div>
-        }
+        {!isCartPage && (
+          <div className="quantity-controls">
+            <button
+              onClick={decreaseQuantity}
+              className="btn btn-sm btn-danger mx-1"
+              disabled={quantity <= 1}
+            >
+              -
+            </button>
+            <span className="quantity-display mx-2">{quantity}</span>
+            <button
+              onClick={increaseQuantity}
+              className="btn btn-sm btn-success mx-1"
+              disabled={quantity >= cardStock}
+            >
+              +
+            </button>
+          </div>
+        )}
 
         <div className="row">{showAddToCart()}</div>
         <div className="row">{showRemoveFromCart()}</div>
@@ -128,3 +136,4 @@ const Card = ({
 };
 
 export default Card;
+ 

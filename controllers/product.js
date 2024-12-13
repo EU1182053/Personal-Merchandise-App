@@ -123,7 +123,7 @@ exports.updateStock = (req, res, next) => {
     return {
       updateOne: {
         filter: { _id: prod._id },
-        update: { $inc: { stock: -prod.count, sold: +prod.count } }
+        update: { $inc: { stock: -prod.quantity, sold: +prod.quantity } }
       }
     };
   }); 
@@ -148,7 +148,7 @@ exports.updateProduct = async (req, res) => {
     // Update product and return the updated document
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,
-      { $set: req.body },
+      { $set: updatedData },  
       { new: true } // Returns the updated document
     );
 

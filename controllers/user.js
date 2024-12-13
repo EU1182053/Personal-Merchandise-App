@@ -58,7 +58,7 @@ exports.pushOrderInPurchaseList = (req, res, next) => {
             name: product.name,
             description: product.description,
             category: product.category,
-            quantity: product.count,
+            quantity: product.quantity,
             amount: product.price,
             transaction_id: req.body.order.transaction_id,
             createdAt: new Date()

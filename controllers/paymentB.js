@@ -43,11 +43,11 @@ exports.processPayment = (req, res) => {
       });
     } 
     else {
-      console.warn("Transaction failed:", result);
+      console.warn("Transaction failed:", result.message);
       return res.status(400).json({
         success: false,
         error: result.message,
       });
     }
   });
-};
+}; 

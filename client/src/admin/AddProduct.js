@@ -50,10 +50,14 @@ const AddProduct = () => {
 
   const onSubmit = (event) => {
     event.preventDefault();
+  
+    // Clear any previous error and set loading state
     setValues({ ...values, error: "", loading: true });
-    console.log(formData)
-    createaProduct(token, formData)
+    console.log(formData);
+  
+    createaProduct(token, formData) // Using the updated createProduct function
       .then((data) => {
+        // If product creation is successful, reset the form values
         setValues({
           ...values,
           name: "",
@@ -62,15 +66,16 @@ const AddProduct = () => {
           photo: "",
           stock: "",
           loading: false,
-          createdProduct: data.name,
+          createdProduct: data.name, // Or any other data property you want to show
         });
       })
-      .catch((data) => {
-        if (data.error) {
-          setValues({ ...values, error: data.error });
-        }
+      .catch((err) => {
+        // Handle error and set error state
+        console.error("Error during product creation:", err);
+        setValues({ ...values, error: err.message || "Product creation failed." });
       });
   };
+  
 
   const handleChange = (name) => (event) => {
     const value = name === "photo" ? event.target.files[0] : event.target.value;

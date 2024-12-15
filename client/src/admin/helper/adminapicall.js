@@ -66,7 +66,7 @@ export const getAllProducts = async () => {
 
 export const deleteProduct = async (productId, userId, token) => {
   try {
-    const response = await fetch(`${API}/product/${productId}/${userId}`, {
+    const response = await fetch(`${API}/product/delete/${productId}/${userId}`, {
       method: "DELETE",
       headers: {
         Accept: "application/json",
@@ -95,16 +95,21 @@ export const getProduct = async productId => {
 //update a product
 
 export const updateProduct = async (productId, userId, token, product) => {
-  console.log("product", product);
-
   try {
-
-    await axios.put(`${API}/product/update/${productId}`, { product }).then(response => {
-      return response.json()
-    }).catch()
-
+    const response = await axios.put(
+      `${API}/product/update/${productId}`,
+      product,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data; // Axios already parses the JSON response
   } catch (err) {
-    return console.log(err);
+    console.error("Error updating product:", err.response?.data || err.message);
+    throw err; // Re-throw error to handle it in the calling function
   }
 };
 // last step

@@ -21,7 +21,7 @@ const Order = () => {
         if (data && data.purchases) {
           setPurchases(data.purchases); // Set purchases array
         } else {
-          throw new Error("No purchases found");
+          setPurchases([]);
         }
       } catch (err) {
         setError(err.message || "Failed to fetch purchases");

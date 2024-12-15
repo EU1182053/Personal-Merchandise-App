@@ -5,12 +5,12 @@ const fs = require('fs');
 
 exports.getProductById = (req, res, next, id) => {
   Product.findById(id)
-    .populate('category')
+    .populate('category') 
     .exec((err, product) => {
       if (err) {
         return res.json({
           error: "Not Found",
-        });
+        }); 
       }
 
       req.product = product;
@@ -54,7 +54,10 @@ exports.createProduct = (req, res) => {
           error: "SAving in DB failed"
         })
       }
-      return res.status(200).send();
+      return res.status(200).json({
+        message: "Product created successfully!",
+        product: product,
+      });
     })
   });
 };

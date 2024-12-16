@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { isAuthenticated } from "../auth/helper";
 import { getAllOrders } from "./helper/orderHelper";
 import Base from "./Base";
+import ReviewCard from "./ReviewCard";
 
 const Order = () => {
   const { user, token } = isAuthenticated(); // Retrieve userId and token
@@ -19,6 +20,7 @@ const Order = () => {
         // Fetch orders
         const data = await getAllOrders(user._id, token);
         if (data && data.purchases) {
+          console.log(data.purchases);
           setPurchases(data.purchases); // Set purchases array
         } else {
           setPurchases([]);
@@ -45,8 +47,12 @@ const Order = () => {
         ) : (
           <div className="row">
             {purchases.map((purchase, index) => (
+
+
               <div className="col-md-4 mb-3" key={`${purchase.transaction_id}-${index}`}>
                 <div className="card text-white bg-dark border border-info">
+                  <ReviewCard product={purchase} />
+
                   <div className="card-header lead">
                     Purchase ID: {purchase._id}
                   </div>

@@ -12,7 +12,7 @@ var reviewSchema = new mongoose.Schema({
       ref: "Product",
       required: true
     },
-    rating_value:{
+    rating_value:{ 
       type: Number,
       required: true
     }

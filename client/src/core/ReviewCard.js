@@ -17,6 +17,8 @@ const ReviewCard = ({ product }) => {
   // Initialize average rating
   useEffect(() => {
     setAverageRating(product?.rating?.average || 0);
+    console.log("products", product)
+
   }, [product?.rating?.average]);
 
   const getRedirect = () => redirect && <Redirect to="/" />;
@@ -31,10 +33,10 @@ const ReviewCard = ({ product }) => {
         setAverageRating(response.averageRating); // Update average rating from response
         setRedirect(true);
       } else {
-        console.error("Failed to update rating:", response);
+        console.log("Failed to update rating:", response);
       }
     } catch (error) {
-      console.error("Error during rating submission:", error);
+      console.log("Error during rating submission:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -92,7 +94,7 @@ const ReviewCard = ({ product }) => {
         {getRedirect()}
         <ImageHelper product={product} />
         <p className="lead bg-success font-weight-normal text-wrap">{product?.description || "Default Description"}</p>
-        <p className="btn btn-success rounded btn-sm px-4">Rs.{product?.price || "Default Price"}</p>
+        <p className="btn btn-success rounded btn-sm px-4">Rs.{product?.amount || "Defaults Price"}</p>
         {StarRating()}
         <p>
           {averageRating > 0

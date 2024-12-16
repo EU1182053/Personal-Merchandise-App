@@ -1,97 +1,139 @@
-import React, { useEffect, useState } from "react";
-import { Redirect } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import { isAuthenticated } from "../auth/helper";
 import { addItemToCart, loadCart, removeItemFromCart } from "./helper/cartHelper";
 import ImageHelper from "./helper/ImageHelper";
-import { getProducts } from "./helper/coreapicalls";
 
-const Card = ({ product, addToCart = true, removeFromCart = false, setReload = true, reload = true }) => {
-  // const { user, token } = isAuthenticated();
-  // const [categories, setCategories] = useState([]);
+const Card = ({
+  product,
+  addToCart = true,
+  removeFromCart = false,
+  setReload = (f) => f,
+  reload = undefined,
+  isCartPage = false,
+}) => {
   const cardTitle = product ? product.name : "Default";
   const cardDescription = product ? product.description : "Default";
   const cardPrice = product ? product.price : "Default";
   const cardStock = product ? product.stock : "0";
   const cardSold = product ? product.sold : "0";
-  const [products, setProducts] = useState([]);
 
-  const [ratingValue, setRatingValue] = useState(0);
-
-  const [redirect, setRedirect] = useState(false)
-  // const [count, setCount] = useState(product.count)
-
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
-    setRatingValue((product.rating_value).reduce((a, b) => a + b, 0) / ((product.rating_value).length) - 1);
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const productInCart = cart.find((item) => item._id === product._id);
+    if (productInCart) {
+      setQuantity(productInCart.quantity);
+    }
+  }, [product._id]);
 
-    setProducts(getProducts());
-    console.log("products", products);
-  }, [reload]);
+  const updateLocalStorage = (newQuantity) => {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const updatedCart = cart.map((item) =>
+      item._id === product._id ? { ...item, quantity: newQuantity } : item
+    );
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    setQuantity(newQuantity);
+  };
 
+  const increaseQuantity = () => {
+    if (quantity < cardStock) {
+      updateLocalStorage(quantity + 1);
+    } else {
+      alert("Cannot add more than available stock.");
+    }
+  };
 
-  const showAddToCart = (addToCart) => {
+  const decreaseQuantity = () => {
+    if (quantity > 1) {
+      updateLocalStorage(quantity - 1);
+    }
+  };
 
+  const handleAddToCart = () => {
+    if (cardStock > 0) {
+      if (isAuthenticated()) {
+        addItemToCart({ ...product, quantity }, () => {});
+      }
+    } else {
+      alert("Product is out of stock.");
+    }
+  };
+
+  const showAddToCart = () => {
     return (
-      (isAuthenticated() && addToCart) && (
+      isAuthenticated() &&
+      addToCart && (
         <div className="col-12">
           <button
-            onClick={() => {
-              return addItemToCart(product, () => setRedirect(true))
-            }}
+            onClick={handleAddToCart}
             className="btn btn-block btn-outline-success mt-2 mb-2"
+            disabled={cardStock === 0}
           >
-            Add to Cart
+            {cardStock === 0 ? "Out of Stock" : "Add to Cart"}
           </button>
         </div>
       )
     );
-
   };
 
-
-  const getRedirect = () => {
-    if (redirect) {
-      return <Redirect to="/" />
-    }
-  }
-
-
-  const showRemoveFromCart = (removeFromCart) => {
+  const showRemoveFromCart = () => {
     return (
       removeFromCart && (
         <div className="col-12">
           <button
             onClick={() => {
-              removeItemFromCart(product._id)
-              setReload(!reload)
+              removeItemFromCart(product._id);
+              setReload(!reload);
             }}
             className="btn btn-block btn-outline-danger mt-2 mb-2"
           >
-            Remove from cart
+            Remove from Cart
           </button>
         </div>
       )
     );
   };
-  return ( (products) ? (<div className="card text-white bg-dark border border-info ">
+
+  return (
+    <div className="card text-white bg-dark border border-info">
       <div className="card-header lead">{cardTitle}</div>
       <div className="card-body">
-        {getRedirect()}
         <ImageHelper product={product} />
         <p className="lead bg-success font-weight-normal text-wrap">
           {cardDescription}
         </p>
-        <p className="btn btn-success rounded  btn-sm px-4">Rs.{cardPrice}</p>
-        <p className="">InStock : {cardStock}</p>
-        <p className="">SOLD : {cardSold}</p>
-        <div className="row">{showAddToCart(addToCart)}</div>
-        <div className="row">{showRemoveFromCart(removeFromCart)}</div>
-        <p>Previous Ratings is {ratingValue.toFixed(2)} / 5 .</p>
+        <p className="btn btn-success rounded btn-sm px-4">Rs. {cardPrice}</p>
+        <p>In Stock: {cardStock}</p>
+        <p>Sold: {cardSold}</p>
+        <p>Average Ratings: {product.rating.average}/5</p>
 
+        {!isCartPage && (
+          <div className="quantity-controls">
+            <button
+              onClick={decreaseQuantity}
+              className="btn btn-sm btn-danger mx-1"
+              disabled={quantity <= 1}
+            >
+              -
+            </button>
+            <span className="quantity-display mx-2">{quantity}</span>
+            <button
+              onClick={increaseQuantity}
+              className="btn btn-sm btn-success mx-1"
+              disabled={quantity >= cardStock}
+            >
+              +
+            </button>
+          </div>
+        )}
+
+        <div className="row">{showAddToCart()}</div>
+        <div className="row">{showRemoveFromCart()}</div>
       </div>
-    </div>) : <h2>No products</h2>
-    
-  ); 
+    </div>
+  );
 };
 
 export default Card;
+ 

@@ -5,12 +5,12 @@ const fs = require('fs');
 
 exports.getProductById = (req, res, next, id) => {
   Product.findById(id)
-    .populate('category')
+    .populate('category') 
     .exec((err, product) => {
       if (err) {
         return res.json({
           error: "Not Found",
-        });
+        }); 
       }
 
       req.product = product;
@@ -54,25 +54,46 @@ exports.createProduct = (req, res) => {
           error: "SAving in DB failed"
         })
       }
-      return res.json(product)
+      return res.status(200).json({
+        message: "Product created successfully!",
+        product: product,
+      });
     })
   });
 };
 exports.getAllProducts = (req, res) => {
   Product.find()
+    .select("-photo") // Exclude the 'photo' field
     .exec((err, products) => {
       if (err) {
-        return res.json({
-          error: "There are no products right now in DB"
-        })
+        return res.status(400).json({
+          error: "There are no products right now in DB",
+        });
       }
-      products.photo = undefined;
-      return res.json(products)
-    })
-}
+      return res.json(products);
+    });
+};
 
-exports.getProduct = (req, res) => {
-  req.product.photo = undefined;
+exports.getProduct = async (req, res) => {
+  const { productId } = req.params;
+  try {
+    // Find product by productId
+    const product = await Product.findById(productId);
+
+    // Check if product exists
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    // Optionally, you can exclude sensitive fields, like `photo` (if you need to)
+    // product.photo = undefined;
+
+    return res.json(product); // Send the product data as the response
+  } catch (error) {
+    console.error('Error fetching product:', error);
+    return res.status(500).json({ error: 'An error occurred while fetching the product' });
+  }
+  // req.product.photo = undefined;
   return res.json(req.product);
 };
 // delete controllers
@@ -98,16 +119,17 @@ exports.photo = (req, res, next) => {
   }
   next()
 }
+
+
 exports.updateStock = (req, res, next) => {
   let myOperations = req.body.order.products.map(prod => {
-    console.log("prod", prod)
     return {
       updateOne: {
         filter: { _id: prod._id },
         update: { $inc: { stock: -prod.quantity, sold: +prod.quantity } }
       }
     };
-  });
+  }); 
 
   Product.bulkWrite(myOperations, {}, (err, products) => {
     if (err) {
@@ -121,12 +143,28 @@ exports.updateStock = (req, res, next) => {
 };
 
 
-exports.updateProduct = (req, res) => {
-  
-    const query = req.body._id ;
-    
-    Product.findByIdAndUpdate(query, req.body,{ overwrite: true}, function(err, doc) {
-      if (err) return res.send(500, {error: err});
-      return res.send(doc).json();
-  });
-} 
+exports.updateProduct = async (req, res) => {
+  try {
+    const productId = req.params.productId; // Get product ID from request parameters
+    const updatedData = req.body; // Get update data from request body
+
+    // Update product and return the updated document
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      { $set: updatedData },  
+      { new: true } // Returns the updated document
+    );
+
+    // If no product found, send a 404 error
+    if (!updatedProduct) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    // Return the updated product
+    return res.status(200).json(updatedProduct);
+  } catch (error) { 
+    // Log and return server error
+    console.error("Error updating product:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};

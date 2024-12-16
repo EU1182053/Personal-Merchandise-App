@@ -42,6 +42,17 @@ const Menu = ({ history }) => (
         </Link>
       </li>
       )}
+      {isAuthenticated() && (
+        <li className="nav-item">
+        <Link
+          style={currentTab(history, "/user/order")}
+          className="nav-link"
+          to="/user/order"
+        >
+          My_Orders
+        </Link>
+      </li>
+      )}
       {isAuthenticated() && (isAuthenticated().user.role === 1 || isAuthenticated().user.role === 1)&& (
         <li className="nav-item">
           <Link
@@ -57,18 +68,18 @@ const Menu = ({ history }) => (
         <Fragment>
           <li className="nav-item">
             <Link
-              style={currentTab(history, "/signup")}
+              style={currentTab(history, "/user/signup")}
               className="nav-link"
-              to="/signup"
+              to="/user/signup"
             >
               Signup
             </Link>
           </li>
           <li className="nav-item">
             <Link
-              style={currentTab(history, "/signin")}
+              style={currentTab(history, "/user/signin")}
               className="nav-link"
-              to="/signin"
+              to="/user/signin"
             >
               Sign In
             </Link>

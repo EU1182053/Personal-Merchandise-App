@@ -1,6 +1,7 @@
 const user = require("../models/user");
 const User = require("../models/user");
-const Order = require("../models/order");
+const { Order } = require("../models/order");
+const products = require("../models/products");
 exports.getUserById = (req, res, next, id) => {
   User.findById(id).exec((err, user) => {
     if (err || !user) {
@@ -40,7 +41,7 @@ exports.updateUser = (req, res) => {
 };
 
 exports.userPurchaseList = (req, res) => {
-  Order.find({ user: req.profile._id })
+  Order.find({ user: req.params._id })
     .populate("user", "_id name")
     .exec((err, order) => {
       if (err) {
@@ -58,20 +59,24 @@ exports.pushOrderInPurchaseList = (req, res, next) => {
             description: product.description,
             category: product.category,
             quantity: product.quantity,
-            amount: req.body.order.amount,
-            transaction_id: req.body.order.transaction_id
+            amount: product.price,
+            transaction_id: req.body.order.transaction_id,
+            createdAt: new Date()
         })
-    })
+    });
+
     User.findOneAndUpdate(
-        {_id: req.body._id},
+        {_id: req.params.userId},
         {$push: {purchases: purchases_list}},
         {new: true},
         (err, purchases) => {
-            if(err){
-                return res.json({
-                    err:"Unabel to save purchase list"
-                })
-            }
+          if (err) {
+            return res.status(500).json({
+              error: "Unable to update the purchase list. Please try again later.",
+              details: err.message,
+            });
+          }
+          
             next()
         }
     )

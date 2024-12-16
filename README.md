@@ -1,5 +1,5 @@
 # MERN
-# An e-commerce web application built with the MERN (MongoDB, Express, React, Node.js) stack.
+# An E-Commerce web application built with the MERN (MongoDB, Express, React, Node.js) stack.
 ## Table of Contents
 
 1. [Introduction](#introduction)
@@ -81,7 +81,7 @@ Ensure you have the following installed:
         - **SENDGRID_API_KEY**, **FROM_EMAIL** for email service
      
     - **Client-side (.env)**: Add the following configuration:
-        - `REACT_APP_BACKEND=http://localhost:8000` (URL of the backend server)
+        - `REACT_APP_BACKEND=http://localhost:8000/api` (URL of the backend server)
      
 
 ### Accessing the Application
@@ -103,7 +103,7 @@ Ensure you have the following installed:
 ### Order Management
 | Method | Endpoint                  | Description                                    |
 |--------|---------------------------|------------------------------------------------|
-| PUT    | `/order/user/:userId`      | Retrieve user purchase history (requires auth) |
+| GET    | `/order/user/:userId`      | Retrieve user purchase history (requires auth) |
 
 ### Review Management
 | Method | Endpoint                  | Description                                    |
@@ -132,7 +132,7 @@ Ensure you have the following installed:
 | Method | Endpoint                        | Description                                        |
 |--------|---------------------------------|----------------------------------------------------|
 | `POST` | `/order/create`                 | Create a new order (requires authentication)      |
-| `GET`  | `/order/all/:userId`            | Get all orders for a user (admin only)             |
+| `GET`  | `/order/all/:userId`            | Get all orders by user id           |
 | `GET`  | `/order/status/:userId`         | Get the status of a user's order (requires authentication) |
 | `PUT`  | `/order/:orderId/status/:userId`| Update the status of an order (admin only)        |
 
@@ -147,9 +147,9 @@ Ensure you have the following installed:
 ### Authentication Management
 | Method | Endpoint            | Description                                           |
 |--------|---------------------|-------------------------------------------------------|
-| `POST` | `/signup`           | Register a new user with email, password, and name    |
-| `POST` | `/signin`           | Sign in an existing user (email and password required)|
-| `GET`  | `/signout`          | Sign out the current user                             |
+| `POST` | `/user/signup`           | Register a new user with email, password, and name    |
+| `POST` | `/user/signin`           | Sign in an existing user (email and password required)|
+| `GET`  | `/user/signout`          | Sign out the current user                             |
 | `GET`  | `/testroute`        | Test route to check authentication (requires sign-in) |
 | `GET`  | `/`                 | API home page (basic route for testing)               |
 

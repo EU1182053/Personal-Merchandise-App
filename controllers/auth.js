@@ -98,18 +98,36 @@ exports.getUserID = (req, res) => {
   return jwt_token._id
 }
 
-exports.isAuthenticated = (req, res, next) => {
-  jwt_token = req.headers.authorization.split(' ')[1]
-
-  jwt_token = jwt_deocde(jwt_token)
-  User.findById(jwt_token, (err, data) => {
-    if (err) {
-      return res.json({
-        error: "Do the Sign In First."
-      })
+exports.isAuthenticated = async(req, res, next) => {
+  try {
+    // Check if the authorization header exists
+    if (!req.headers.authorization) {
+      return res.status(401).json({ error: 'Authorization header missing' });
     }
-    next()
-  })
+
+    // Extract the token
+    const token = req.headers.authorization.split(' ')[1];
+
+    // Decode the token
+    const decoded = jwt.decode(token); // Or verify if needed (jwt.verify)
+
+    
+
+    // Check if the user exists in the database
+    const user = await User.findById(decoded._id);
+    if (!user) {
+      return res.status(401).json({ error: 'User not found. Please sign in.' });
+    }
+
+    // Attach user data to the request object for future use
+    req.user = user;
+
+    // Call the next middleware
+    next();
+  } catch (err) {
+    // Catch any other errors
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 }
 
 exports.isAdmin = (req, res, next) => {
@@ -121,91 +139,103 @@ exports.isAdmin = (req, res, next) => {
       return res.json({
         error: data
       })
-    } 
+    }
     next()
   })
 };
 
-exports.recover = (req, res) => {
-  User.findOne({ email: req.body.email })
-    .then(user => {
-      if (!user) return res.status(401).json({ message: 'The email address ' + req.body.email + ' is not associated with any account. Double-check your email address and try again.' });
-      //Generate and set password reset token
-      user.generatePasswordReset();
-      // Save the updated user object
-      
-      user.save()
-        .then(user => {
-          console.log("recover", user)
-          // send email
-          let link = "http://" + req.headers.host + "/api/user/reset/" + user.resetPasswordToken;
-          let token = user.resetPasswordToken;
-          const mailOptions = { 
-            to: user.email, 
-            from: process.env.FROM_EMAIL,
-            subject: "Password change request",
-            text: `Hi ${user.name} \n 
-                  Please click on the following link ${link} to reset your password. \n\n 
-                  If you did not request this, please ignore this email and your password will remain unchanged.\n`,
-          };
-          return res.status(200).json({
-            "text": `Hi ${user.name} Please click on the following link ${link} to reset your password. 
+exports.requestPasswordRecovery = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      return res.status(401).json({
+        message: `The email address ${req.body.email} is not associated with any account. Double-check your email address and try again.`,
+      });
+    }
+
+    //Generate and set password reset token
+    user.generatePasswordReset();
+    // Save the updated user object
+
+    await user.save(); 
+
+    // Construct reset link
+    const protocol = req.protocol; // 'http' or 'https'
+    const resetLink = `${protocol}://localhost:3000/user/newPassword?token=${user.resetPasswordToken}`;
+    
+    const mailOptions = {
+      to: user.email,
+      from: process.env.FROM_EMAIL,
+      subject: "Password change request",
+      text: `Hi ${user.name} \n 
+            Please click on the following link ${resetLink} to reset your password. \n\n 
             If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+    } 
 
-            message: 'A reset email has been sent to ' + user.email + '.',
-            token: token,
-            recoveruser: user
-          });
-          sgMail.send(mailOptions, (error, result) => {
-            if (error) return res.status(500).json({ Message: error.message });
+    await sgMail.send(mailOptions);
+    return res.status(200).json({
+      message: `A reset email has been sent to ${user.email}.`,
+      resetLink: resetLink,
+      resetPasswordToken:user.resetPasswordToken,
+      recoveruser: { id: user._id, email: user.email }, // Avoid exposing sensitive data
+    });
+  } catch (error) {
+    console.error("Password recovery error:", error);
+    return res.status(500).json({ 
+      message: "An error occurred. Please try again later." 
+    });
+  }
 
-            res.status(200).json({ message: 'A reset email has been sent to ' + user.email + '.' });
-          });
-        })
-        .catch(err => res.status(500).json({ message: err.message }));
-    })
-    .catch(err => res.status(500).json({ message: err.message }));
 };
 
-exports.reset = (req, res, next) => {
-  
-  User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: new Date().getTime() } })
+exports.validateResetToken = (req, res, next) => {
+
+  User.findOne({
+    resetPasswordToken: req.params.token,
+    resetPasswordExpires: { $gt: new Date().getTime() }
+  })
     .then((user) => {
-      if (!user) return res.status(401).json({ message: 'Password reset token is invalid or has expired.' });
+      if (!user) return res.status(401).json({
+        message: 'Password reset token is invalid or has expired. Please request a new one.'
+      });
       //Redirect user to form with the email address
       next()
     })
-    .catch(err => res.status(500).json({ message: err.message }));
+    .catch(err => {
+      console.error("Error during password reset token validation:", err);
+      res.status(500).json({ message: "An error occurred while validating the reset token. Please try again later." });
+    });
+
 };
 
-exports.resetPassword = (req, res) => {
-  User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } })
+exports.updatePassword = (req, res) => {
+  User.findOne({ 
+    resetPasswordToken: req.params.token, 
+    resetPasswordExpires: { $gt: Date.now() } 
+  })
     .then((user) => {
-      if (!user) return res.status(401).json({ message: 'Password reset token is invalid or has expired.' });
+      if (!user) return res.status(401).json({ 
+        message: 'Password reset token is invalid or has expired.' 
+      });
 
       //Set the new password
       user.password = req.body.password;
-      
 
-      
+
+
       // Save
       user.save((err) => {
-        if (err) return res.status(500).json({ message: err.message });
+        if (err) return res.status(500).json({ 
+          message: err.message 
+        });
 
-        // send email
-        // const mailOptions = {
-        //   to: user.email,
-        //   from: process.env.FROM_EMAIL, 
-        //   subject: "Your password has been changed",
-        //   text: `Hi ${user.name} \n 
-        //           This is a confirmation that the password for your account ${user.email} has just been changed.\n`
-        // };
-        // sgMail.send(mailOptions, (error, result) => {
-        //   if (error) return res.status(500).json({ message: error});
-
-          return  res.status(200).json({ message: 'Your password has been updated.', ResetPasswordUser:user });
+  
+        return res.status(200).json({ 
+          message: 'Your password has been updated.', 
+          ResetPasswordUser: user 
+        });
         // });
-        
+
 
       });
     });

@@ -1,15 +1,20 @@
 const express = require("express");
 const router = express.Router();
-const { isSignedIn, isAuthenticated, isAdmin } = require("../controllers/auth");
+const { isSignIn, isAuthenticated, isAdmin } = require("../controllers/auth");
 const { getUserById, pushOrderInPurchaseList } = require("../controllers/user");
 const { updateStock } = require("../controllers/product");
 const {
-  getOrderById,
+  getOrderById, 
   createOrder,
-  getAllOrders,
+  getAllOrders, 
   getOrderStatus,
-  updateStatus,
+   
 } = require("../controllers/order");
+
+// Middleware for common user authentication
+const authenticateUser = [isSignIn, isAuthenticated];
+const adminMiddleware = [isAuthenticated, isAdmin];
+
 
 //params
 router.param("userId", getUserById);
@@ -18,8 +23,8 @@ router.param("orderId", getOrderById);
 //Actual routes
 //create
 router.post(
-  "/order/create", 
-  isAuthenticated,
+  "/order/create/:userId", 
+  authenticateUser,
   pushOrderInPurchaseList,
   updateStock,
   createOrder
@@ -27,24 +32,18 @@ router.post(
 //read
 router.get(
   "/order/all/:userId",
-  
-  isAdmin,
-  getAllOrders
-);
+  authenticateUser,
+  getAllOrders 
+);  
 
 //status of order
 router.get(
   "/order/status/:userId",
   
-  isAuthenticated,
+ authenticateUser,
  
   getOrderStatus
 );
-router.put(
-  "/order/:orderId/status/:userId",
- 
-  isAdmin,
-  updateStatus
-);
+
 
 module.exports = router;

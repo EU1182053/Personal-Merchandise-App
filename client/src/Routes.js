@@ -5,7 +5,6 @@ import Signup from './user/Signup'
 import Signin from './user/Signin'
 import Signout from './user/Signout'
 import AdminRoute from "./auth/helper/AdminRoutes";
-import PrivateRoute from "./auth/helper/PrivateRoutes";
 import ReviewBoard from "./user/ReviewBoard";
 import AdminDashBoard from "./user/AdminDashBoard";
 import AddCategory from './admin/AddCategory'
@@ -15,6 +14,7 @@ import ManageProducts from './admin/ManageProducts'
 import Cart from './core/Cart'
 import Forgot from './user/Forgot'
 import NewPassword from './user/NewPassword'
+import Order from './core/Order'
 
 const Routes = () => {
     
@@ -22,9 +22,9 @@ const Routes = () => {
     <BrowserRouter>
     <Switch>
         <Route path='/' exact component={Home} ></Route>
-        <Route path='/signup' exact component={Signup} ></Route>
-        <Route path='/signin' exact component={Signin} ></Route>
-        <Route path='/signout' exact component={Signout} ></Route>
+        <Route path='/user/signup' exact component={Signup} ></Route>
+        <Route path='/user/signin' exact component={Signin} ></Route>
+        <Route path='/user/signout' exact component={Signout} ></Route>
         <Route path="/user/review" exact component={ReviewBoard} />
       
         <AdminRoute path="/admin/dashboard" exact component={AdminDashBoard} />
@@ -35,6 +35,7 @@ const Routes = () => {
         <Route path='/cart' exact component={Cart} ></Route>
         <Route path='/user/recover' exact component={Forgot} ></Route>
         <Route path='/user/newPassword' exact component={NewPassword} ></Route>
+        <Route path='/user/order' exact component={Order} ></Route>
 
     </Switch>
     </BrowserRouter>

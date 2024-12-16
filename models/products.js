@@ -37,10 +37,10 @@ const productSchema = new mongoose.Schema(
       data: Buffer,
       contentType: String
     },
-    rating_value:{
-      type: Array,
-      default: 0
-    }
+    rating: {
+      average: { type: Number, default: 0 },
+      count: { type: Number, default: 0 },
+    },
   },
   { timestamps: true }
 );

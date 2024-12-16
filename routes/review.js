@@ -6,6 +6,8 @@ const { getUserById } = require("../controllers/user");
 
 router.param('userId', getUserById)
 router.post("/review/create/:userId",  isSignIn, isAuthenticated, createReview);
-router.get("/review/:productId",  isAdmin,  getAllReviews);
 
+// step 1
+router.get("/review/:productId",  isAdmin,  getAllReviews);
+ 
 module.exports = router;

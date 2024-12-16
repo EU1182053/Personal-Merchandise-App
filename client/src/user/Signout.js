@@ -10,7 +10,7 @@ const Signout = () => {
     return (
         <Base title="Signout Page">
           {SignOutForm()}
-          <Redirect to="/signup"/> 
+          <Redirect to="/user/signup"/> 
           <p className=" text-white text-center"></p>
         </Base>
       );

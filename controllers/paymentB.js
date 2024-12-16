@@ -9,7 +9,7 @@ const gateway = new braintree.BraintreeGateway({
 
 exports.getToken = (req, res) => {
   gateway.clientToken.generate({}, (err, response) => {
-    if (err) {
+    if (err) { 
       return res.json(err);
     } else {
       res.json(response);
@@ -17,16 +17,37 @@ exports.getToken = (req, res) => {
   });
 };
 exports.processPayment = (req, res) => {
-    let nonceFromTheClient = req.body.paymentMethodNonce
+  const nonceFromTheClient = req.body.paymentMethodNonce;
+  const amountFromTheClient = req.body.amount;
 
-    let amountFromTheClient = req.body.amount
-    gateway.transaction.sale({
-        amount: amountFromTheClient,
-        paymentMethodNonce: nonceFromTheClient,
-        // deviceData: deviceDataFromTheClient,
-        options: {
-          submitForSettlement: true
-        }
-      }, (err, result) => {
+  // Input validation
+  if (!nonceFromTheClient || !amountFromTheClient) {
+    return res.status(400).json({ error: "Invalid request data" });
+  }
+
+  gateway.transaction.sale({
+    amount: amountFromTheClient,
+    paymentMethodNonce: nonceFromTheClient,
+    options: {
+      submitForSettlement: true,
+    },
+  }, (err, result) => {
+    if (err) {
+      console.error("Braintree transaction error:", err);
+      return res.status(500).json({ error: "Transaction failed. Please try again." });
+    }
+    if (result.success) { 
+      return res.status(200).json({
+        success: true,
+        transaction: result.transaction,
       });
-};
+    } 
+    else {
+      console.warn("Transaction failed:", result.message);
+      return res.status(400).json({
+        success: false,
+        error: result.message,
+      });
+    }
+  });
+}; 

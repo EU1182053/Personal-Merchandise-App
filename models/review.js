@@ -2,10 +2,10 @@ var mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 
 var reviewSchema = new mongoose.Schema({
-  data:[{
+  
     user_id:{
       type: ObjectId,
-      ref: "Product"
+      ref: "User"
     },
     product_id:{
       type: ObjectId,
@@ -16,6 +16,6 @@ var reviewSchema = new mongoose.Schema({
       type: Number,
       required: true
     }
-  }]
+   
 });
 module.exports = mongoose.model("Review", reviewSchema);

@@ -13,23 +13,33 @@ export const getmeToken = async (userId, token) => {
     return await response.json();
   } catch (err) {
     return console.log(err);
-  }
+  } 
 };
 
 export const processPayment = async (userId, token, paymentInfo) => {
-    try {
+  try {
+    console.log("21");
     const response = await fetch(`${API}/payment/braintree/${userId}`, {
       method: "POST",
-      mode: "no-cors",
-      headers: {
+      headers: { 
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(paymentInfo)
+      body: JSON.stringify(paymentInfo),
     });
-    return response;
+
+    const data = await response.json();
+
+
+    if (data.success) {
+      return { success: true, transaction: data.transaction };
+    } else {
+      return { success: false, error: data.error || data.message };
+    }
   } catch (err) {
-    return console.log(err);
+    console.log("Error:", err);
+    return { success: false, error: "Network or server error. Please try again." };
   }
-}
+};
+

@@ -1,4 +1,5 @@
 const { Order, ProductCart } = require("../models/order");
+const User = require("../models/user");
 const { isAuthenticated, getUserID } = require("./auth");
 
 exports.getOrderById = (req, res, next, id) => {
@@ -16,7 +17,7 @@ exports.getOrderById = (req, res, next, id) => {
 };
 
 exports.createOrder = (req, res) => {
-  
+   
   const order = new Order(req.body.order);
   order.save((err, order) => {
     if (err) {
@@ -25,38 +26,29 @@ exports.createOrder = (req, res) => {
         error: err.message
       });
     }
-    res.json(order);
+    res.json(order); 
   });
 };
 
-exports.getAllOrders = (req, res) => {
-  Order.find()
-    .populate("user", "_id name")
-    .exec((err, order) => {
-      if (err) {
-        return res.status(400).json({
-          error: "No orders found in DB"
-        });
-      }
-      res.json(order);
-    });
+exports.getAllOrders = async(req, res) => {
+  const userId = req.params.userId; // Correctly access userId from route parameters
+  try {
+    const orders = await User.findById( userId )  
+
+    if (orders["purchases"].length === 0) {
+      return res.status(404).json({ error: "No orders found for this user" });
+    } 
+ 
+    return res.json(orders); // Return the orders if found
+  } catch (err) {
+    console.error("Error fetching orders:", err); // Log error for debugging
+    return res.status(500).json({ error: "Something went wrong while fetching orders" });
+  }
 };
+
+
 
 exports.getOrderStatus = (req, res) => {
   res.json(Order.schema.path("status").enumValues);
 };
 
-exports.updateStatus = (req, res) => {
-  Order.update(
-    { _id: req.body.orderId },
-    { $set: { status: req.body.status } },
-    (err, order) => {
-      if (err) {
-        return res.status(400).json({
-          error: "Cannot update order status"
-        });
-      }
-      res.json(order);
-    }
-  );
-};

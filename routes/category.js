@@ -5,14 +5,19 @@ const {getCategoryById, createCategory,showAllCategory, updateCategory} = requir
 const {isSignIn, isAuthenticated, isAdmin} = require("../controllers/auth");
 
 
-
+// Middleware to extract parameters
 router.param("userId", getUserById);
 router.param("categoryId", getCategoryById);
 
 
-
+// Routes
+// Create a new category (Admin only)
 router.post("/category/create/:userId",  isSignIn, isAdmin, createCategory);
+
+// Get all categories
 router.get("/category/show",   showAllCategory);
-router.put("/category/update/:userId/:categoryId",isSignIn, isAdmin, updateCategory )
+
+// Update a category (Admin only)
+router.put("/category/update/:userId/:categoryId",isSignIn,isAuthenticated, isAdmin, updateCategory );
 
 module.exports = router

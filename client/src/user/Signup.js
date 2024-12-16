@@ -84,7 +84,7 @@ const Signup = () => {
         className="alert alert-success"
         style={{ display: success ? "" : "none" }}
       >
-        SignUp Successful.Please <Link to="/signin">Login Here</Link>
+        SignUp Successful.Please <Link to="/user/signin">Login Here</Link>
       </div>
     );
   };

@@ -17,11 +17,10 @@ const ReviewCard = ({ product }) => {
   // Initialize average rating
   useEffect(() => {
     setAverageRating(product?.rating?.average || 0);
-    console.log("products", product)
-
+    getRedirect()
   }, [product?.rating?.average]);
 
-  const getRedirect = () => redirect && <Redirect to="/" />;
+  const getRedirect = () => redirect && <Redirect to="/user/order" />;
 
   const handleRatingSubmit = async (rating) => {
     if (!isAuthenticated()) return;
@@ -29,9 +28,12 @@ const ReviewCard = ({ product }) => {
     setIsSubmitting(true);
     try {
       const response = await updateRating(product._id, user._id, token, rating);
-      if (response?.success) {
+      if (response?.message === "Review added and product updated successfully.") {
         setAverageRating(response.averageRating); // Update average rating from response
         setRedirect(true);
+        window.location.reload();
+
+
       } else {
         console.log("Failed to update rating:", response);
       }

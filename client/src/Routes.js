@@ -25,7 +25,6 @@ const Routes = () => {
         <Route path='/user/signup' exact component={Signup} ></Route>
         <Route path='/user/signin' exact component={Signin} ></Route>
         <Route path='/user/signout' exact component={Signout} ></Route>
-        <Route path="/user/review" exact component={ReviewBoard} />
       
         <AdminRoute path="/admin/dashboard" exact component={AdminDashBoard} />
         <AdminRoute path="/admin/create/category" exact component={AddCategory} />

@@ -33,7 +33,7 @@ router.post(
 router.get(
   "/order/all/:userId",
   authenticateUser,
-  getAllOrders 
+  getAllOrders  
 );  
 
 //status of order

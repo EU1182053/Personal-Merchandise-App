@@ -32,7 +32,7 @@ exports.createReview = async (req, res) => {
     product.rating.average = Math.round(totalRating / product.rating.count);
     await product.save();
 
-    res.json({ message: "Review added and product updated successfully." });
+    return res.json({ message: "Review added and product updated successfully." });
 
   } catch (error) {
     res.status(400).json({
@@ -64,3 +64,16 @@ exports.getAllReviews = (req, res) => {
     });
 };
 
+
+exports.getReviewsByProducts = async (req, res) => {
+  const { productIds } = req.body; // Array of product IDs
+  try {
+    const reviews = await Review.find({ product_id: { $in: productIds } })
+      .populate("user_id", "name") // Populate user info
+      .exec();
+
+    res.json({ reviews });
+  } catch (err) {
+    res.status(400).json({ error: "Failed to fetch reviews" });
+  } 
+};

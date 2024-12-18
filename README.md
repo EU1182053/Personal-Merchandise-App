@@ -109,7 +109,7 @@ Ensure you have the following installed:
 | Method | Endpoint                  | Description                                    |
 |--------|---------------------------|------------------------------------------------|
 | POST   | `/review/create/:userId`   | Create a review for a product (requires authentication) |
-| GET    | `/review/:productId`       | Get all reviews for a specific product (admin only) |
+| GET    | `review/getByProducts`       | Get all reviews which is given by specific user |
 
 ### Product Management
 | Method | Endpoint                        | Description                                        |

@@ -129,7 +129,6 @@ export const updateRating = async (productId, userId, token, ratingValue) => {
       product_id: productId,
       rating_value: ratingValue,
     };
-    console.log("data",data)
     // Making the POST request
     const response = await axios.post(
       `${API}/review/create/${userId}`,

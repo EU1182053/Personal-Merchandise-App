@@ -36,12 +36,11 @@ exports.getAllOrders = async(req, res) => {
     const orders = await User.findById( userId )  
 
     if (orders["purchases"].length === 0) {
-      return res.status(404).json({ error: "No orders found for this user" });
-    } 
+      return res.status(404).json({ purchases: [] });
+    }   
  
     return res.json(orders); // Return the orders if found
   } catch (err) {
-    console.error("Error fetching orders:", err); // Log error for debugging
     return res.status(500).json({ error: "Something went wrong while fetching orders" });
   }
 };

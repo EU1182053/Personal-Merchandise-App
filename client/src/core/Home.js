@@ -25,8 +25,8 @@ const Home = () => {
 
   return (
     <Base title="Home Page" description="Welcome to our T-shirt Store">
-      <div className="row text-center">
-        <h1>All Products</h1>
+      <div className="container">
+        <h1 className="mb-4 text-center">All Products</h1>
         {error && (
           <div className="alert alert-danger">
             <h4>Failed to load products. Please try again later.</h4>

@@ -28,10 +28,10 @@ mongoose
   })
   .catch((error) => {
     console.log("DB stopped working",error );
-  }); 
+  });  
 app.use(bodyParser.json()); 
-app.use(cookieParser()); 
-app.use(cors());
+app.use(cookieParser());  
+app.use(cors()); 
 app.use("/api", authRoute);
 app.use("/api", userRoute);
 app.use("/api", cateRoute);

@@ -21,15 +21,16 @@ const Base = ({
         <div className={className}>{children}</div>
       </div>
       <footer className="footer p-3 ">
-        <div className="col text-center bg-info">  
+        <div className="col text-center">  
           <div className="container-fluid   text-white   py-3 "></div>
           <span className="text-white">
             If you have any problems, reach me at instagram!
           </span>
           <br></br>
-          <a href="https://www.google.com/" className="col-3" style={{"color":"green"}} ><i className="fab fa-instagram fa-2x" ></i></a>
-          <a href="https://www.google.com/" className="col-3" style={{"color":"green"}}><i className="fab fa-linkedin fa-2x" ></i></a>
-          <a href="https://www.google.com/" className="col-3" style={{"color":"green"}}><i className="fab fa-twitter fa-2x" ></i></a>
+          
+          <a href="https://www.google.com/" className="col-3" style={{"color":"purple"}} ><i className="fab fa-instagram fa-2x" ></i></a>
+          <a href="https://www.google.com/" className="col-3" style={{"color":"#74C0FC"}}><i className="fab fa-linkedin fa-2x" ></i></a>
+          <a href="https://www.google.com/" className="col-3" style={{"color":"#74C0FC"}}><i className="fab fa-twitter fa-2x" ></i></a>
           
         </div>
       </footer> 

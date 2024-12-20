@@ -178,61 +178,49 @@ Contributions are welcome! Please follow these steps:
 
 Here are some project outputs - 
 
+Home Page
+![home-page](https://github.com/user-attachments/assets/c4f66d5b-1d39-4177-8406-03997fe7d4e3)
 
 Admin Page
  
-![admin-page](https://user-images.githubusercontent.com/65112935/235117532-f1aac853-d675-481f-a533-e9437facd29a.png)
+![admin-page]![admin-page](https://github.com/user-attachments/assets/58e1a2a2-a3ec-4e88-af2e-f010460c22dd)
+
 
 create category
 
-![create_category](https://user-images.githubusercontent.com/65112935/235117610-6f45b616-d8e0-4543-8bf2-5ee51c4c2192.png)
+![create_category](https://github.com/user-attachments/assets/67242a52-9b07-4dc7-88a9-b373f438347c)
+
 
 
 
 create Product
 
-![create_product](https://user-images.githubusercontent.com/65112935/235117713-5e6727a0-7db4-45ce-a471-fb087cd9b498.png)
+![create_product](https://github.com/user-attachments/assets/ade432d6-9477-4feb-87ff-2e9a2487fdaf)
+
 
 
 review any product
+![review_product](https://github.com/user-attachments/assets/0041d9d8-41a3-41b2-8af3-5a18d309738d)
 
-![review-page](https://user-images.githubusercontent.com/65112935/235117798-eba2f991-07dd-48d4-bb46-f75e8d592b9e.png)
+
 
 sign in and sign up page
 
 ![sign-in page](https://user-images.githubusercontent.com/65112935/235117853-fe73566e-463a-4aa3-970c-241b09871848.png)
 ![signup-page](https://user-images.githubusercontent.com/65112935/235117898-c03e57fb-57cf-4ace-a376-2eb7be0a622f.png)
 
+order details page
+
+![order_details](https://github.com/user-attachments/assets/211947c3-477e-4cdc-ad2c-799bdda69a3d)
+
+Edit product
+![edit_product](https://github.com/user-attachments/assets/bb72bdcd-e5ab-47c7-ab26-c8b5452a2f16)
+
+Cart Page 
+![cart-page](https://github.com/user-attachments/assets/5a5be795-dee8-4098-9fa7-f7667c6f2a17)
 
 
 In terms of future tasks, there are a few items to consider. Firstly, implementing a category-based filtering system for products is a priority. Additionally, setting up a system to receive product updates via email would be beneficial. Finally, deploying the system on a server is also necessary for its continued development and availability.
 Here are some project outputs - 
 
 
-Admin Page
- 
-![admin-page](https://user-images.githubusercontent.com/65112935/235117532-f1aac853-d675-481f-a533-e9437facd29a.png)
-
-create category
-
-![create_category](https://user-images.githubusercontent.com/65112935/235117610-6f45b616-d8e0-4543-8bf2-5ee51c4c2192.png)
-
-
-
-create Product
-
-![create_product](https://user-images.githubusercontent.com/65112935/235117713-5e6727a0-7db4-45ce-a471-fb087cd9b498.png)
-
-
-review any product
-
-![review-page](https://user-images.githubusercontent.com/65112935/235117798-eba2f991-07dd-48d4-bb46-f75e8d592b9e.png)
-
-sign in and sign up page
-
-![sign-in page](https://user-images.githubusercontent.com/65112935/235117853-fe73566e-463a-4aa3-970c-241b09871848.png)
-![signup-page](https://user-images.githubusercontent.com/65112935/235117898-c03e57fb-57cf-4ace-a376-2eb7be0a622f.png)
-
-
-
-In terms of future tasks, there are a few items to consider. Firstly, implementing a category-based filtering system for products is a priority. Additionally, setting up a system to receive product updates via email would be beneficial. Finally, deploying the system on a server is also necessary for its continued development and availability.

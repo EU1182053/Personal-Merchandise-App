@@ -11,7 +11,7 @@ const adminMiddleware = [isAuthenticated, isAdmin];
 router.param('userId', getUserById)
 router.post("/review/create/:userId",  authenticateUser, createReview);
 
-
+// step 8
 router.post("/review/getByProducts", authenticateUser, getReviewsByProducts);
 
 module.exports = router;

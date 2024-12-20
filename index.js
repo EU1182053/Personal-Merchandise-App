@@ -31,7 +31,7 @@ mongoose
   });  
 app.use(bodyParser.json()); 
 app.use(cookieParser());  
-app.use(cors()); 
+app.use(cors());  
 app.use("/api", authRoute);
 app.use("/api", userRoute);
 app.use("/api", cateRoute);

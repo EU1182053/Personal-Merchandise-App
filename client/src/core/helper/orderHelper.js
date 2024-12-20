@@ -21,6 +21,7 @@ export const createOrder = async (userId, token, orderData) => {
   }
 };
 
+// step 2
 export const getAllOrders = async (userId, token) => {
   try {
     // Make a GET request to the server to fetch all orders for the user

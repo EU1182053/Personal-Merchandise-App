@@ -17,18 +17,22 @@ const Order = () => {
   useEffect(() => {
     const fetchOrdersAndReviews = async () => {
       try {
+        // step 1
         const orderData = await getAllOrders(user._id, token);
 
+        // step 5
         if (orderData["purchases"].length > 0) {
 
 
           // Extract product IDs from orders
           const productIds = orderData.purchases.map((order) => order._id);
 
+          // step 6
           // Fetch reviews for all product IDs
           const reviewData = await getReviewsByProducts(productIds, token);
 
 
+          // step 10
           // Filter reviews based on the logged-in user's ID
           const userReviews = reviewData.reviews.filter(
             (review) => review.user_id._id === user._id
@@ -44,6 +48,7 @@ const Order = () => {
 
           setOrders(orderData.purchases);
 
+          // step 11
           setReviews(reviewMap);
         }
         else {

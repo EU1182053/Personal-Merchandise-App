@@ -64,7 +64,7 @@ exports.getAllReviews = (req, res) => {
     });
 };
 
-
+// step 9
 exports.getReviewsByProducts = async (req, res) => {
   const { productIds } = req.body; // Array of product IDs
   try {

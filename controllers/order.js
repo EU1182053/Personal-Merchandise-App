@@ -30,6 +30,8 @@ exports.createOrder = (req, res) => {
   });
 };
 
+
+// step 4
 exports.getAllOrders = async(req, res) => {
   const userId = req.params.userId; // Correctly access userId from route parameters
   try {

@@ -30,7 +30,7 @@ const Order = () => {
           // step 6
           // Fetch reviews for all product IDs
           const reviewData = await getReviewsByProducts(productIds, token);
-
+          console.log("re", reviewData)
 
           // step 10
           // Filter reviews based on the logged-in user's ID
@@ -45,7 +45,7 @@ const Order = () => {
             acc[review.product_id].push(review);
             return acc;
           }, {});
-
+ 
           setOrders(orderData.purchases);
 
           // step 11
@@ -79,6 +79,7 @@ const Order = () => {
             {orders.map((order, index) => (
               <div className="col-md-6 mb-3" key={order._id}>
                 < ReviewCard product={order} />
+                
                 <div className="card bg-dark border border-info">
                   <div className="card-header lead">Order: {order._id}</div>
                   <div className="card-body">

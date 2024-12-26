@@ -13,7 +13,7 @@ export const getAllReviews = async () => {
 // Fetch reviews for multiple product IDs
 export const getReviewsByProducts = async (productIds, token) => {
   try {
-    const response = await fetch(`${API}/getReviewsByProducts`, {
+    const response = await fetch(`${API}/review/getByProducts`, {
       method: "POST",
       headers: {
         Accept: "application/json",

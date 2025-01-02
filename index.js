@@ -16,8 +16,9 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const path = require("path");
 const cors = require("cors");
+const config = require("./config");
 mongoose
-  .connect(process.env.MONGO_URI, {
+  .connect(config.database.uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
@@ -43,7 +44,7 @@ app.use("/api", reviewRoute);
 // ... other app.use middleware
 app.use(express.static(path.join(__dirname, "client", "build")));
  
-const port = process.env.PORT; 
+const port = config.app.port; 
 app.get("/", (req, res) => res.send("hello there"));
 
 // Right before your app.listen(), add this:

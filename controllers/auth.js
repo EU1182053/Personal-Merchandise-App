@@ -5,7 +5,8 @@ var jwt = require("jsonwebtoken");
 var expressJwt = require("express-jwt");
 var jwt_deocde = require("jwt-decode");
 const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const config = require("../config");
+sgMail.setApiKey(config.email.sendgridApiKey);
 
 exports.signup = (req, res) => {
   const errors = validationResult(req);
@@ -66,7 +67,7 @@ exports.signin = (req, res) => {
     }
 
     // creating a token
-    var token = jwt.sign({ _id: user._id }, process.env.SECRET);
+    var token = jwt.sign({ _id: user._id }, config.app.secret);
 
     //put token in cookie
     res.cookie("token", token, { expire: new Date() + 9999 });
@@ -82,7 +83,7 @@ exports.signin = (req, res) => {
 
 //protected route
 exports.isSignIn = expressJwt({
-  secret: process.env.SECRET,
+  secret: config.app.secret,
   userProperty: "auth",
 });
 
@@ -165,7 +166,7 @@ exports.requestPasswordRecovery = async (req, res) => {
     
     const mailOptions = {
       to: user.email,
-      from: process.env.FROM_EMAIL,
+      from: config.email.from,
       subject: "Password change request",
       text: `Hi ${user.name} \n 
             Please click on the following link ${resetLink} to reset your password. \n\n 

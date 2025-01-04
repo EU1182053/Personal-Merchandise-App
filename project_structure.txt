@@ -1,0 +1,31 @@
+mern-app/
+├── client/               # React frontend application
+│   ├── build/            # Production build files
+│   ├── node_modules/     # Frontend dependencies installed via npm
+│   ├── public/           # Static files (e.g., index.html, favicon.ico)
+│   ├── src/              # React app source code
+│   │   ├── admin/        # Admin-related components or logic
+│   │   ├── auth/         # Authentication-related components or logic
+│   │   ├── core/         # Core reusable components or logic
+│   │   ├── assets/      #  T-shirts, Icons 
+│   │   ├── user/         # User-related components or logic
+│   │   ├── App.js        # Main React component managing routes and structure
+│   │   ├── backend.js    # Backend API configuration or utility functions
+│   │   ├── index.js      # Entry point for rendering React DOM
+│   │   ├── Routes.js     # Centralized route definitions for the app
+│   │   └── styles.css    # Global CSS for the app
+│   ├── package-lock.json # Locked versions of frontend dependencies
+│   ├── package.json      # Frontend dependencies and scripts
+│   └── .env              # Frontend environment variables
+├── config/               # Backend configuration files (e.g., database)
+├── controllers/          # Business logic for backend routes
+├── models/               # Database schemas and models (MongoDB)
+├── node_modules/         # Backend dependencies installed via npm
+├── routes/               # API route definitions
+├── .env                  # Backend environment variables
+├── .gitignore            # Files to exclude from Git
+├── index.js              # Backend entry point (server setup)
+├── package-lock.json     # Locked versions of backend dependencies
+├── package.json          # Backend dependencies and scripts
+├── project_structure.pdf # Documentation of the project structure
+└── README.md             # Project documentation

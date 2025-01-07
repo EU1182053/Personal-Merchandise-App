@@ -41,17 +41,5 @@ router.post("/user/signup", validateSignup, handleValidationErrors, signup);
 router.post("/user/signin", validateSignin, handleValidationErrors, signin);
 router.get("/user/signout", signout);
 
-// Test route
-router.get("/user/testroute", isSignIn, isAuthenticated, (req, res) => {
-  res.json({
-    message: "Test route works successfully",
-    user: req.auth,
-  });
-});
-
-// Basic API page
-router.get("/user", (req, res) => {
-  res.json({ message: "API is working" });
-});
 
 module.exports = router;

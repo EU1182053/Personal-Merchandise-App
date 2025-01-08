@@ -8,35 +8,31 @@ const sgMail = require('@sendgrid/mail');
 const config = require("../config");
 sgMail.setApiKey(config.email.sendgridApiKey);
 
-exports.signup = (req, res) => {
+exports.signup = async (req, res) => {
+  // Validate request
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.json({ Error: errors.array()[0].msg });
+    return res.status(422).json({ error: errors.array()[0].msg });
   }
 
+  try {
+    const { email, name, password } = req.body;
 
-  var email = req.body.email;
-
-  User.findOne({ email }, (err, user) => {
-    if (err || !user) {
-      const user = new User(req.body);
-      user.save((err, user) => {
-        if (err) {
-          return res.status(400).json({
-            Message: err.message,
-          });
-        }
-        res.json(user);
-      });
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: "Email already exists" });
     }
-    else {
-      return res.status(400).json({
-        Message: "Email exists",
-      });
-    }
-  })
 
-  // res.send('signup works')
+    // Create new user
+    const user = new User({ name, email, password });
+    await user.save();
+
+    res.status(200).json({ message: "User signed up successfully" });
+  } catch (error) {
+    // Handle any unexpected errors
+    res.status(500).json({ error: "An error occurred during signup" });
+  }
 };
 
 exports.signout = (req, res) => {

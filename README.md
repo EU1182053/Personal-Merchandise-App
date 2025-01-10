@@ -7,8 +7,9 @@
 3. [Technologies Used](#technologies-used)
 4. [Installation](#installation)
 5. [API Endpoints](#api-endpoints)
-6. [Contributing](#contributing)
-7. [License](#license)
+6. [Testing](#testing)
+7. [Contributing](#contributing)
+8. [License](#license)
 
 # Introduction
 An e-commerce platform built using the MERN stack (MongoDB, Express, React, Node.js). This app allows users to browse products, add them to their cart, and make purchases. It also includes user authentication, product management, and order tracking features for admins.
@@ -153,7 +154,11 @@ Ensure you have the following installed:
 | `GET`  | `/testroute`        | Test route to check authentication (requires sign-in) |
 | `GET`  | `/`                 | API home page (basic route for testing)               |
 
-
+## Testing
+**Run Test Cases**:
+    ```bash
+    npm test
+    ```
 ## Contributing
 
 Contributions are welcome! Please follow these steps:

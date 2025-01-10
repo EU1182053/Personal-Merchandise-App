@@ -37,9 +37,10 @@ exports.signup = async (req, res) => {
 
 exports.signout = (req, res) => {
   res.clearCookie("token");
-  res.json({
-    message: "User signout successful",
-  });
+  res.status(200).json(
+    {
+      message: "User signout successful",
+    });
 };
 
 exports.signin = (req, res) => {
@@ -51,13 +52,13 @@ exports.signin = (req, res) => {
   }
   User.findOne({ email }, (err, user) => {
     if (err || !user) {
-      return res.json({
+      return res.status(404).json({
         error: "User does not exists",
       });
     }
 
     if (!user.authenticate(password)) {
-      return res.json({
+      return res.status(401).json({
         error: "password does not match.",
       });
     }
@@ -69,10 +70,10 @@ exports.signin = (req, res) => {
     res.cookie("token", token, { expire: new Date() + 9999 });
 
     // send response to front end
-    const { _id, name, email, role } = user;
-    return res.json({
+    return res.status(200).json({
       token,
       user: user,
+      message: "User signed in successfully"
     });
   });
 };
@@ -95,7 +96,7 @@ exports.getUserID = (req, res) => {
   return jwt_token._id
 }
 
-exports.isAuthenticated = async(req, res, next) => {
+exports.isAuthenticated = async (req, res, next) => {
   try {
     // Check if the authorization header exists
     if (!req.headers.authorization) {
@@ -108,7 +109,7 @@ exports.isAuthenticated = async(req, res, next) => {
     // Decode the token
     const decoded = jwt.decode(token); // Or verify if needed (jwt.verify)
 
-    
+
 
     // Check if the user exists in the database
     const user = await User.findById(decoded._id);
@@ -154,12 +155,12 @@ exports.requestPasswordRecovery = async (req, res) => {
     user.generatePasswordReset();
     // Save the updated user object
 
-    await user.save(); 
+    await user.save();
 
     // Construct reset link
     const protocol = req.protocol; // 'http' or 'https'
     const resetLink = `${protocol}://localhost:3000/user/newPassword?token=${user.resetPasswordToken}`;
-    
+
     const mailOptions = {
       to: user.email,
       from: config.email.from,
@@ -167,19 +168,19 @@ exports.requestPasswordRecovery = async (req, res) => {
       text: `Hi ${user.name} \n 
             Please click on the following link ${resetLink} to reset your password. \n\n 
             If you did not request this, please ignore this email and your password will remain unchanged.\n`,
-    } 
+    }
 
     await sgMail.send(mailOptions);
     return res.status(200).json({
       message: `A reset email has been sent to ${user.email}.`,
       resetLink: resetLink,
-      resetPasswordToken:user.resetPasswordToken,
+      resetPasswordToken: user.resetPasswordToken,
       recoveruser: { id: user._id, email: user.email }, // Avoid exposing sensitive data
     });
   } catch (error) {
     console.error("Password recovery error:", error);
-    return res.status(500).json({ 
-      message: "An error occurred. Please try again later." 
+    return res.status(500).json({
+      message: "An error occurred. Please try again later."
     });
   }
 
@@ -206,13 +207,13 @@ exports.validateResetToken = (req, res, next) => {
 };
 
 exports.updatePassword = (req, res) => {
-  User.findOne({ 
-    resetPasswordToken: req.params.token, 
-    resetPasswordExpires: { $gt: Date.now() } 
+  User.findOne({
+    resetPasswordToken: req.params.token,
+    resetPasswordExpires: { $gt: Date.now() }
   })
     .then((user) => {
-      if (!user) return res.status(401).json({ 
-        message: 'Password reset token is invalid or has expired.' 
+      if (!user) return res.status(401).json({
+        message: 'Password reset token is invalid or has expired.'
       });
 
       //Set the new password
@@ -222,14 +223,14 @@ exports.updatePassword = (req, res) => {
 
       // Save
       user.save((err) => {
-        if (err) return res.status(500).json({ 
-          message: err.message 
+        if (err) return res.status(500).json({
+          message: err.message
         });
 
-  
-        return res.status(200).json({ 
-          message: 'Your password has been updated.', 
-          ResetPasswordUser: user 
+
+        return res.status(200).json({
+          message: 'Your password has been updated.',
+          ResetPasswordUser: user
         });
         // });
 

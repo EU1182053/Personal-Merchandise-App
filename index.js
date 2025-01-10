@@ -63,6 +63,7 @@ app.use((err, req, res, next) => {
 
 // Start the server
 const port = config.app.port;
+
 const server = app.listen(port, () => {
   console.log(`🚀 Server is running on port ${port}`);
 });

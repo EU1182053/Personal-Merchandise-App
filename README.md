@@ -156,9 +156,10 @@ Ensure you have the following installed:
 
 ## Testing
 **Run Test Cases**:
-    ```bash
-    npm test
+ ```bash
+   npm test
     ```
+   
 ## Contributing
 
 Contributions are welcome! Please follow these steps:
@@ -170,7 +171,7 @@ Contributions are welcome! Please follow these steps:
    ```
 3. **Commit your changes:**
    ```bash
-   git commit -m 'Add feature
+   git commit -m 'Add feature'
    ```
 4. **Push to the branch**
    ```bash

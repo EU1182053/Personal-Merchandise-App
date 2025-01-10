@@ -155,6 +155,7 @@ Ensure you have the following installed:
 | `GET`  | `/`                 | API home page (basic route for testing)               |
 
 ## Testing
+Make sure server is stopped.
 **Run Test Cases**:
  ```bash
    npm test

@@ -5,7 +5,7 @@ const User = require('../models/user');
 const Category = require('../models/category');
 
 describe('Category Routes', () => {
-    let adminUser, userToken, categoryId;
+    let adminUser, userToken, categoryId, adminId;
     beforeAll(async () => {
         //create a admin user for testing
         const admin = new User({
@@ -25,7 +25,15 @@ describe('Category Routes', () => {
             });
 
         userToken = res.body.token;
+        adminId = res.body.user._id;
 
+
+         // Create a category
+         const category = new Category({
+            name: 'Old Category Name',
+        });
+        const savedCategory = await category.save();
+        categoryId = savedCategory._id;
 
 
     });
@@ -41,12 +49,36 @@ describe('Category Routes', () => {
         expect(res.body.savedCategory).toHaveProperty('name', 'Category');
 
         // Cleanup: Delete the created category
-        categoryId = res.body.savedCategory._id;
-        await Category.findByIdAndDelete(categoryId);
+        await Category.findByIdAndDelete(res.body.savedCategory._id);
     })
-    
+    it('should list all categories', async () => {
+        const res = await request(server)
+            .get('/api/category/show')
+
+        expect(res.status).toBe(200);
+
+        expect(res.body).toHaveProperty("categories");
+
+        expect(Array.isArray(res.body.categories)).toBe(true);
+
+    });
+
+    it('should update a category', async () => {
+        const res = await request(server)
+            .put(`/api/category/update/${adminId}/${categoryId}`)
+            .set('Authorization', `Bearer ${userToken}`)
+            .send({
+                name: 'Updated Category Name',
+            });
+
+        // Check the response
+        expect(res.status).toBe(200);
+        expect(res.body).toHaveProperty("updatedCategory");
+        expect(res.body.updatedCategory).toHaveProperty('name', 'Updated Category Name');
+    });
     /// Cleanup
     afterAll(async () => {
+        await Category.deleteOne({ _id: categoryId });
         await User.deleteMany({
             email: { $in: [adminUser.email] },
         });

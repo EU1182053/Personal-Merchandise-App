@@ -2,56 +2,61 @@ const category = require("../models/category");
 const Category = require("../models/category");
 
 exports.getCategoryById = (req, res, next, id) => {
-  Category.findById(id).exec((err, cate) => {
+  Category.findById(id).exec((err, category) => {
     if (err) {
-      return res.json({
+      return res.status(404).json({
         error: "Not Found",
       });
     }
 
-    req.profile = cate;
+    req.profile = category;
     next();
   });
 };
+
+// create a new category
 exports.createCategory = (req, res) => {
   const category = new Category(req.body);
-  category.save((err, category) => {
+
+  category.save((err, savedCategory) => {
     if (err) {
       return res.status(400).json({
-        err: "category stopped",
+        error: "Failed to create category",
       });
     }
-    return res.json(category);
+    return res.status(200).json({"savedCategory":savedCategory});
   });
 };
 
+// update a category
 exports.updateCategory = (req, res) => {
   Category.findByIdAndUpdate(
     {_id: req.profile._id},
     {$set: req.body},
     {new: true},
-    (err, cate) => {
+    (err, updatedCategory) => {
       if(err){
-        return res.json({
-          error:"Getting error while updating"
+        return res.status(400).json({
+          error:"Failed to update category"
         })
 
       }
-      return res.json(cate)
+      return res.status(200).json({"updatedCategory":updatedCategory})
     }
   )
 }
 
+// Fetch all categories
 exports.showAllCategory = (req, res) => {
   
   Category.find().exec(
-  (err, category) => {
-  if(err || !category){ 
-    return res.json({ 
-      error:"Categories are absent"
+  (err, categories) => {
+  if(err || !categories.length){ 
+    return res.status(404).json({ 
+      error:"No categories found"
     })
   }
-  return res.json(category)
+  return res.status(200).json({"categories": categories});
 })
 }
 

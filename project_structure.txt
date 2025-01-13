@@ -22,6 +22,7 @@ mern-app/
 ├── models/               # Database schemas and models (MongoDB)
 ├── node_modules/         # Backend dependencies installed via npm
 ├── routes/               # API route definitions
+├── tests/                # Test Cases
 ├── .env                  # Backend environment variables
 ├── .gitignore            # Files to exclude from Git
 ├── index.js              # Backend entry point (server setup)

@@ -76,10 +76,11 @@ Ensure you have the following installed:
 6. Set up environment variables:
     - Create a `.env` file in both the root and client directories.
     - Add necessary configurations like:
-        - **MONGO_URI**: MongoDB connection string
         - **JWT_SECRET**: Secret key for JWT authentication
-        - **PORT**: Port for the backend server
         - **SENDGRID_API_KEY**, **FROM_EMAIL** for email service
+        - `MONGO_URI=mongodb://localhost:27017/test`
+        - `PORT=8000`
+        - `NODE_ENV=development`
      
     - **Client-side (.env)**: Add the following configuration:
         - `REACT_APP_BACKEND=http://localhost:8000/api` (URL of the backend server)
@@ -156,8 +157,6 @@ Ensure you have the following installed:
 
 ## Testing
 Make sure server is stopped.
-Edit .env file:
-NODE_ENV=test
 **Run Test Cases**:
  ```bash
    npx jest --detectOpenHandles --runInBand

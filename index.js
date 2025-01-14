@@ -64,9 +64,11 @@ app.use((err, req, res, next) => {
 // Start the server
 const port = config.app.port;
 
-const server = app.listen(port, () => {
-  console.log(`🚀 Server is running on port ${port}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => {
+    console.log(`🚀 Server is running on port ${port}`);
+  });
+}
 
 // Export the server instance
-module.exports = server;  // export `server`, not just `app`
+module.exports = app;  // export `app`

@@ -1,5 +1,5 @@
 const request = require('supertest');
-const server = require('../index');  // Import your Express app
+const app = require('../index');  // Import your Express app
 const mongoose = require('mongoose');
 const User = require('../models/user');
 
@@ -21,7 +21,7 @@ describe('Auth Routes', () => {
 
   /// Signup Tests
   it('should sign up a new user', async () => {
-    const res = await request(server)
+    const res = await request(app)
       .post('/api/user/signup')
       .send(testUser);
 
@@ -34,7 +34,7 @@ describe('Auth Routes', () => {
   });
 
   it('should fail to sign up a user with missing fields', async () => {
-    const res = await request(server)
+    const res = await request(app)
       .post('/api/user/signup')
       .send({
         email: 'userTest2@gmail.com',
@@ -55,7 +55,7 @@ describe('Auth Routes', () => {
   });
 
   it('should sign in an existing user', async () => {
-    const res = await request(server)
+    const res = await request(app)
       .post('/api/user/signin')
       .send({
         email: signinUser.email,
@@ -67,7 +67,7 @@ describe('Auth Routes', () => {
   });
 
   it('should return 401 if password does not match', async () => {
-    const res = await request(server)
+    const res = await request(app)
       .post('/api/user/signin')
       .send({
         email: signinUser.email,
@@ -79,7 +79,7 @@ describe('Auth Routes', () => {
   });
 
   it('should return 404 if user does not exist', async () => {
-    const res = await request(server)
+    const res = await request(app)
       .post('/api/user/signin')
       .send({
         email: 'nonexistent@gmail.com',
@@ -92,7 +92,7 @@ describe('Auth Routes', () => {
 
   /// Signout Test
   it('should sign out a user successfully', async () => {
-    const signinRes = await request(server)
+    const signinRes = await request(app)
       .post('/api/user/signin')
       .send({
         email: signinUser.email,
@@ -101,7 +101,7 @@ describe('Auth Routes', () => {
 
     const cookie = signinRes.headers['set-cookie'][0]; // Extract token cookie
 
-    const res = await request(server)
+    const res = await request(app)
       .get('/api/user/signout')
       .set('Cookie', cookie); // Send the token in the request
 
@@ -114,7 +114,8 @@ describe('Auth Routes', () => {
     await User.deleteMany({
       email: { $in: [testUser.email, signinUser.email] },
     });
-    server.close();
-    mongoose.connection.close();
+    mongoose.disconnect();
+    // app.close();
+    // mongoose.connection.close();
   });
 });

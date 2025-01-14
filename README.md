@@ -156,9 +156,11 @@ Ensure you have the following installed:
 
 ## Testing
 Make sure server is stopped.
+Edit .env file:
+NODE_ENV=test
 **Run Test Cases**:
  ```bash
-   npm test
+   npx jest --detectOpenHandles --runInBand
  ```
    
 ## Contributing

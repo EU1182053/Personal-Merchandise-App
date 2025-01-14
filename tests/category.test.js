@@ -1,5 +1,5 @@
 const request = require('supertest');
-const server = require('../index');  // Import your Express app
+const app = require('../index');  // Import your Express app
 const mongoose = require('mongoose');
 const User = require('../models/user');
 const Category = require('../models/category');
@@ -17,7 +17,7 @@ describe('Category Routes', () => {
         adminUser = await admin.save();
 
         // Simulate admin sign-in to get token
-        const res = await request(server)
+        const res = await request(app)
             .post('/api/user/signin')
             .send({
                 email: 'admin@example.com',
@@ -39,7 +39,7 @@ describe('Category Routes', () => {
     });
 
     it('should create a new category', async () => {
-        const res = await request(server)
+        const res = await request(app)
             .post(`/api/category/create/${adminUser._id}`)
             .set('Authorization', `Bearer ${userToken}`)
             .send({ name: 'Category' });
@@ -52,7 +52,7 @@ describe('Category Routes', () => {
         await Category.findByIdAndDelete(res.body.savedCategory._id);
     })
     it('should list all categories', async () => {
-        const res = await request(server)
+        const res = await request(app)
             .get('/api/category/show')
 
         expect(res.status).toBe(200);
@@ -64,7 +64,7 @@ describe('Category Routes', () => {
     });
 
     it('should update a category', async () => {
-        const res = await request(server)
+        const res = await request(app)
             .put(`/api/category/update/${adminId}/${categoryId}`)
             .set('Authorization', `Bearer ${userToken}`)
             .send({
@@ -82,7 +82,6 @@ describe('Category Routes', () => {
         await User.deleteMany({
             email: { $in: [adminUser.email] },
         });
-        server.close();
         mongoose.connection.close();
     });
 });

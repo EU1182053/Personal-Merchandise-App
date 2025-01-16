@@ -11,7 +11,7 @@ describe('Category Routes', () => {
         //create a admin user for testing
         const admin = new User({
             name: 'Admin User',
-            email: 'admin@example.com',
+            email: 'admin@gmail.com',
             password: 'admin123',
             role: 1, // Role 1 = Admin
         });
@@ -21,7 +21,7 @@ describe('Category Routes', () => {
         const res = await request(app)
             .post('/api/user/signin')
             .send({
-                email: 'admin@example.com',
+                email: 'admin@gmail.com',
                 password: 'admin123',
             });
 
@@ -79,10 +79,8 @@ describe('Category Routes', () => {
     });
     /// Cleanup
     afterAll(async () => {
-        await Category.deleteOne({ _id: categoryId });
-        await User.deleteMany({
-            email: { $in: [adminUser.email] },
-        });
-        mongoose.disconnect();
+        await User.deleteMany({});
+        await Category.deleteMany({});
+        mongoose.connection.close();
     });
 });

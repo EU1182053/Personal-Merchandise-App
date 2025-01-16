@@ -3,7 +3,7 @@ const User = require("../models/user");
 const { validationResult } = require("express-validator");
 var jwt = require("jsonwebtoken");
 var expressJwt = require("express-jwt");
-var jwt_deocde = require("jwt-decode");
+var jwt_decode = require("jwt-decode");
 const sgMail = require('@sendgrid/mail');
 const config = require("../config");
 sgMail.setApiKey(config.email.sendgridApiKey);
@@ -92,7 +92,7 @@ exports.getUserID = (req, res) => {
   jwt_token = req.headers.authorization.split(' ')[1]
   console.log(jwt_token)
 
-  jwt_token = jwt_deocde(jwt_token)
+  jwt_token = jwt_decode(jwt_token)
   return jwt_token._id
 }
 
@@ -124,22 +124,46 @@ exports.isAuthenticated = async (req, res, next) => {
     next();
   } catch (err) {
     // Catch any other errors
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ error: err, message:"isAuthenticated middleware error" });
   }
 }
 
 exports.isAdmin = (req, res, next) => {
-  let jwt_token = req.headers.authorization.split(' ')[1]
-  // console.log(jwt_token);
-  jwt_token = jwt_deocde(jwt_token)
-  User.findById(jwt_token, (err, data) => {
-    if (err || data.role !== 1) {
-      return res.json({
-        error: data
-      })
+  try {
+    const jwt_token = req.headers.authorization.split(' ')[1];
+
+    if (!jwt_token) {
+      return res.status(400).json({
+        error: 'Authorization token is missing',
+      });
     }
-    next()
-  })
+
+    const decodedToken = jwt_decode(jwt_token); // Decode the JWT token
+    console.log(decodedToken)
+    const userId = decodedToken._id; // Assuming the token contains an id
+
+    User.findById(userId, (err, user) => {
+      if (err || !user) {
+        return res.status(500).json({
+          error: 'User not found or error fetching user',
+        });
+      }
+
+      if (user.role !== 1) {
+        return res.status(403).json({
+          error: 'You are not authorized to perform this action',
+        });
+      }
+
+      // If the user is an admin, allow the request to continue
+      next();
+    });
+  } catch (err) {
+    console.error('Error in isAdmin middleware:', err);
+    return res.status(500).json({
+      error: 'Failed to authenticate token or decode user',
+    });
+  }
 };
 
 exports.requestPasswordRecovery = async (req, res) => {

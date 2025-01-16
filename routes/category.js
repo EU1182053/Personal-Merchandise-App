@@ -15,7 +15,7 @@ router.param("categoryId", getCategoryById);
 
 // Routes
 // Create a new category (Admin only)
-router.post("/category/create/:userId",  isSignIn, isAdmin, createCategory);
+router.post("/category/create/:userId",  isAdmin, createCategory);
 
 // Get all categories
 router.get("/category/show",   showAllCategory);

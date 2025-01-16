@@ -37,7 +37,7 @@ const validateSignin = [
 ];
 
 // Routes
-router.post("/user/signup", validateSignup, handleValidationErrors, signup);
+router.post("/user/signup",validateSignup, handleValidationErrors, signup);
 router.post("/user/signin", validateSignin, handleValidationErrors, signin);
 router.get("/user/signout", signout);
 

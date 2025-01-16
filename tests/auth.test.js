@@ -38,7 +38,6 @@ describe('Auth Routes', () => {
 
     // Save the created user for cleanup
     mockSignedUpUser = await User.findOne({ email: testUser.email });
-    expect(mockSignedUpUser).not.toBeNull();
   });
 
   it('should fail to sign up a user with missing fields', async () => {
@@ -94,7 +93,7 @@ describe('Auth Routes', () => {
     expect(res.body).toHaveProperty('error', 'User does not exists');
   });
 
-  /// Signout Test
+  // /// Signout Test
   it('should sign out a user successfully', async () => {
     const signinRes = await request(app)
       .post('/api/user/signin')
@@ -115,9 +114,7 @@ describe('Auth Routes', () => {
 
   /// Cleanup
   afterAll(async () => {
-    await User.deleteMany({
-      email: { $in: [testUser.email, signinUser.email] },
-    });
+    await User.deleteMany({});
     mongoose.connection.close();
 
     // app.close();

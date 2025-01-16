@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon index.js",
     "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build", 
-    "test": "jest"
+    "test": "NODE_ENV=test jest"
   },
   "keywords": [],
   "author": "",
@@ -35,9 +35,6 @@
   },
   "engines": {
     "node": "10.19.0"
-  },
-  "devDependencies": {
-    "jest": "^29.7.0",
-    "supertest": "^7.0.0"
   }
+ 
 }

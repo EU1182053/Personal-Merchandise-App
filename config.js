@@ -13,6 +13,9 @@ const config = {
     email:{
         from: process.env.FROM_EMAIL,
         sendgridApiKey: process.env.SENDGRID_API_KEY
+    },
+    token:{
+        validAdminJwtToken:process.env.validAdminJwtToken
     }
 }
 

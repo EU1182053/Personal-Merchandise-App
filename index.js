@@ -9,7 +9,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const config = require("./config");
 
-// Import routes
+// Import routes 
 const authRoute = require("./routes/auth");
 const userRoute = require("./routes/user");
 const cateRoute = require("./routes/category");
@@ -23,12 +23,7 @@ const app = express();
 let db_uri;
 
 // Load environment variables based on the environment
-if (process.env.NODE_ENV === 'test') {
-  db_uri = config.database.uri_test
-} else {
-  db_uri = config.database.uri_dev
-
-}
+db_uri = process.env.NODE_ENV === 'test' ? config.database.uri_test : config.database.uri_dev;
 
 // Connect to MongoDB
 mongoose
@@ -38,10 +33,10 @@ mongoose
     useCreateIndex: true,
     useFindAndModify: false,
   })
-  .then(() => console.log(`✅ Database connection successful with ${db_uri} environment`))
+  .then(() => console.log(`✅ Connected to database (${process.env.NODE_ENV} environment)`))
   .catch((error) => {
-    console.log("❌ Database connection error:", error);
-    process.exit(1); // Exit the app if the database connection fails
+    console.error("❌ Database connection error:", error);
+    process.exit(1);
   });
 
 // Middleware
@@ -58,10 +53,22 @@ app.use("/api", paymentRoute);
 app.use("/api", orderRoute);
 app.use("/api", reviewRoute);
 
+// Handle unknown routes
+app.use((req, res) => {
+  res.status(404).json({ error: "Route not found" });
+});
+
 // Error handling for uncaught routes or exceptions
 app.use((err, req, res, next) => {
   console.error("Unexpected error:", err);
   res.status(500).json({ error: "An unexpected error occurred" });
+});
+
+// Graceful shutdown
+process.on("SIGINT", async () => {
+  console.log("Shutting down gracefully...");
+  await mongoose.connection.close();
+  process.exit(0);
 });
 
 // Start the server
@@ -73,6 +80,4 @@ if (process.env.NODE_ENV !== 'test') {
   });
 }
 
-
-// Export the server instance
-module.exports = app;  // export `app`
+module.exports = app;

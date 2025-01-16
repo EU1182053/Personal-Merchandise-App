@@ -6,7 +6,7 @@ exports.getUserById = (req, res, next, id) => {
   User.findById(id).exec((err, user) => {
     if (err || !user) {
       return res.json({
-        error: "Not Found",
+        error: "User Not Found",
       });
     }
 

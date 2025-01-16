@@ -9,7 +9,7 @@ exports.getProductById = (req, res, next, id) => {
     .exec((err, product) => {
       if (err) {
         return res.json({
-          error: "Not Found",
+          error: "Product Not Found",
         }); 
       }
 
@@ -134,7 +134,8 @@ exports.updateStock = (req, res, next) => {
   Product.bulkWrite(myOperations, {}, (err, products) => {
     if (err) {
       return res.status(400).json({
-        error: "Bulk operation failed"
+        error: err,
+        message: "Bulk operation failed"
       });
     }
     // console.log(products)

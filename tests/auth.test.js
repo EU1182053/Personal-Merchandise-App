@@ -2,6 +2,7 @@ const request = require('supertest');
 const app = require('../index');  // Import your Express app
 const mongoose = require('mongoose');
 const User = require('../models/user');
+const config = require('../config');
 
 describe('Auth Routes', () => {
   let mockSignedUpUser;
@@ -18,6 +19,13 @@ describe('Auth Routes', () => {
     email: 'userTest2@gmail.com',
     password: '12345',
   };
+
+  /// Signin Tests
+  beforeAll(async () => {
+
+    // Create a user for signin testing
+    mockSignedInUser = await User.create(signinUser);
+  });
 
   /// Signup Tests
   it('should sign up a new user', async () => {
@@ -48,11 +56,7 @@ describe('Auth Routes', () => {
     );
   });
 
-  /// Signin Tests
-  beforeAll(async () => {
-    // Create a user for signin testing
-    mockSignedInUser = await User.create(signinUser);
-  });
+  
 
   it('should sign in an existing user', async () => {
     const res = await request(app)
@@ -114,7 +118,8 @@ describe('Auth Routes', () => {
     await User.deleteMany({
       email: { $in: [testUser.email, signinUser.email] },
     });
-    mongoose.disconnect();
+    mongoose.connection.close();
+
     // app.close();
     // mongoose.connection.close();
   });

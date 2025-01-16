@@ -7,6 +7,7 @@ const Category = require('../models/category');
 describe('Category Routes', () => {
     let adminUser, userToken, categoryId, adminId;
     beforeAll(async () => {
+
         //create a admin user for testing
         const admin = new User({
             name: 'Admin User',
@@ -82,6 +83,6 @@ describe('Category Routes', () => {
         await User.deleteMany({
             email: { $in: [adminUser.email] },
         });
-        mongoose.connection.close();
+        mongoose.disconnect();
     });
 });

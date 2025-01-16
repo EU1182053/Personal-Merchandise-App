@@ -1,6 +1,5 @@
 const { Order, ProductCart } = require("../models/order");
 const User = require("../models/user");
-const { isAuthenticated, getUserID } = require("./auth");
 
 exports.getOrderById = (req, res, next, id) => {
   Order.findById(id)

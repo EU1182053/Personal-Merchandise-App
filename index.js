@@ -20,24 +20,27 @@ const reviewRoute = require("./routes/review");
 
 // Initialize Express app
 const app = express();
+let db_uri;
 
-// Validate environment variables
-if (!config.database.uri || !config.app.port) {
-  console.error("Missing required environment variables. Check your .env file.");
-  process.exit(1); // Exit the application if critical configurations are missing
+// Load environment variables based on the environment
+if (process.env.NODE_ENV === 'test') {
+  db_uri = config.database.uri_test
+} else {
+  db_uri = config.database.uri_dev
+
 }
 
 // Connect to MongoDB
 mongoose
-  .connect(config.database.uri, {
+  .connect(db_uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
     useFindAndModify: false,
   })
-  .then(() => console.log("✅ Database connection successful"))
+  .then(() => console.log(`✅ Database connection successful with ${db_uri} environment`))
   .catch((error) => {
-    console.error("❌ Database connection error:", error);
+    console.log("❌ Database connection error:", error);
     process.exit(1); // Exit the app if the database connection fails
   });
 
@@ -69,6 +72,7 @@ if (process.env.NODE_ENV !== 'test') {
     console.log(`🚀 Server is running on port ${port}`);
   });
 }
+
 
 // Export the server instance
 module.exports = app;  // export `app`

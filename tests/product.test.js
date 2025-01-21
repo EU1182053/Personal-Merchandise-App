@@ -67,6 +67,27 @@ describe("Product Routes", () => {
   });
 
 
+  it('should delete a product as an admin', async () => {
+    // Create a product to delete
+    const product = await Product.create({
+      name: "Test Product",
+      description: "Test Description",
+      category: "63bff53788e77963ac2e3b4f",
+      price: 100,
+      stock: 10,
+    });
+  
+    const res = await request(app)
+      .delete(`/api/product/delete/${product._id}/${adminId}`)
+      .set("Authorization", `Bearer ${userToken}`); // Replace with a valid admin token
+  
+    // Check the response
+    expect(res.status).toBe(200); // Assuming 200 is returned on successful deletion
+    expect(res.body).toHaveProperty("message", "Deletion was a success"); // Example response property
+  
+    
+  });
+  
   afterAll(async () => {
     await Product.deleteMany({});
     await User.deleteMany({});

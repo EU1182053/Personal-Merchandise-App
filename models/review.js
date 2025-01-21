@@ -12,10 +12,10 @@ var reviewSchema = new mongoose.Schema({
       ref: "Product",
       required: true
     },
-    rating_value:{
+    rating_value:{ 
       type: Number,
       required: true
     }
-   
-});
+    
+},{ timestamps: true });
 module.exports = mongoose.model("Review", reviewSchema);

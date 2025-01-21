@@ -17,9 +17,10 @@ const ReviewCard = ({ product }) => {
   // Initialize average rating
   useEffect(() => {
     setAverageRating(product?.rating?.average || 0);
+    getRedirect()
   }, [product?.rating?.average]);
 
-  const getRedirect = () => redirect && <Redirect to="/" />;
+  const getRedirect = () => redirect && <Redirect to="/user/order" />;
 
   const handleRatingSubmit = async (rating) => {
     if (!isAuthenticated()) return;
@@ -27,14 +28,17 @@ const ReviewCard = ({ product }) => {
     setIsSubmitting(true);
     try {
       const response = await updateRating(product._id, user._id, token, rating);
-      if (response?.success) {
+      if (response?.message === "Review added and product updated successfully.") {
         setAverageRating(response.averageRating); // Update average rating from response
         setRedirect(true);
+        window.location.reload();
+
+
       } else {
-        console.error("Failed to update rating:", response);
+        console.log("Failed to update rating:", response);
       }
     } catch (error) {
-      console.error("Error during rating submission:", error);
+      console.log("Error during rating submission:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -92,7 +96,7 @@ const ReviewCard = ({ product }) => {
         {getRedirect()}
         <ImageHelper product={product} />
         <p className="lead bg-success font-weight-normal text-wrap">{product?.description || "Default Description"}</p>
-        <p className="btn btn-success rounded btn-sm px-4">Rs.{product?.price || "Default Price"}</p>
+        <p className="btn btn-success rounded btn-sm px-4">Rs.{product?.amount || "Defaults Price"}</p>
         {StarRating()}
         <p>
           {averageRating > 0

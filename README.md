@@ -1,5 +1,5 @@
 # MERN
-# An E-Commerce web application built with the MERN (MongoDB, Express, React, Node.js) stack.
+# An E-Commerce Web application built with the MERN (MongoDB, Express, React, Node.js) stack.
 ## Table of Contents
 
 1. [Introduction](#introduction)
@@ -7,8 +7,9 @@
 3. [Technologies Used](#technologies-used)
 4. [Installation](#installation)
 5. [API Endpoints](#api-endpoints)
-6. [Contributing](#contributing)
-7. [License](#license)
+6. [Testing](#testing)
+7. [Contributing](#contributing)
+8. [License](#license)
 
 # Introduction
 An e-commerce platform built using the MERN stack (MongoDB, Express, React, Node.js). This app allows users to browse products, add them to their cart, and make purchases. It also includes user authentication, product management, and order tracking features for admins.
@@ -75,10 +76,11 @@ Ensure you have the following installed:
 6. Set up environment variables:
     - Create a `.env` file in both the root and client directories.
     - Add necessary configurations like:
-        - **MONGO_URI**: MongoDB connection string
         - **JWT_SECRET**: Secret key for JWT authentication
-        - **PORT**: Port for the backend server
         - **SENDGRID_API_KEY**, **FROM_EMAIL** for email service
+        - `MONGO_URI=mongodb://localhost:27017/test`
+        - `PORT=8000`
+        - `NODE_ENV=development`
      
     - **Client-side (.env)**: Add the following configuration:
         - `REACT_APP_BACKEND=http://localhost:8000/api` (URL of the backend server)
@@ -109,7 +111,7 @@ Ensure you have the following installed:
 | Method | Endpoint                  | Description                                    |
 |--------|---------------------------|------------------------------------------------|
 | POST   | `/review/create/:userId`   | Create a review for a product (requires authentication) |
-| GET    | `/review/:productId`       | Get all reviews for a specific product (admin only) |
+| GET    | `review/getByProducts`       | Get all reviews which is given by specific user |
 
 ### Product Management
 | Method | Endpoint                        | Description                                        |
@@ -153,7 +155,13 @@ Ensure you have the following installed:
 | `GET`  | `/testroute`        | Test route to check authentication (requires sign-in) |
 | `GET`  | `/`                 | API home page (basic route for testing)               |
 
-
+## Testing
+Make sure server is stopped.
+**Run Test Cases**:
+ ```bash
+   npx jest --detectOpenHandles --runInBand
+ ```
+   
 ## Contributing
 
 Contributions are welcome! Please follow these steps:
@@ -165,7 +173,7 @@ Contributions are welcome! Please follow these steps:
    ```
 3. **Commit your changes:**
    ```bash
-   git commit -m 'Add feature
+   git commit -m 'Add feature'
    ```
 4. **Push to the branch**
    ```bash
@@ -178,61 +186,49 @@ Contributions are welcome! Please follow these steps:
 
 Here are some project outputs - 
 
+Home Page
+![home-page](https://github.com/user-attachments/assets/c4f66d5b-1d39-4177-8406-03997fe7d4e3)
 
 Admin Page
  
-![admin-page](https://user-images.githubusercontent.com/65112935/235117532-f1aac853-d675-481f-a533-e9437facd29a.png)
+![admin-page]![admin-page](https://github.com/user-attachments/assets/58e1a2a2-a3ec-4e88-af2e-f010460c22dd)
+
 
 create category
 
-![create_category](https://user-images.githubusercontent.com/65112935/235117610-6f45b616-d8e0-4543-8bf2-5ee51c4c2192.png)
+![create_category](https://github.com/user-attachments/assets/67242a52-9b07-4dc7-88a9-b373f438347c)
+
 
 
 
 create Product
 
-![create_product](https://user-images.githubusercontent.com/65112935/235117713-5e6727a0-7db4-45ce-a471-fb087cd9b498.png)
+![create_product](https://github.com/user-attachments/assets/ade432d6-9477-4feb-87ff-2e9a2487fdaf)
+
 
 
 review any product
+![review_product](https://github.com/user-attachments/assets/0041d9d8-41a3-41b2-8af3-5a18d309738d)
 
-![review-page](https://user-images.githubusercontent.com/65112935/235117798-eba2f991-07dd-48d4-bb46-f75e8d592b9e.png)
+
 
 sign in and sign up page
 
 ![sign-in page](https://user-images.githubusercontent.com/65112935/235117853-fe73566e-463a-4aa3-970c-241b09871848.png)
 ![signup-page](https://user-images.githubusercontent.com/65112935/235117898-c03e57fb-57cf-4ace-a376-2eb7be0a622f.png)
 
+order details page
+
+![order_details](https://github.com/user-attachments/assets/211947c3-477e-4cdc-ad2c-799bdda69a3d)
+
+Edit product
+![edit_product](https://github.com/user-attachments/assets/bb72bdcd-e5ab-47c7-ab26-c8b5452a2f16)
+
+Cart Page 
+![cart-page](https://github.com/user-attachments/assets/5a5be795-dee8-4098-9fa7-f7667c6f2a17)
 
 
 In terms of future tasks, there are a few items to consider. Firstly, implementing a category-based filtering system for products is a priority. Additionally, setting up a system to receive product updates via email would be beneficial. Finally, deploying the system on a server is also necessary for its continued development and availability.
 Here are some project outputs - 
 
 
-Admin Page
- 
-![admin-page](https://user-images.githubusercontent.com/65112935/235117532-f1aac853-d675-481f-a533-e9437facd29a.png)
-
-create category
-
-![create_category](https://user-images.githubusercontent.com/65112935/235117610-6f45b616-d8e0-4543-8bf2-5ee51c4c2192.png)
-
-
-
-create Product
-
-![create_product](https://user-images.githubusercontent.com/65112935/235117713-5e6727a0-7db4-45ce-a471-fb087cd9b498.png)
-
-
-review any product
-
-![review-page](https://user-images.githubusercontent.com/65112935/235117798-eba2f991-07dd-48d4-bb46-f75e8d592b9e.png)
-
-sign in and sign up page
-
-![sign-in page](https://user-images.githubusercontent.com/65112935/235117853-fe73566e-463a-4aa3-970c-241b09871848.png)
-![signup-page](https://user-images.githubusercontent.com/65112935/235117898-c03e57fb-57cf-4ace-a376-2eb7be0a622f.png)
-
-
-
-In terms of future tasks, there are a few items to consider. Firstly, implementing a category-based filtering system for products is a priority. Additionally, setting up a system to receive product updates via email would be beneficial. Finally, deploying the system on a server is also necessary for its continued development and availability.

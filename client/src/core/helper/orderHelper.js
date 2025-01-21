@@ -21,6 +21,7 @@ export const createOrder = async (userId, token, orderData) => {
   }
 };
 
+// step 2
 export const getAllOrders = async (userId, token) => {
   try {
     // Make a GET request to the server to fetch all orders for the user
@@ -32,10 +33,9 @@ export const getAllOrders = async (userId, token) => {
         Authorization: `Bearer ${token}`,  // Include the token for authorization
       } 
     });
-
     // Check if the response is successful
     if (!response.ok) {
-      console.log(`HTTP Error: ${response.status}`);
+      return await response.json({ purchases: [] })
     }
 
     
@@ -46,4 +46,6 @@ export const getAllOrders = async (userId, token) => {
     throw err;  // Re-throw the error for the caller to handle
   }
 };
+
+
 

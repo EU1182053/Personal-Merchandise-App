@@ -34,4 +34,4 @@ router.post("/user/password-recovery", async (req, res, next) => {
 });
 router.post("/user/password-reset/:token", validateResetToken, updatePassword);// Reset password
 
-module.exports = router;
+module.exports = router;  

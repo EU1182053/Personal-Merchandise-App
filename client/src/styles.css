@@ -25,7 +25,7 @@ input[type=email] {
   padding: 12px 20px;
   margin: 8px 0;
   box-sizing: border-box;
-  background-image: url('../src/icons/gmail.svg') ;
+  background-image: url('../src/assets/icons/gmail.svg') ;
   background-repeat: no-repeat;
   background-position: right;
 }
@@ -34,7 +34,7 @@ input[type=password] {
   padding: 0.375rem .75rem;
   margin: 8px 0;
   box-sizing: border-box;
-  background-image: url('../src/icons/padlock.svg') ;
+  background-image: url('../src/assets/icons/padlock.svg') ;
   background-repeat: no-repeat;
   background-position: right;
   

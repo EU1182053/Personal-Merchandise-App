@@ -1,6 +1,16 @@
+// Load environment variables
 require("dotenv").config();
-const authRoute = require("./routes/auth");
 
+// Import dependencies
+const express = require("express");
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
+const config = require("./config");
+
+// Import routes 
+const authRoute = require("./routes/auth");
 const userRoute = require("./routes/user");
 const cateRoute = require("./routes/category");
 const orderRoute = require("./routes/order");
@@ -8,49 +18,66 @@ const productRoute = require("./routes/product");
 const paymentRoute = require("./routes/paymentBRoutes");
 const reviewRoute = require("./routes/review");
 
-const express = require("express");
+// Initialize Express app
 const app = express();
+let db_uri;
 
-const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
-const path = require("path");
-const cors = require("cors");
+// Load environment variables based on the environment
+db_uri = process.env.NODE_ENV === 'test' ? config.database.uri_test : config.database.uri_dev;
+
+// Connect to MongoDB
 mongoose
-  .connect(process.env.MONGO_URI, {
+  .connect(db_uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
-    useFindAndModify: false, 
-  }) 
-  .then((data) => {
-    console.log("DB succeed");
+    useFindAndModify: false,
   })
+  .then(() => console.log(`✅ Connected to database (${process.env.NODE_ENV} environment)`))
   .catch((error) => {
-    console.log("DB stopped working",error );
-  }); 
-app.use(bodyParser.json()); 
-app.use(cookieParser()); 
+    console.error("❌ Database connection error:", error);
+    process.exit(1);
+  });
+
+// Middleware
+app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(cors());
+
+// API Routes
 app.use("/api", authRoute);
 app.use("/api", userRoute);
 app.use("/api", cateRoute);
 app.use("/api", productRoute);
-app.use("/api", paymentRoute); 
+app.use("/api", paymentRoute);
 app.use("/api", orderRoute);
 app.use("/api", reviewRoute);
 
-// ... other app.use middleware
-app.use(express.static(path.join(__dirname, "client", "build")));
- 
-const port = process.env.PORT; 
-app.get("/", (req, res) => res.send("hello there"));
-
-// Right before your app.listen(), add this:
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+// Handle unknown routes
+app.use((req, res) => {
+  res.status(404).json({ error: "Route not found" });
 });
 
-app.listen(port, () => { 
-  console.log(`${port}`);
+// Error handling for uncaught routes or exceptions
+app.use((err, req, res, next) => {
+  console.error("Unexpected error:", err);
+  res.status(500).json({ error: "An unexpected error occurred" });
 });
+
+// Graceful shutdown
+process.on("SIGINT", async () => {
+  console.log("Shutting down gracefully...");
+  await mongoose.connection.close();
+  process.exit(0);
+});
+
+// Start the server
+const port = config.app.port;
+
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => {
+    console.log(`🚀 Server is running on port ${port}`);
+  });
+}
+
+module.exports = app;

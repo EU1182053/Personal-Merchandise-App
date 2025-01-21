@@ -73,7 +73,7 @@ const Paymentb = ({ products, totalAmount, setReload = (f) => f, reload = undefi
     <div>
       <h3>Your total bill is Rs. {totalAmount}</h3>
       {info.error && <div className="alert alert-danger">{info.error}</div>}
-      {info.clientToken ? (
+      {info.clientToken && totalAmount ? (
         <div>
           <DropIn
             options={{ authorization: info.clientToken }}

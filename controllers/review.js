@@ -32,7 +32,7 @@ exports.createReview = async (req, res) => {
     product.rating.average = Math.round(totalRating / product.rating.count);
     await product.save();
 
-    res.json({ message: "Review added and product updated successfully." });
+    return res.json({ message: "Review added and product updated successfully." });
 
   } catch (error) {
     res.status(400).json({
@@ -54,24 +54,9 @@ exports.getAllReviews = (req, res) => {
         return res.status(404).json({ message: "No reviews found for this product" });
       }
 
-      // Calculate average rating
-      const totalRatings = reviews.reduce((sum, review) => {
-        // Sum the ratings for this product
-        return sum + review.data.reduce((subSum, reviewData) => {
-          return subSum + reviewData.rating_value;
-        }, 0);
-      }, 0);
-
-      const totalReviews = reviews.reduce((sum, review) => {
-        // Count the number of reviews for this product
-        return sum + review.data.length;
-      }, 0);
-
-      const averageRating = totalReviews > 0 ? (totalRatings / totalReviews) : 0;
-
+      
       return res.json({
         reviews: reviews,
-        averageRating: averageRating.toFixed(2), // Optional: toFixed for two decimal places
       });
     })
     .catch((error) => {
@@ -79,3 +64,16 @@ exports.getAllReviews = (req, res) => {
     });
 };
 
+// step 9
+exports.getReviewsByProducts = async (req, res) => {
+  const { productIds } = req.body; // Array of product IDs
+  try {
+    const reviews = await Review.find({ product_id: { $in: productIds } })
+      .populate("user_id", "name") // Populate user info
+      .exec();
+
+    res.json({ reviews });
+  } catch (err) {
+    res.status(400).json({ error: "Failed to fetch reviews" });
+  } 
+};

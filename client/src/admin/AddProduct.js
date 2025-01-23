@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Base from "../core/Base";
 import { Link } from "react-router-dom";
 import { createaProduct, getCategories } from "./helper/adminapicall";
@@ -35,18 +35,18 @@ const AddProduct = () => {
     formData,
   } = values;
 
-  const preload = () => {
+  const preload = useCallback(() => {
     getCategories()
       .then((data) => {
         setValues({ ...values, categories: data, formData: new FormData() });
         console.log(data, formData);
       })
       .catch((err) => console.log(err));
-  };
+  },[values, formData])
 
   useEffect(() => {
     preload();
-  }, []);
+  }, [preload]);
 
   const onSubmit = (event) => {
     event.preventDefault();

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Base from "../core/Base";
 import { Link } from "react-router-dom";
 import { isAuthenticated } from "../auth/helper";
@@ -37,8 +37,8 @@ const ManageProducts = () => {
     formData,
   } = values;
 
-  // Preload products and categories
-  const preloadProducts = () => {
+   // Memoize preloadProducts to avoid unnecessary recreation
+   const preloadProducts = useCallback(() => {
     getAllProducts()
       .then((data) => {
         if (data.error) {
@@ -48,9 +48,10 @@ const ManageProducts = () => {
         }
       })
       .catch((err) => console.log(err));
-  };
+  }, []); // Empty dependency array, meaning it only depends on initial render
 
-  const preloadCategories = () => {
+  // Memoize preloadCategories to avoid unnecessary recreation
+  const preloadCategories = useCallback(() => {
     getCategories()
       .then((data) => {
         if (data.error) {
@@ -60,12 +61,13 @@ const ManageProducts = () => {
         }
       })
       .catch((err) => console.log(err));
-  };
+  }, [values]); // Add 'values' in the dependency array if it's being modified by preloadCategories
 
   useEffect(() => {
     preloadProducts();
     preloadCategories();
-  }, []);
+  }, [preloadProducts, preloadCategories]); // Add both functions to the dependency array
+
 
   // Handle input changes
   const handleChange = (name) => (event) => {

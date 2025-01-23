@@ -5,7 +5,6 @@ import { getProducts } from "./helper/coreapicalls";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
-  const [quantities, setQuantities] = useState({});
   const [error, setError] = useState(false);
 
   const showProducts = () => {

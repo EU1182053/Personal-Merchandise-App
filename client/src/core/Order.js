@@ -8,7 +8,6 @@ import ReviewCard from "./ReviewCard";
 const Order = () => {
   const { user, token } = isAuthenticated();
   const [orders, setOrders] = useState([]); // Orders with product details
-  const [product, setProducts] = useState([]);
   const [reviews, setReviews] = useState({}); // Reviews keyed by product ID
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

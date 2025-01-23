@@ -28,7 +28,7 @@ export const removeItemFromCart = (productId) => {
     if (localStorage.getItem("cart")) {
       cart = JSON.parse(localStorage.getItem("cart"));
     }
-    cart.map((product, i) => {
+    cart.forEach((product, i) => {
       if (product._id === productId) {
         cart.splice(i, 1);
       }

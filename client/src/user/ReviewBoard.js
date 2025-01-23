@@ -18,6 +18,7 @@ const ReviewBoard = () => {
       .catch((data) => {
         if (data.error) {
           setError(true);
+
         }
       });
   };
@@ -44,6 +45,7 @@ const ReviewBoard = () => {
               </div>
             );
           })}
+          {error && <div className="alert alert-danger">{error}</div>}
          
       
        

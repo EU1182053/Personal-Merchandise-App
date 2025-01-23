@@ -75,10 +75,10 @@ Ensure you have the following installed:
 
 6. Set up environment variables:
     - Create a `.env` file in both the root and client directories.
-    - Add necessary configurations like:
-        - **JWT_SECRET**: Secret key for JWT authentication
+    - **server-side (.env)**:
+        - **SECRET**: Secret key for JWT authentication
         - **SENDGRID_API_KEY**, **FROM_EMAIL** for email service
-        - `MONGO_URI=mongodb://localhost:27017/test`
+        - `MONGO_URI=mongodb://localhost:27017/(any name)`
         - `PORT=8000`
         - `NODE_ENV=development`
      

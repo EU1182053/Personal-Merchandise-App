@@ -10,88 +10,79 @@ const currentTab = (history, path) => {
   }
 };
 
-const Menu = ({ history }) => (
-  <div>
-    <ul className="nav nav-tabs bg-dark">
-      <li className="nav-item">
-        <Link style={currentTab(history, "/")} className="nav-link" to="/">
-          Home
-        </Link>
-      </li>
-      {
-        isAuthenticated() && (
-          <li className="nav-item">
-        <Link
-          style={currentTab(history, "/cart")}
-          className="nav-link"
-          to="/cart"
-        >
-          Cart
-        </Link>
-      </li>
-        )
-      }
-      
-      {isAuthenticated() && (
+const Menu = ({ history }) => {
+  const auth = isAuthenticated(); // Call once and store in a variable
+  const userRole = auth?.user?.role; // Safe access
+
+  return (
+    <div>
+      <ul className="nav nav-tabs bg-dark">
         <li className="nav-item">
-        <Link
-          style={currentTab(history, "/user/order")}
-          className="nav-link"
-          to="/user/order"
-        >
-          My_Orders
-        </Link>
-      </li>
-      )}
-      {isAuthenticated() && (isAuthenticated().user.role === 1 || isAuthenticated().user.role === 1)&& (
-        <li className="nav-item">
-          <Link
-            style={currentTab(history, "/admin/dashboard")}
-            className="nav-link"
-            to="/admin/dashboard"
-          >
-            Admin_Dashboard
+          <Link style={currentTab(history, "/")} className="nav-link" to="/">
+            Home
           </Link>
         </li>
-      )}
-      {!isAuthenticated() && (
-        <Fragment>
+
+        {auth && (
           <li className="nav-item">
-            <Link
-              style={currentTab(history, "/user/signup")}
-              className="nav-link"
-              to="/user/signup"
-            >
-              Signup
+            <Link style={currentTab(history, "/cart")} className="nav-link" to="/cart">
+              Cart
             </Link>
           </li>
+        )}
+
+        {auth && (
           <li className="nav-item">
-            <Link
-              style={currentTab(history, "/user/signin")}
-              className="nav-link"
-              to="/user/signin"
-            >
-              Sign In
+            <Link style={currentTab(history, "/user/order")} className="nav-link" to="/user/order">
+              My Orders
             </Link>
           </li>
-        </Fragment>
-      )}
-      {isAuthenticated() && (
-        <li className="nav-item">
-          <span
-            className="nav-link text-warning"
-            onClick={() => {
-              signout(() => {
-                history.push("/");
-              });
-            }}
-          >
-            Signout
-          </span>
-        </li>
-      )}     
-    </ul>
-  </div>
-);
+        )}
+
+        {/* Admin Dashboard */}
+        {auth && userRole === 1 && (
+          <li className="nav-item">
+            <Link style={currentTab(history, "/admin/dashboard")} className="nav-link" to="/admin/dashboard">
+              Admin Dashboard
+            </Link>
+          </li>
+        )}
+
+        {/* If not authenticated, show Signup & Signin */}
+        {!auth && (
+          <Fragment>
+            <li className="nav-item">
+              <Link style={currentTab(history, "/user/signup")} className="nav-link" to="/user/signup">
+                Signup
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link style={currentTab(history, "/user/signin")} className="nav-link" to="/user/signin">
+                Sign In
+              </Link>
+            </li>
+          </Fragment>
+        )}
+
+        {/* Signout */}
+        {auth && (
+          <li className="nav-item">
+            <span
+              className="nav-link text-warning"
+              onClick={() => {
+                signout(() => {
+                  history.push("/");
+                });
+              }}
+            >
+              Signout
+            </span>
+          </li>
+        )}
+      </ul>
+    </div>
+  );
+};
+
 
 export default withRouter(Menu);

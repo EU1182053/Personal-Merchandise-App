@@ -38,7 +38,7 @@ export const signout = (next) => {
     localStorage.removeItem("cart");
     next();
 
-    return fetch(`${API}user/signout`, {
+    return fetch(`${API}/user/signout`, {
       method: "GET",
     })
       .then((response) => console.log(response))

@@ -7,7 +7,9 @@ export const signup = user => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(user),
-  });
+  }).then((response) => response.json()).catch((error) => {
+    console.warn(error);
+  })
 };
 
 export const signin = (user) => {

@@ -18,5 +18,5 @@ const config = {
         validAdminJwtToken:process.env.validAdminJwtToken
     }
 }
-
+ 
 module.exports = config;

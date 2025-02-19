@@ -10,13 +10,14 @@ import {
 } from "./helper/adminapicall";
 
 const ManageProducts = () => {
+  const [categories, setCategories] = useState([]);
+
   const [values, setValues] = useState({
     name: "",
     description: "",
     price: "",
     stock: "",
     category: "",
-    categories: [],
     loading: false,
     error: "",
     updatedProduct: "",
@@ -32,7 +33,6 @@ const ManageProducts = () => {
     price,
     stock,
     category,
-    categories,
     updatedProduct,
     formData,
   } = values;
@@ -57,12 +57,11 @@ const ManageProducts = () => {
         if (data.error) {
           console.log(data.error);
         } else {
-          setValues({ ...values, categories: data });
+          setCategories(data.categories); // ✅ Store categories separately
         }
       })
       .catch((err) => console.log(err));
-  }, [values]); // Add 'values' in the dependency array if it's being modified by preloadCategories
-
+  }, []);
   useEffect(() => {
     preloadProducts();
     preloadCategories();
@@ -79,15 +78,16 @@ const ManageProducts = () => {
   // Open form for editing a specific product
   const openEditForm = (product) => {
     setEditProductId(product._id);
-    setValues({
-      ...values,
+
+    setValues((prevValues) => ({
+      ...prevValues,
       name: product.name,
       description: product.description,
       price: product.price,
       stock: product.stock,
       category: product.category,
       formData: new FormData(),
-    });
+    }));
   };
 
   // Update product

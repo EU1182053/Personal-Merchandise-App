@@ -60,7 +60,7 @@ export const isAuthenticated = () => {
 
 export const recover = async ({ email }) => {
   try {
-    const response = await fetch(`${API}/user/recover`, {
+    const response = await fetch(`${API}/user/password-recovery`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -101,7 +101,7 @@ export const recover = async ({ email }) => {
 
 export const resetPassword = async ({ password, token }) => {
   try {
-    const response = await fetch(`${API}/user/reset/${token}`, {
+    const response = await fetch(`${API}/user/password-reset/${token}`, {
       method: "POST",
       headers: {
 

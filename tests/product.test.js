@@ -36,7 +36,6 @@ describe("Product Routes", () => {
 
   it("should create a product as an admin", async () => {
     const testImagePath = path.join(__dirname, "assets", "testImage.png");
-    console.log(testImagePath)
     // Mock the product data
     const productData = {
       name: "Test Product",

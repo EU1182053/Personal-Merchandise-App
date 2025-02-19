@@ -23,7 +23,7 @@ const ReviewCard = ({ product }) => {
     setAverageRating(productAverageRating || 0);
   }, [productAverageRating]);
 
-  const getRedirect = () => redirect && <Redirect to="/user/order" />;
+  const getRedirect = () => {return redirect && <Redirect to="/" />}
 
   const handleRatingSubmit = async (rating) => {
     if (!isAuthenticated()) return;

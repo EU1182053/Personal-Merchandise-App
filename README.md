@@ -1,5 +1,5 @@
 # MERN
-# An E-Commerce Web application built with the MERN (MongoDB, Express, React, Node.js) stack.
+# An E-Commerce Web Application built with the MERN (MongoDB, Express, React, Node.js) stack.
 ## Table of Contents
 
 1. [Introduction](#introduction)

@@ -32,8 +32,8 @@ const validateSignup = [
 const validateSignin = [
   check("email").isEmail().withMessage("Invalid email format"),
   check("password")
-    .isLength({ min: 3 })
-    .withMessage("Password must be at least 3 characters long"),
+    .isLength({ min: 3, max:8 })
+    .withMessage("Password minimum length 3 and maximum 8"),
 ];
 
 // Routes

@@ -81,6 +81,8 @@ Ensure you have the following installed:
         - `MONGO_URI=mongodb://localhost:27017/(any name)`
         - `PORT=8000`
         - `NODE_ENV=development`
+        - **TINIFY_API_KEY**: excellent tool for image compression while maintaining high visual quality
+        
      
     - **Client-side (.env)**: Add the following configuration:
         - `REACT_APP_BACKEND=http://localhost:8000/api` (URL of the backend server)

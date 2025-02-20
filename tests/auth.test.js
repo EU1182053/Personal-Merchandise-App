@@ -60,7 +60,7 @@ describe('Auth Routes', () => {
   it('should return 401 if password is incorrect', async () => {
     const res = await request(app).post('/api/user/signin').send({
       email: signinUser.email,
-      password: 'wrongpassword',
+      password: '12345678',
     });
     expect(res.status).toBe(401);
     expect(res.body).toHaveProperty('error', 'Password does not match.');

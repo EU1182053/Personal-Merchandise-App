@@ -1,5 +1,10 @@
 const express = require("express");
 const router = express.Router();
+
+const Product = require("../models/products");
+
+
+
 const { getUserById } = require("../controllers/user");
 const {
   getProductById,
@@ -8,9 +13,11 @@ const {
   getProduct,
   deleteProduct,
   photo,
-  updateProduct
+  updateProduct,
+  getProductPhoto
 } = require("../controllers/product");
 const { isSignIn, isAuthenticated, isAdmin } = require("../controllers/auth");
+const upload = require("../middleware/upload");
 
 // Middleware for authentication
 const authenticateUser = [isSignIn, isAuthenticated];
@@ -27,17 +34,18 @@ router.post("/product/create", adminMiddleware, createProduct);
 // get all the products
 router.get("/product/showAll", getAllProducts);
 
-//get a specific product
-router.get("/product/show/:productId",isAdmin, getProduct);
-
+//get a specific product 
+router.get("/product/show/:productId",adminMiddleware, getProduct);
+ 
 //delete route 
 router.delete("/product/delete/:productId/:userId", adminMiddleware, deleteProduct);
 
 // route for photo
-router.get('/product/photo/:productId', photo)
-  
+router.get("/product/photo/:productId", getProductPhoto);  
+ 
+     
 // route for update
-router.put('/product/update/:productId', adminMiddleware, updateProduct )  
+router.put('/product/update/:productId', adminMiddleware,upload.single("photo"), updateProduct )  
 
   
 module.exports = router;

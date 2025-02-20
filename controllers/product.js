@@ -1,4 +1,7 @@
 const Product = require("../models/products");
+const config = require("../config")
+const tinify = require("tinify");
+tinify.key = config.tinify.apikey; // 🔹 Set Your API Key
 
 const formidable = require("formidable");
 const fs = require('fs');
@@ -17,53 +20,67 @@ exports.getProductById = (req, res, next, id) => {
       next();
     });
 };
-exports.createProduct = (req, res) => {
-  let form = new formidable.IncomingForm();
+exports.createProduct = async (req, res) => {
+  const form = new formidable.IncomingForm();
   form.keepExtensions = true;
 
-  form.parse(req, (err, fields, file) => {
+  form.parse(req, async (err, fields, file) => {
     if (err) {
-      return res.json({
-        error: "problem with Image",
-      });
+      return res.status(400).json({ error: "Problem with image upload" });
     }
-    //compulsion
+
+    const { name, description, stock, price, category } = fields;
+    if (!name || !description || !stock || !price || !category) {
+      return res.status(400).json({ error: "All fields must be filled" });
+    }
+
     let product = new Product(fields);
-    const { name, description, stock, price, photo, category } = fields
-    // if(!name || !description || !stock || !price || !photo || !category){
-    //     return res.json({
-    //         error:"All the fields should be filled"
-    //     })
-    // }
 
-    if (file.photo) {
-      if (file.photo.size > 3000000) {
-        return res.json({
-          error: "File size is too big!",
-        });
+    if (file.photo && file.photo.size > 0) {
+      if (file.photo.size > 3 * 1024 * 1024) {
+        return res.status(400).json({ error: "File size is too large (max: 3MB)" });
       }
-      //adding image from the PC
-      product.photo.data = fs.readFileSync(file.photo.path)
-      product.photo.contentType = product.photo.type
+
+      const allowedTypes = ["image/png", "image/jpeg", "image/webp"];
+      if (!allowedTypes.includes(file.photo.type)) {
+        return res.status(400).json({ error: "Invalid file type. Use PNG, JPEG, or WebP." });
+      }
+
+      try {
+        const fileBuffer = fs.readFileSync(file.photo.path);
+        const compressedBuffer = await tinify.fromBuffer(fileBuffer).toBuffer();
+
+        // Save compressed image
+        product.photo.data = compressedBuffer;
+        product.photo.contentType = file.photo.type;
+
+      } catch (fileError) { 
+        return res.status(500).json({ error: "Error processing image with TinyPNG" });
+      }
     }
 
-    //save to DB
-    product.save((err, product) => {
-      if (err) {
-        return res.json({
-          error: "product SAving in DB failed"
-        })
-      }
-      return res.status(200).json({
+    try {
+      const savedProduct = await product.save();
+
+      // Get compressed image size
+      const compressedSize = Buffer.byteLength(savedProduct.photo.data);
+      const compressedSizeInKB = (compressedSize / 1024).toFixed(2); // KB
+      const compressedSizeInMB = (compressedSize / (1024 * 1024)).toFixed(2); // MB
+
+      res.status(201).json({
         message: "Product created successfully!",
-        product: product,
+        originalSize: (file.photo.size / (1024 * 1024)).toFixed(2) + " MB",
+        compressedSize: compressedSizeInMB + " MB",
+        compressedSizeKB: compressedSizeInKB + " KB",
+        product: savedProduct,
       });
-    })
+    } catch (dbError) {
+      res.status(500).json({ error: "Failed to save product in database" });
+    }
   });
 };
 exports.getAllProducts = (req, res) => {
   Product.find()
-    .select("-photo") // Exclude the 'photo' field
     .exec((err, products) => {
       if (err) {
         return res.status(400).json({
@@ -93,9 +110,27 @@ exports.getProduct = async (req, res) => {
     console.error('Error fetching product:', error);
     return res.status(500).json({ error: 'An error occurred while fetching the product' });
   }
-  // req.product.photo = undefined;
-  return res.json(req.product);
+  // req.product.photo = undefined
 };
+
+exports.getProductPhoto = async(req, res) => {
+  try {
+    const product = await Product.findById(req.params.productId).select("photo");
+    if (!product || !product.photo || !product.photo.data) {
+      return res.status(404).json({ error: "Image not found" });
+    }
+
+    res.set("Content-Type", product.photo.contentType);
+    res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate"); // 🚀 Disable caching
+    res.set("Pragma", "no-cache");
+    res.set("Expires", "0");
+
+    return res.send(product.photo.data);
+  } catch (err) {
+    return res.status(500).json({ error: "Failed to load image" });
+  }
+};
+
 // delete controllers
 exports.deleteProduct = (req, res) => {
   let product = req.product;
@@ -112,13 +147,15 @@ exports.deleteProduct = (req, res) => {
   });
 };
 //middlewares
-exports.photo = (req, res, next) => {
+exports.photo = (req, res) => {
   if (req.product.photo.data) {
     res.set("Content-Type", req.product.photo.contentType)
     return res.send(req.product.photo.data)
   }
-  next()
-}
+  else{
+    return res.send({"req.product.photo.data":"data"})
+  }
+}  
 
 
 exports.updateStock = (req, res, next) => {
@@ -145,27 +182,37 @@ exports.updateStock = (req, res, next) => {
 
 
 exports.updateProduct = async (req, res) => {
+
+  
   try {
-    const productId = req.params.productId; // Get product ID from request parameters
-    const updatedData = req.body; // Get update data from request body
-
-    // Update product and return the updated document
-    const updatedProduct = await Product.findByIdAndUpdate(
-      productId,
-      { $set: updatedData },  
-      { new: true } // Returns the updated document
-    );
-
-    // If no product found, send a 404 error
-    if (!updatedProduct) {
+    let product = await Product.findById(req.params.productId);
+    if (!product) {
       return res.status(404).json({ error: "Product not found" });
     }
-
-    // Return the updated product
-    return res.status(200).json({message:"Product updated successfully!"});
-  } catch (error) { 
-    // Log and return server error
-    console.error("Error updating product:", error);
-    return res.status(500).json({ error: "Internal Server Error" });
+  
+    // Allowed fields for update
+    const allowedFields = ["name", "description", "price", "stock", "category","sold"];
+    allowedFields.forEach((key) => {
+      if (req.body[key] !== undefined) {
+        product[key] = req.body[key];
+      }
+    });
+ 
+ 
+    // ✅ Update image if uploaded
+    if (req.file) {
+      product.photo.data = req.file.buffer;
+      product.photo.contentType = req.file.mimetype;
+    } else {
+      console.log("No file received");
+    }
+  
+    await product.save();
+    res.status(200).json({ message: "Product updated successfully!", product });
+  
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to update product" });
   }
+  
 };

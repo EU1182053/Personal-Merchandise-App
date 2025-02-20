@@ -12,7 +12,7 @@ exports.signup = async (req, res) => {
   // Validate request
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(422).json({ error: errors.array()[0].msg });
+    return res.status(422).json({ error: errors.array()[0].msg,ok:false });
   }
 
   try {
@@ -20,15 +20,15 @@ exports.signup = async (req, res) => {
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ error: "Email already exists" });
+    if (existingUser) { 
+      return res.status(400).json({ error: "Email already exists",ok:false });
     }
 
     // Create new user
     const user = new User({ name, email, password });
     await user.save();
 
-    res.status(200).json({ message: "User signed up successfully" });
+    res.status(200).json({ message: "User signed up successfully", ok:true });
   } catch (error) {
     // Handle any unexpected errors
     res.status(500).json({ error: "An error occurred during signup" });
@@ -48,18 +48,20 @@ exports.signin = (req, res) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.status(400).send(errors.array());
+    return res.status(400).json({error: errors.array()[0].msg,ok:false});
   }
   User.findOne({ email }, (err, user) => {
     if (err || !user) {
       return res.status(404).json({
         error: "User does not exists",
+        ok:false
       });
     }
 
     if (!user.authenticate(password)) {
       return res.status(401).json({
-        error: "password does not match.",
+        error: "Password does not match.",
+        ok:false
       });
     }
 
@@ -73,7 +75,8 @@ exports.signin = (req, res) => {
     return res.status(200).json({
       token,
       user: user,
-      message: "User signed in successfully"
+      message: "User signed in successfully",
+      ok:true
     });
   });
 };
@@ -88,9 +91,7 @@ exports.isSignIn = expressJwt({
 // is Authenticated remaining sec-7 v-7
 
 exports.getUserID = (req, res) => {
-  console.log(req)
   jwt_token = req.headers.authorization.split(' ')[1]
-  console.log(jwt_token)
 
   jwt_token = jwt_decode(jwt_token)
   return jwt_token._id
@@ -139,7 +140,6 @@ exports.isAdmin = (req, res, next) => {
     }
 
     const decodedToken = jwt_decode(jwt_token); // Decode the JWT token
-    console.log(decodedToken)
     const userId = decodedToken._id; // Assuming the token contains an id
 
     User.findById(userId, (err, user) => {

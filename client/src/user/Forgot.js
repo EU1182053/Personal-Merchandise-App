@@ -40,6 +40,9 @@ const Forgot = () => {
 
     recover({ email })
       .then((data) => {
+        console.log(
+          "data", data
+        )
         if (data && data.resetLink) {
           // Extract and store reset token
           const resetToken = data.resetLink.split("/").pop();
@@ -66,7 +69,7 @@ const Forgot = () => {
         setValues({
           ...values,
           loading: false,
-          error: "An error occurred. Please try again.",
+          error: `The email address ${email} is not associated with any account. Double-check your email address and try again.`,
         });
       });
   };

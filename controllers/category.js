@@ -54,8 +54,8 @@ exports.showAllCategory = (req, res) => {
   if(err || !categories.length){ 
     return res.status(404).json({ 
       error:"No categories found"
-    })
-  }
+    }) 
+  } 
   return res.status(200).json({"categories": categories});
 })
 }

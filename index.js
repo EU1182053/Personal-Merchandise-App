@@ -40,9 +40,11 @@ mongoose
   });
 
 // Middleware
-app.use(bodyParser.json());
 app.use(cookieParser());
+
 app.use(cors());
+app.use(bodyParser.json()); // ✅ Parses JSON bodies
+app.use(bodyParser.urlencoded({ extended: true })); // ✅ Parses URL-encoded bodies
 
 // API Routes
 app.use("/api", authRoute);
@@ -78,6 +80,6 @@ if (process.env.NODE_ENV !== 'test') {
   app.listen(port, () => {
     console.log(`🚀 Server is running on port ${port}`);
   });
-}
+} 
 
 module.exports = app;

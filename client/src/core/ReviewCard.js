@@ -14,13 +14,16 @@ const ReviewCard = ({ product }) => {
   const { user, token } = isAuthenticated();
   const [averageRating, setAverageRating] = useState(0);
 
+  // Extract the dependency to a variable
+  const productAverageRating = product?.rating?.average;
+
+  // Initialize average rating
   // Initialize average rating
   useEffect(() => {
-    setAverageRating(product?.rating?.average || 0);
-    getRedirect()
-  }, [product?.rating?.average]);
+    setAverageRating(productAverageRating || 0);
+  }, [productAverageRating]);
 
-  const getRedirect = () => redirect && <Redirect to="/user/order" />;
+  const getRedirect = () => {return redirect && <Redirect to="/" />}
 
   const handleRatingSubmit = async (rating) => {
     if (!isAuthenticated()) return;
@@ -31,7 +34,6 @@ const ReviewCard = ({ product }) => {
       if (response?.message === "Review added and product updated successfully.") {
         setAverageRating(response.averageRating); // Update average rating from response
         setRedirect(true);
-        window.location.reload();
 
 
       } else {

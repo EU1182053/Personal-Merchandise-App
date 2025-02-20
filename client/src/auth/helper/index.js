@@ -7,7 +7,9 @@ export const signup = user => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(user),
-  });
+  }).then((response) => response.json()).catch((error) => {
+    console.warn(error);
+  })
 };
 
 export const signin = (user) => {
@@ -38,7 +40,7 @@ export const signout = (next) => {
     localStorage.removeItem("cart");
     next();
 
-    return fetch(`${API}user/signout`, {
+    return fetch(`${API}/user/signout`, {
       method: "GET",
     })
       .then((response) => console.log(response))
@@ -58,7 +60,7 @@ export const isAuthenticated = () => {
 
 export const recover = async ({ email }) => {
   try {
-    const response = await fetch(`${API}/user/recover`, {
+    const response = await fetch(`${API}/user/password-recovery`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -99,7 +101,7 @@ export const recover = async ({ email }) => {
 
 export const resetPassword = async ({ password, token }) => {
   try {
-    const response = await fetch(`${API}/user/reset/${token}`, {
+    const response = await fetch(`${API}/user/password-reset/${token}`, {
       method: "POST",
       headers: {
 

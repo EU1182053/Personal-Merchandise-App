@@ -16,24 +16,26 @@ const Paymentb = ({ products, totalAmount, setReload = (f) => f, reload = undefi
   });
   const [redirect, setRedirect] = useState(false);
 
-  const userId = isAuthenticated() && isAuthenticated().user._id;
-  const token = isAuthenticated() && isAuthenticated().token;
+  // Extract userId and token from isAuthenticated() once
+  const auth = isAuthenticated();
+  const userId = auth ? auth.user._id : null;
+  const token = auth ? auth.token : null;
 
   useEffect(() => {
     if (userId && token) {
       getmeToken(userId, token)
-        .then((info) => setInfo({ clientToken: info.clientToken }))
+        .then((info) => setInfo((prevInfo) => ({ ...prevInfo, clientToken: info.clientToken })))
         .catch((err) =>
-          setInfo({ ...info, error: "Failed to fetch client token" })
+          setInfo((prevInfo) => ({ ...prevInfo, error: "Failed to fetch client token" }))
         );
     }
   }, [userId, token]);
 
   const onPurchase = () => {
-    setInfo({ ...info, loading: true });
+    setInfo((prevInfo) => ({ ...prevInfo, loading: true }));
 
     if (!info?.instance) {
-      setInfo({ ...info, error: "Payment instance is not available", loading: false });
+      setInfo((prevInfo) => ({ ...prevInfo, error: "Payment instance is not available", loading: false }));
       return;
     }
 
@@ -51,14 +53,14 @@ const Paymentb = ({ products, totalAmount, setReload = (f) => f, reload = undefi
           products,
           transaction_id: response.transaction.id,
           amount: totalAmount,
-        };  
+        };
 
         // Log the orderData before creating the order
-      console.log("Order data before createOrder:", orderData);
+        console.log("Order data before createOrder:", orderData);
         return createOrder(userId, token, { order: orderData });
       })
       .then(() => {
-        cartEmpty(() => {});
+        cartEmpty(() => { });
         setReload(!reload);
         setRedirect(true);
       })

@@ -22,11 +22,11 @@ const Signup = () => {
     setValues({ ...values, error: false, success: false });
     signup({ name, email, password })
       .then((data) => {
-        if (data.error) {
-          setValues({ ...values, error: data.error, success: false });
+        if (!data.ok) {
+          setValues({ ...values, error: data?.errors?.[0]?.msg || data?.error, success: false });
         } else {
-          setValues({
-            ...values,
+          setValues({ 
+            ...values, 
             name: "",
             email: "",
             password: "",
@@ -79,15 +79,13 @@ const Signup = () => {
     );
   };
   const successMessage = () => {
-    return (
-      <div
-        className="alert alert-success"
-        style={{ display: success ? "" : "none" }}
-      >
-        SignUp Successful.Please <Link to="/user/signin">Login Here</Link>
+    return success ? (
+      <div className="alert alert-success">
+        SignUp Successful. Please <Link to="/user/signin">Login Here</Link>
       </div>
-    );
+    ) : null;
   };
+  
   const errorMessage = () => {
     return (
       <div

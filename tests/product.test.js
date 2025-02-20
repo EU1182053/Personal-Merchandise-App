@@ -36,7 +36,6 @@ describe("Product Routes", () => {
 
   it("should create a product as an admin", async () => {
     const testImagePath = path.join(__dirname, "assets", "testImage.png");
-    console.log(testImagePath)
     // Mock the product data
     const productData = {
       name: "Test Product",
@@ -88,6 +87,23 @@ describe("Product Routes", () => {
     
   });
   
+  it('should update a product as an admin', async () => {
+    const product = await Product.create({
+      name: "Test Product",
+      description: "Test Description",
+      category: "63bff53788e77963ac2e3b4f",
+      price: 100,
+      stock: 10,
+    });
+    const res = await request(app)
+    .put(`/api/product/update/${product._id}`)
+    .set("Authorization", `Bearer ${userToken}`); // Replace with a valid admin token
+
+    // Check the response
+    expect(res.status).toBe(200); // Assuming 200 is returned on successful update
+    expect(res.body).toHaveProperty("message", "Product updated successfully!"); // Example response property
+    
+  })
   afterAll(async () => {
     await Product.deleteMany({});
     await User.deleteMany({});

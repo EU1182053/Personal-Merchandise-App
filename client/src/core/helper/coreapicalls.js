@@ -5,7 +5,7 @@ export const getProducts = async () => {
     const response = await fetch(`${API}/product/showAll`, { method: "GET" });
     return await response.json();
   } catch (err) {
-    return console.log(err);
+    return console.log("err", err);
   }
 }
 export const createReview = async (userId, token, data) => {

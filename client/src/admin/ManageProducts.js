@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Base from "../core/Base";
 import { Link } from "react-router-dom";
 import { isAuthenticated } from "../auth/helper";
@@ -8,23 +8,28 @@ import {
   updateProduct,
   getCategories,
 } from "./helper/adminapicall";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const ManageProducts = () => {
+  const [categories, setCategories] = useState([]);
+  const history = useHistory(); // Initialize history
   const [values, setValues] = useState({
     name: "",
     description: "",
     price: "",
     stock: "",
     category: "",
-    categories: [],
     loading: false,
     error: "",
     updatedProduct: "",
     formData: new FormData(),
+    photo: ""
   });
   const [products, setProducts] = useState([]);
   const [editProductId, setEditProductId] = useState("");
 
+
+  
   const { user, token } = isAuthenticated();
   const {
     name,
@@ -32,13 +37,13 @@ const ManageProducts = () => {
     price,
     stock,
     category,
-    categories,
     updatedProduct,
     formData,
+    photo
   } = values;
 
-  // Preload products and categories
-  const preloadProducts = () => {
+  // Memoize preloadProducts to avoid unnecessary recreation
+  const preloadProducts = useCallback(() => {
     getAllProducts()
       .then((data) => {
         if (data.error) {
@@ -48,24 +53,25 @@ const ManageProducts = () => {
         }
       })
       .catch((err) => console.log(err));
-  };
+  }, []); // Empty dependency array, meaning it only depends on initial render
 
-  const preloadCategories = () => {
+  // Memoize preloadCategories to avoid unnecessary recreation
+  const preloadCategories = useCallback(() => {
     getCategories()
       .then((data) => {
         if (data.error) {
           console.log(data.error);
         } else {
-          setValues({ ...values, categories: data });
+          setCategories(data.categories); // ✅ Store categories separately
         }
       })
       .catch((err) => console.log(err));
-  };
-
+  }, []);
   useEffect(() => {
     preloadProducts();
     preloadCategories();
-  }, []);
+  }, [preloadProducts, preloadCategories]); // Add both functions to the dependency array
+
 
   // Handle input changes
   const handleChange = (name) => (event) => {
@@ -77,36 +83,70 @@ const ManageProducts = () => {
   // Open form for editing a specific product
   const openEditForm = (product) => {
     setEditProductId(product._id);
-    setValues({
-      ...values,
+
+    const updatedFormData = new FormData(); // Maintain FormData instance
+    updatedFormData.append("name", product.name);
+    updatedFormData.append("description", product.description);
+    updatedFormData.append("price", product.price);
+    updatedFormData.append("stock", product.stock);
+    updatedFormData.append("category", product.category);
+
+    // If there's an existing photo in state, re-append it to FormData
+    if (values.photo) {
+      updatedFormData.append("photo", values.photo);
+    }
+
+    setValues((prevValues) => ({
+      ...prevValues,
       name: product.name,
       description: product.description,
       price: product.price,
       stock: product.stock,
       category: product.category,
-      formData: new FormData(),
-    });
+      formData: updatedFormData, // Update FormData safely
+    }));
   };
 
+
+
   // Update product
-  const handleUpdateProduct = (event) => {
+  const handleUpdateProduct = async (event) => {
     event.preventDefault();
     if (!editProductId) {
       return console.log("No product selected for update");
     }
-    updateProduct(editProductId, user._id, token, formData).then((data) => {
-      if (data.error) {
-        console.log(data.error);
-      } else {
-        setValues({
-          ...values,
-          updatedProduct: data.name,
-          loading: false,
-        });
-        preloadProducts(); // Reload product list
-      }
-    });
+  
+    const updatedFormData = new FormData();
+    updatedFormData.append("name", values.name);
+    updatedFormData.append("description", values.description);
+    updatedFormData.append("price", values.price);
+    updatedFormData.append("stock", values.stock);
+    updatedFormData.append("category", values.category);
+  
+    if (values.photo) {
+      updatedFormData.append("photo", values.photo);
+    }
+  
+    const data = await updateProduct(editProductId, user._id, token, updatedFormData);
+  
+    if (data.error) {
+      console.log(data.error);
+    } else {
+      console.log("Product updated successfully!");
+  
+      // Reload the product list to reflect the changes
+      preloadProducts();
+  
+      // Force re-render by updating the state
+      setEditProductId("");
+      setValues({ ...values, updatedProduct: data.name });
+  
+      // Redirect after update
+      history.push("/");
+    }
   };
+  
+
 
   // Delete product
   const handleDeleteProduct = (productId) => {
@@ -158,6 +198,25 @@ const ManageProducts = () => {
       {editProductId && (
         <form className="mt-4">
           <h3 className="text-white">Edit Product</h3>
+          <div className="text-center">
+            <img
+              src={`http://localhost:8000/api/product/photo/${editProductId}?t=${Date.now()}`}
+              alt="Product"
+              className="img-fluid mb-3"
+              style={{ maxHeight: "150px", maxWidth: "150px" }}
+            />
+          </div>
+          <div className="form-group">
+            <label className="btn btn-block btn-info">
+              Upload Product Photo
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleChange("photo")}
+                className="form-control"
+              />
+            </label>
+          </div>
           <div className="form-group">
             <label className="text-light">Name</label>
             <input

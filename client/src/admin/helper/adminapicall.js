@@ -95,22 +95,15 @@ export const getProduct = async productId => {
 //update a product
 
 export const updateProduct = async (productId, userId, token, product) => {
-  try {
-    const response = await axios.put(
-      `${API}/product/update/${productId}`,
-      product,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    return response.data; // Axios already parses the JSON response
-  } catch (err) {
-    console.error("Error updating product:", err.response?.data || err.message);
-    throw err; // Re-throw error to handle it in the calling function
-  }
+  return fetch(`${API}/product/update/${productId}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`, // ✅ Don't set 'Content-Type' for FormData
+    },
+    body: product, // ✅ Send FormData
+  })
+    .then((response) => response.json())
+    .catch((err) => console.log(err));
 };
 // last step
 export const updateRating = async (productId, userId, token, ratingValue) => {

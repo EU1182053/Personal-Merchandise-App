@@ -33,7 +33,6 @@ exports.processPayment = (req, res) => {
     },
   }, (err, result) => {
     if (err) {
-      console.error("Braintree transaction error:", err);
       return res.status(500).json({ error: "Transaction failed. Please try again." });
     }
     if (result.success) { 
@@ -43,7 +42,6 @@ exports.processPayment = (req, res) => {
       });
     } 
     else {
-      console.warn("Transaction failed:", result.message);
       return res.status(400).json({
         success: false,
         error: result.message,

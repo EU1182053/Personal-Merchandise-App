@@ -5,13 +5,13 @@ import { getProducts } from "./helper/coreapicalls";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
-  const [quantities, setQuantities] = useState({});
   const [error, setError] = useState(false);
 
   const showProducts = () => {
     getProducts()
       .then((data) => {
         setProducts(data);
+        console.log(data)
         setError(false); // Reset error state if data is fetched successfully
       })
       .catch(() => {

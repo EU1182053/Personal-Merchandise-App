@@ -1,7 +1,7 @@
 // load environment variables from .env
 require("dotenv").config();
 
-const config = {
+const config = { 
     app:{
         port: process.env.PORT || 5000,
         secret: process.env.SECRET || 'defaultsecret'
@@ -16,7 +16,10 @@ const config = {
     },
     token:{
         validAdminJwtToken:process.env.validAdminJwtToken
+    },
+    tinify:{
+        apikey: process.env.TINIFY_API_KEY
     }
 }
-
+ 
 module.exports = config;

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Base from "../core/Base";
+import Popup from "../core/Popup";
 import { signup } from "../auth/helper/index";
 import { Link } from "react-router-dom";
 const Signup = () => {
@@ -80,25 +81,33 @@ const Signup = () => {
   };
   const successMessage = () => {
     return success ? (
-      <div className="alert alert-success">
-        SignUp Successful. Please <Link to="/user/signin">Login Here</Link>
-      </div>
-    ) : null;
+    <Popup
+      type="success"
+      message="Signup Successful! Please login now."
+      onClose={() => setValues({ ...values, success: false })}
+    >
+      <Link
+        to="/user/signin"
+        className="btn btn-success btn-sm mr-2"
+      >
+        Login Now
+      </Link>
+    </Popup>
+  ) : null;
   };
   
   const errorMessage = () => {
-    return (
-      <div
-        className="alert alert-warning"
-        style={{ display: error ? "" : "none" }}
-      >
-        {error}
-      </div>
-    );
+    return error ? (
+    <Popup
+      type="error"
+      message={error}
+      onClose={() => setValues({ ...values, error: "" })}
+    />
+  ) : null;
   };
 
   return (
-    <Base title="SignUp Page">
+    <Base title="Sign Up | Personal Merchandise App" description="Create your account on Personal Merchandise App to shop trendy T-shirts, manage orders, and save favorite products securely.">
       {SignUpForm()}
       {successMessage()}
       {errorMessage()}

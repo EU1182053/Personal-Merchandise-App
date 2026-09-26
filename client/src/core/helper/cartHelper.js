@@ -1,18 +1,28 @@
 export const addItemToCart = (item, next) => {
   let cart = [];
-  if (typeof window !== undefined) {
+  if (typeof window !== "undefined") {
     if (localStorage.getItem("cart")) {
       cart = JSON.parse(localStorage.getItem("cart"));
     }
-    cart.push({
-      ...item,
-      count: 1, 
-    });  
-    localStorage.setItem("cart", JSON.stringify(cart));
 
-    next();
+    // Exclude photo from the item
+    const { photo, ...slimItem } = item;
+
+    cart.push({
+      ...slimItem,
+      count: 1,
+    });
+
+    try {
+      localStorage.setItem("cart", JSON.stringify(cart));
+      if (next) next();
+    } catch (error) {
+      console.error("Storage quota exceeded:", error);
+      alert("Cart is too large. Please remove some items.");
+    }
   }
 };
+
 export const loadCart = () => {
   if (typeof window !== undefined) {
     if (localStorage.getItem("cart")) {

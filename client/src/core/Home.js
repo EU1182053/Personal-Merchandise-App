@@ -11,7 +11,7 @@ const Home = () => {
     getProducts()
       .then((data) => {
         setProducts(data);
-        console.log(data)
+        console.log("data", data)
         setError(false); // Reset error state if data is fetched successfully
       })
       .catch(() => {
@@ -24,7 +24,9 @@ const Home = () => {
   }, []);
 
   return (
-    <Base title="Home Page" description="Welcome to our T-shirt Store">
+    <Base title="Personal Merchandise App | Buy Trendy T-Shirts Online" 
+    description="Shop the latest T-shirts online with Personal Merchandise App. Secure payments, fast delivery, and a user-friendly shopping experience for men and women."
+    >
       <div className="container">
         <h1 className="mb-4 text-center">All Products</h1>
         {error && (
@@ -36,7 +38,7 @@ const Home = () => {
       <div className="row">
         {!error &&
           products.map((product, index) => (
-            <div key={index}>
+            <div className="col-md-4 mb-4" key={index}>
               <Card product={product} />
             </div>
           ))}

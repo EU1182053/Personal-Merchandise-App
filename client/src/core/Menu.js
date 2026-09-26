@@ -1,6 +1,7 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { signout, isAuthenticated } from "../auth/helper";
+import Popup from "./Popup";
 
 const currentTab = (history, path) => {
   if (history.location.pathname === path) {
@@ -14,6 +15,7 @@ const Menu = ({ history }) => {
   const auth = isAuthenticated(); // Call once and store in a variable
   const userRole = auth?.user?.role; // Safe access
 
+  const [showSignoutPopup, setShowSignoutPopup] = useState(false);
   return (
     <div>
       <ul className="nav nav-tabs bg-dark">
@@ -23,6 +25,17 @@ const Menu = ({ history }) => {
           </Link>
         </li>
 
+
+        {showSignoutPopup && (
+          <Popup
+            type="success"
+            message="Signout Successful! See you again."
+            onClose={() => {
+              setShowSignoutPopup(false);
+              history.push("/");
+            }}
+          />
+        )}
         {auth && (
           <li className="nav-item">
             <Link style={currentTab(history, "/cart")} className="nav-link" to="/cart">
@@ -71,7 +84,7 @@ const Menu = ({ history }) => {
               className="nav-link text-warning"
               onClick={() => {
                 signout(() => {
-                  history.push("/");
+                  setShowSignoutPopup(true);
                 });
               }}
             >

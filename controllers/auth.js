@@ -16,7 +16,7 @@ exports.signup = async (req, res) => {
   }
 
   try {
-    const { email, name, password } = req.body;
+    const { email, name, password, role } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -25,7 +25,7 @@ exports.signup = async (req, res) => {
     }
 
     // Create new user
-    const user = new User({ name, email, password });
+    const user = new User({ name, email, password, role });
     await user.save();
 
     res.status(200).json({ message: "User signed up successfully", ok:true });
@@ -78,11 +78,13 @@ exports.signin = (req, res) => {
       message: "User signed in successfully",
       ok:true
     });
-  });
+  });  
 };
 
 //protected route
 exports.isSignIn = expressJwt({
+  
+  algorithms: ["HS256"],
   secret: config.app.secret,
   userProperty: "auth",
 });

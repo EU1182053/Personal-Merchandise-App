@@ -127,7 +127,7 @@ const AddProduct = () => {
   );
 
   return (
-    <Base title="Add a Product" description="Welcome to product creation section" className="container bg-info p-4">
+    <Base title="Add New Product | Admin Dashboard | Personal Merchandise App" description="Admins can add new products, including images, descriptions, and pricing, to expand the Personal Merchandise App catalog." className="container bg-info p-4">
       <Link to="/admin/dashboard" className="btn btn-md btn-dark mb-3">Admin Home</Link>
       <div className="row bg-dark text-white rounded">
         <div className="col-md-8 offset-md-2">

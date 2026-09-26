@@ -29,7 +29,7 @@ router.param("productId", getProductById);
 
 // Routes
 //create a product
-router.post("/product/create", adminMiddleware, createProduct);
+router.post("/product/create", adminMiddleware,upload.single("photo"), createProduct);
 
 // get all the products
 router.get("/product/showAll", getAllProducts);

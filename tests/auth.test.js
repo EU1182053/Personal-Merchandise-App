@@ -1,7 +1,9 @@
+require('dotenv').config();
 const request = require('supertest');
-const app = require('../index'); // Import your Express app
 const mongoose = require('mongoose');
 const User = require('../models/user');
+
+const { app, connectDB } = require('../index');
 
 describe('Auth Routes', () => {
   let mockSignedUpUser;
@@ -20,6 +22,7 @@ describe('Auth Routes', () => {
   };
 
   beforeAll(async () => {
+    await connectDB();
     await User.deleteMany({}); // Ensure a clean database before running tests
     mockSignedInUser = await User.create(signinUser);
   });

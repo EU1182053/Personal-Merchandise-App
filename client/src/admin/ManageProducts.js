@@ -160,7 +160,7 @@ const ManageProducts = () => {
   };
 
   return (
-    <Base title="Manage Products" description="Update or remove products here">
+    <Base title="Manage Products | Admin Dashboard | Personal Merchandise App" description="Admins can view, edit, or delete products in the Personal Merchandise App catalog efficiently.">
       <Link className="btn btn-info mb-3" to="/admin/dashboard">
         <span>Admin Home</span>
       </Link>

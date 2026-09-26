@@ -3,14 +3,20 @@ import Base from "./Base";
 import Card from "./Card";
 import { loadCart } from "./helper/cartHelper";
 import Paymentb from "./Paymentb";
+import Popup from "./Popup";
 
 const Cart = () => {
   const [products, setProducts] = useState([]);
+  const [popup, setPopup] = useState({
+    show: false,
+    type: "success",
+    message: "",
+  });
 
   useEffect(() => {
     const loadedProducts = loadCart(); // Load the products from localStorage initially
-  console.log("Loaded products from localStorage:", loadedProducts);
-  setProducts(loadedProducts);
+    console.log("Loaded products from localStorage:", loadedProducts);
+    setProducts(loadedProducts);
     setProducts(loadCart()); // Load the products from localStorage initially
   }, []); // Only run once on component mount
 
@@ -37,6 +43,20 @@ const Cart = () => {
     );
   };
 
+  const handleRemoveFromCart = (productId) => {
+    const updatedCart = products.filter(
+      (product) => product._id !== productId
+    );
+
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    setProducts(updatedCart);
+
+    setPopup({
+      show: true,
+      type: "success",
+      message: "Product removed from cart successfully.",
+    });
+  };
   const loadAllProducts = () => {
     return (
       <div className="row">
@@ -47,6 +67,7 @@ const Cart = () => {
               addToCart={false}
               removeFromCart={true}
               isCartPage={true}  // Pass isCartPage as true for cart page
+              onRemove={handleRemoveFromCart}
             />
             <div className="quantity-controls">
               <button
@@ -66,17 +87,30 @@ const Cart = () => {
           </div>
         ))}
       </div>
-    ); 
+    );
   };
 
   return (
-    <Base title="Carts Page" description="Welcome to your cart!">
+    <Base title="Your Cart | Personal Merchandise App" description="View products added to your cart, update quantities, and proceed to checkout securely on Personal Merchandise App.">
+      {popup.show && (
+      <Popup
+        type={popup.type}
+        message={popup.message}
+        onClose={() =>
+          setPopup({
+            show: false,
+            type: "success",
+            message: "",
+          })
+        }
+      />
+    )}
       <div>
         <div className="row text-center">
           <h1>All Products</h1>
         </div>
         <div className="row">
-          <div className="col-8"> 
+          <div className="col-8">
             {products.length > 0 ? (
               loadAllProducts()
             ) : (

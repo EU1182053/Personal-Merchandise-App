@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { isAuthenticated } from "../auth/helper";
 import { addItemToCart, removeItemFromCart } from "./helper/cartHelper";
 import ImageHelper from "./helper/ImageHelper";
+import Popup from "./Popup";
 
 const Card = ({
   product,
@@ -10,6 +11,7 @@ const Card = ({
   setReload = (f) => f,
   reload = undefined,
   isCartPage = false,
+ onRemove = (f) => f,  
 }) => {
   const cardTitle = product ? product.name : "Default";
   const cardDescription = product ? product.description : "Default";
@@ -44,6 +46,12 @@ const Card = ({
     }
   };
 
+  const [popup, setPopup] = useState({
+    show: false,
+    type: "success",
+    message: "",
+  });
+
   const decreaseQuantity = () => {
     if (quantity > 1) {
       updateLocalStorage(quantity - 1);
@@ -53,10 +61,20 @@ const Card = ({
   const handleAddToCart = () => {
     if (cardStock > 0) {
       if (isAuthenticated()) {
-        addItemToCart({ ...product, quantity }, () => {});
+        addItemToCart({ ...product, quantity }, () => { });
+
+        setPopup({
+          show: true,
+          type: "success",
+          message: "Product added to cart successfully.",
+        });
       }
     } else {
-      alert("Product is out of stock.");
+      setPopup({
+        show: true,
+        type: "error",
+        message: "Product is out of stock.",
+      });
     }
   };
 
@@ -83,8 +101,8 @@ const Card = ({
         <div className="col-12">
           <button
             onClick={() => {
-              removeItemFromCart(product._id);
-              setReload(!reload);
+               onRemove(product._id);
+
             }}
             className="btn btn-block btn-outline-danger mt-2 mb-2"
           >
@@ -96,7 +114,20 @@ const Card = ({
   };
 
   return (
-    <div className="card text-white bg-dark border border-info">
+    <div className="card text-white bg-dark border border-info h-100">
+      {popup.show && (
+        <Popup
+          type={popup.type}
+          message={popup.message}
+          onClose={() =>
+            setPopup({
+              show: false,
+              type: "success",
+              message: "",
+            })
+          }
+        />
+      )}
       <div className="card-header lead">{cardTitle}</div>
       <div className="card-body">
         <ImageHelper product={product} />
@@ -136,4 +167,3 @@ const Card = ({
 };
 
 export default Card;
- 

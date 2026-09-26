@@ -5,6 +5,7 @@ import { FaStar } from "react-icons/fa";
 import { updateRating } from "../admin/helper/adminapicall";
 import ImageHelper from "./helper/ImageHelper";
 import { isAuthenticated } from "../auth/helper";
+import Popup from "./Popup";
 
 const ReviewCard = ({ product }) => {
   const [rating, setRating] = useState(null);
@@ -13,6 +14,12 @@ const ReviewCard = ({ product }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { user, token } = isAuthenticated();
   const [averageRating, setAverageRating] = useState(0);
+  const [popup, setPopup] = useState({
+    show: false,
+    type: "success",
+    message: "",
+  });
+
 
   // Extract the dependency to a variable
   const productAverageRating = product?.rating?.average;
@@ -23,7 +30,7 @@ const ReviewCard = ({ product }) => {
     setAverageRating(productAverageRating || 0);
   }, [productAverageRating]);
 
-  const getRedirect = () => {return redirect && <Redirect to="/" />}
+  const getRedirect = () => { return redirect && <Redirect to="/" /> }
 
   const handleRatingSubmit = async (rating) => {
     if (!isAuthenticated()) return;
@@ -33,7 +40,12 @@ const ReviewCard = ({ product }) => {
       const response = await updateRating(product._id, user._id, token, rating);
       if (response?.message === "Review added and product updated successfully.") {
         setAverageRating(response.averageRating); // Update average rating from response
-        setRedirect(true);
+        // Show success popup
+        setPopup({
+          show: true,
+          type: "success",
+          message: "Rating submitted successfully.",
+        });
 
 
       } else {
@@ -93,6 +105,27 @@ const ReviewCard = ({ product }) => {
 
   return (
     <div className="card text-white bg-dark border border-info">
+      {popup.show && (
+        <Popup
+          type={popup.type}
+          message={popup.message}
+        >
+          <button
+            className="btn btn-success btn-sm"
+            onClick={() => {
+              setPopup({
+                show: false,
+                type: "success",
+                message: "",
+              });
+
+              setRedirect(true);
+            }}
+          >
+            Continue
+          </button>
+        </Popup>
+      )}
       <div className="card-header lead">{product?.name || "Default Name"}</div>
       <div className="card-body">
         {getRedirect()}

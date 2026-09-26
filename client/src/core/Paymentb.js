@@ -5,6 +5,7 @@ import { createOrder } from "./helper/orderHelper";
 import { isAuthenticated } from "../auth/helper";
 import { cartEmpty } from "./helper/cartHelper";
 import DropIn from "braintree-web-drop-in-react";
+import Popup from "./Popup";
 
 const Paymentb = ({ products, totalAmount, setReload = (f) => f, reload = undefined }) => {
   const [info, setInfo] = useState({
@@ -15,6 +16,12 @@ const Paymentb = ({ products, totalAmount, setReload = (f) => f, reload = undefi
     instance: {},
   });
   const [redirect, setRedirect] = useState(false);
+  // ADDED: Popup state
+  const [popup, setPopup] = useState({
+    show: false,
+    type: "success",
+    message: "",
+  });
 
   // Extract userId and token from isAuthenticated() once
   const auth = isAuthenticated();
@@ -60,12 +67,35 @@ const Paymentb = ({ products, totalAmount, setReload = (f) => f, reload = undefi
         return createOrder(userId, token, { order: orderData });
       })
       .then(() => {
+        // Empty cart
         cartEmpty(() => { });
+
+        // Reload cart if required
         setReload(!reload);
-        setRedirect(true);
+
+        // ADDED: Show success popup instead of redirecting immediately
+        setPopup({
+          show: true,
+          type: "success",
+          message: "Payment successful! Your order has been placed.",
+        });
+        setInfo((prevInfo) => ({
+          ...prevInfo,
+          loading: false,
+        }));
       })
-      .catch((err) => setInfo({ ...info, error: "Payment failed", loading: false }));
+      .catch((err) => {
+        console.log("Payment error:", err);
+        setInfo((prevInfo) => ({
+          ...prevInfo,
+          error: "Payment failed",
+          loading: false,
+        }));
+      }
+        );
   };
+
+    // Redirect after popup is closed
 
   if (redirect) {
     return <Redirect to="/user/order" />;
@@ -73,6 +103,27 @@ const Paymentb = ({ products, totalAmount, setReload = (f) => f, reload = undefi
 
   return (
     <div>
+       {popup.show && (
+        <Popup
+          type={popup.type}
+          message={popup.message}
+        >
+          <button
+            className="btn btn-success btn-sm"
+            onClick={() => {
+              setPopup({
+                show: false,
+                type: "success",
+                message: "",
+              });
+
+              setRedirect(true);
+            }}
+          >
+            Continue
+          </button>
+        </Popup>
+      )}
       <h3>Your total bill is Rs. {totalAmount}</h3>
       {info.error && <div className="alert alert-danger">{info.error}</div>}
       {info.clientToken && totalAmount ? (

@@ -3,6 +3,7 @@ import Base from "../core/Base";
 import { Link, Redirect } from "react-router-dom";
 import '../styles.css'
 import { signin, authenticate, isAuthenticated } from "../auth/helper";
+import Popup from "../core/Popup";
 
 const Signin = () => {
   const [values, setValues] = useState({
@@ -10,10 +11,11 @@ const Signin = () => {
     password: "",
     error: "",
     loading: false,
+    success: false,
     didRedirect: false,
   });
 
-  const { email, password, error, loading, didRedirect } = values;
+  const { email, password, error, loading, success, didRedirect } = values;
   const { user } = isAuthenticated();
 
   const handleChange = (name) => (event) => {
@@ -31,52 +33,71 @@ const Signin = () => {
           authenticate(data, () => {
             setValues({
               ...values,
-              didRedirect: true,
+              success: true,
+              didRedirect: false,
             });
           });
         }
       })
-      .catch(error => {return console.log("signin request failed",error)});
+      .catch(error => { return console.log("signin request failed", error) });
   };
 
   const performRedirect = () => {
     if (didRedirect) {
       if (user && user.role === 1) {
-        return <Redirect to="/admin/dashboard"/>
+        return <Redirect to="/admin/dashboard" />
       } else {
-        return <Redirect to="/"/>
+        return <Redirect to="/" />
       }
     }
-    if (isAuthenticated()) {
+    if (!success && isAuthenticated()) {
       return <Redirect to="/" />;
     }
   };
 
-  const loadingMessage = () => {
-    return (
-      loading && (
-        <div className="alert alert-info">
-          <h2>Loading...</h2>
-        </div>
-      )
-    );
-  };
+  // const loadingMessage = () => {
+  //   return (
+  //     loading && (
+  //       <div className="alert alert-info">
+  //         <h2>Loading...</h2>
+  //       </div>
+  //     )
+  //   );
+  // };
 
   const errorMessage = () => {
-    return (
-      <div className="row">
-        <div className="col-md-6 offset-sm-3 text-left">
-          <div
-            className="alert alert-danger"
-            style={{ display: error ? "" : "none" }}
-          >
-            {error}
-          </div>
-        </div>
-      </div>
-    );
+    return error ? (
+      <Popup
+        type="error"
+        message={error}
+        onClose={() => setValues({ ...values, error: "" })}
+      />
+    ) : null
   };
 
+  // ADDED
+  const successMessage = () => {
+    return success ? (
+      <Popup
+        type="success"
+        message="Signin Successful! Welcome back."
+        onClose={() => setValues({ ...values, success: false })}
+      >
+        <button
+          className="btn btn-success btn-sm"
+          onClick={() =>
+            setValues({
+              ...values,
+              success: false,
+              didRedirect: true,
+            })
+          }
+        >
+          Continue
+        </button>
+      </Popup>
+    ) : null;
+  };
   const signInForm = () => {
     return (
       <div className="row">
@@ -106,24 +127,25 @@ const Signin = () => {
             </button>
           </form>
           <Link
-          
-          className="nav-link offset-sm-3 text-right"
-          to="/user/recover"
-        >
-          Forgot Password?
-        </Link>
+
+            className="nav-link offset-sm-3 text-right"
+            to="/user/recover"
+          >
+            Forgot Password?
+          </Link>
         </div>
       </div>
     );
   };
 
   return (
-    <Base title="Sign In page" description="A page for user to sign in!">
-      {loadingMessage()}
+    <Base title="Sign In | Personal Merchandise App" description="Access your Personal Merchandise App account to manage orders, update profile, and continue shopping your favorite T-shirts.">
+      {/* {loadingMessage()} */}
       {errorMessage()}
+      {successMessage()}
       {signInForm()}
       {performRedirect()}
-      
+
     </Base>
   );
 };

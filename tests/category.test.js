@@ -1,5 +1,7 @@
+process.env.NODE_ENV = "test";
 const request = require('supertest');
-const app = require('../index');  // Import your Express app
+const { app, connectDB } = require('../index');
+
 const mongoose = require('mongoose');
 const User = require('../models/user');
 const Category = require('../models/category');
@@ -7,7 +9,7 @@ const Category = require('../models/category');
 describe('Category Routes', () => {
     let adminUser, userToken, categoryId, adminId;
     beforeAll(async () => {
-
+        await connectDB();
         //create a admin user for testing
         const admin = new User({
             name: 'Admin User',
@@ -29,8 +31,8 @@ describe('Category Routes', () => {
         adminId = res.body.user._id;
 
 
-         // Create a category
-         const category = new Category({
+        // Create a category
+        const category = new Category({
             name: 'Old Category Name',
         });
         const savedCategory = await category.save();
